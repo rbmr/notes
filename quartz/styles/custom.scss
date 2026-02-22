@@ -47,3 +47,26 @@ tr {
   margin-top: 1.1rem !important;    /* Adjust this value for more/less space before */
   margin-bottom: 1.1rem !important; /* Adjust this value for more/less space after */
 }
+
+
+/* Set base font size for Explorer and TOC */
+.explorer, .toc {
+  font-size: 0.9rem;
+}
+
+/* Override the specific hardcoded header and folder link sizes in Explorer */
+.explorer {
+  button.mobile-explorer h2,
+  button.desktop-explorer h2,
+  .folder-container div > a,
+  .folder-container div > button span {
+    font-size: 0.9rem;
+  }
+}
+
+/* Override the specific hardcoded header size in TOC */
+.toc {
+  button.toc-header h3 {
+    font-size: 0.9rem;
+  }
+}
