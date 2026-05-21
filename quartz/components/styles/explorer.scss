@@ -126,10 +126,16 @@ button.desktop-explorer {
       overscroll-behavior: contain;
     }
 
+    & li {
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
     & li > a {
       color: var(--dark);
       opacity: 0.75;
       pointer-events: all;
+      display: block; /* Allows the link to behave correctly with the line height */
 
       &.active {
         opacity: 1;
@@ -171,7 +177,7 @@ button.desktop-explorer {
     font-family: var(--headerFont);
     font-size: 0.95rem;
     font-weight: $semiBoldWeight;
-    line-height: 1.5rem;
+    line-height: 1.2;
     display: inline-block;
   }
 
@@ -197,7 +203,7 @@ button.desktop-explorer {
       color: var(--secondary);
       font-weight: $semiBoldWeight;
       margin: 0;
-      line-height: 1.5rem;
+      line-height: 1.2;
       pointer-events: none;
     }
   }

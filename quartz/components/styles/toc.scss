@@ -47,12 +47,19 @@ ul.toc-content.overflow {
   overscroll-behavior: contain;
   list-style: none;
 
+  & > li {
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+
   & > li > a {
     color: var(--dark);
     opacity: 0.35;
     transition:
       0.5s ease opacity,
       0.3s ease color;
+    display: block;
+    
     &.in-view {
       opacity: 0.75;
     }
