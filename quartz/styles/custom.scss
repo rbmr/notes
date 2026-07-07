@@ -70,12 +70,18 @@ tr {
   }
 
   .explorer-content li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
     line-height: 1.2;
   }
 
   .explorer-content li > a {
     display: block; /* Allows the link to behave correctly with the line height */
+  }
+
+  /* Extra breathing room between a folder's title and the first item of its
+   * expanded subcategory, on top of the tighter overall item spacing above. */
+  .explorer-content .folder-outer > ul {
+    padding-top: 0.4rem;
   }
 }
 
@@ -92,5 +98,148 @@ tr {
 
   .toc-content li > a {
     display: block;
+  }
+}
+
+// ============================================================================
+// Visual polish (colors/typography come from quartz.config.yaml; layout is untouched)
+// ============================================================================
+
+* {
+  scrollbar-color: var(--gray) transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--gray);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Soften and lift roundable elements a touch beyond the framework default */
+pre,
+img,
+.callout {
+  border-radius: 8px;
+}
+
+img {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+pre {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.callout {
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* Inline code vs. block code: distinguish at a glance */
+:not(pre) > code {
+  background: color-mix(in srgb, var(--lightgray) 70%, transparent);
+}
+
+/* Subtle animated underline for external links, smoother pill fade for internal links */
+a:not(.internal) {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition:
+    color 0.2s ease,
+    background-size 0.2s ease;
+}
+
+a:not(.internal):hover {
+  background-size: 100% 1px;
+}
+
+a.internal {
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* Zebra striping + soft container shadow for tables */
+.table-container {
+  border-radius: 8px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+}
+
+.table-container > table tr:nth-child(even) {
+  background-color: color-mix(in srgb, var(--lightgray) 40%, transparent);
+}
+
+/* These lists are vertical nav only; long filenames/headings must never cause
+ * horizontal scrollbars. overflow-y: auto (set by the shared .overflow utility
+ * in base.scss, and by .explorer-content) otherwise forces overflow-x to
+ * compute as auto per spec, so pin it explicitly. */
+ul.overflow,
+ol.overflow,
+.explorer-content {
+  overflow-x: hidden;
+}
+
+/* A little more life in the sidebar navigation */
+.explorer .folder-container div > a,
+.explorer .folder-container div > button span,
+.explorer-content li > a,
+.backlinks > ul.overflow > li > a {
+  border-radius: 4px;
+  padding: 0.1rem 0.2rem;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--highlight);
+  }
+}
+
+ul.toc-content.overflow > li > a {
+  border-radius: 4px;
+  padding: 0.1rem 0.2rem;
+  transition:
+    0.5s ease opacity,
+    0.3s ease color,
+    background-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--highlight);
+  }
+
+  &.in-view {
+    font-weight: $semiBoldWeight;
+  }
+}
+
+/* Gentle fade/slide-in for the article on load; SPA re-navigation replaces the node so this replays */
+article {
+  animation: article-fade-in 0.35s ease;
+}
+
+@keyframes article-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
