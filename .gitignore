@@ -10,6 +10,3 @@ private/
 .replit
 replit.nix
 .idea
-# for when creating a simlink
-# > ln -s ~/projects/nerd-bowl-vault/site content
-content

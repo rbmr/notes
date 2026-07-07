@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  # Trigger via dispatch
-  repository_dispatch:
-    types: [ update_content ]
   # Trigger manually from the Actions tab
   workflow_dispatch:
 
@@ -23,27 +20,8 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Site (Quartz Engine)
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Checkout Content (Vault)
-        uses: actions/checkout@v4
-        with:
-          repository: NerdBowl/nerd-bowl-vault
-          path: vault-temp # Checkout to a temporary directory
-          token: ${{ secrets.VAULT_PAT }}
-          fetch-depth: 0
-          sparse-checkout: |
-            site
-
-      - name: Setup Content
-        run: |
-          # Create 'content/' directory
-          mkdir -p content
-          # Copy contents of 'site' folder to 'content'
-          cp -r vault-temp/site/. content/
-          # Remove temporary directory
-          rm -rf vault-temp
 
       - name: Setup Node
         uses: actions/setup-node@v4
