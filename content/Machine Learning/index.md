@@ -1,4 +1,5 @@
 ![[machine_learning_2x.png|300]]
+
 Reference: https://xkcd.com/1838/ 
 
 #### Definition of AI
