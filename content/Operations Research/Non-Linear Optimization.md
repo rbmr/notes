@@ -16,19 +16,14 @@ This document relies on basic knowledge of linear algebra. For a full list of re
 
 ### Basic Optimization
 
-- Let $X \subseteq \mathbb{R}^n$, and let $f:X \rightarrow \mathbb{R}$ be a function. A point $x^* \in X$ is a **global minimizer** of $f$ over $X$ if $f(x^*) \le f(x)$ for all $x \in X$.
-- Let $X \subseteq \mathbb{R}^n$ and let $f:X \rightarrow \mathbb{R}$ be a function. A point $x^* \in X$ is a **local minimizer** of $f$ over $X$ if there exists an $\epsilon > 0$ such that $f(x^*) \le f(x)$ for all $x \in X$ with $||x - x^*|| < \epsilon$.
-- The **minimum**, $\min_{x \in X} f(x)$, is the smallest $k \in \mathbb{R}$ such that there exists a $x^* \in X$ for which $f(x^*) = k$. The minimum exists if and only if there exists a global minimizer.
-- The **infimum**, $\inf_{x \in X} f(x)$, is the largest $k \in \mathbb{R} \cup \{-\infty, +\infty\}$ such that $f(x) \ge k$ for all $x \in X$. The infimum always exists.
-- Let $f:\mathbb{R}^n \rightarrow \mathbb{R}$ be partially differentiable at some point $x^* \in \mathbb{R}^n$. The **gradient** of $f$ at $x^*$ is defined as $\nabla f(x^*) := [\frac{\partial f(x^*)}{\partial x_1} \dots \frac{\partial f(x^*)}{\partial x_n}]^\top$.
+- The notions of **(global and local) minimizer** and **maximizer**, **minimum** and **maximum**, and **infimum** and **supremum** carry over unchanged from the univariate case (see [[1. Univariate Calculus]]): for $f:X \rightarrow \mathbb{R}$ with $X \subseteq \mathbb{R}^n$ we only replace the interval condition $|x - x^*| < \epsilon$ with the open ball $\|x - x^*\| < \epsilon$ (i.e. $x \in B_\epsilon(x^*)$). We phrase everything below in terms of minimization; the maximization case follows by negating $f$.
+- The **gradient** $\nabla f(x^*)$ (the vector of first-order partials) and the **Hessian** $\nabla^2 f(x^*)$ (the matrix of second-order partials, symmetric when those partials are continuous) are defined as in [[4. Multivariate Calculus]].
 - Any point $x^*$ where $\nabla f(x^*) = 0$ is called a **stationary point**.
 - **Fermat's Theorem**: Let $x^*$ be a local minimizer of a function $f:\mathbb{R}^n \rightarrow \mathbb{R}$, and assume $f$ is continuously differentiable in an open set $S$ containing $x^*$. Then $\nabla f(x^*) = 0$.
 - Let $X \subseteq \mathbb{R}^n$ be a convex set. A function $f:X \rightarrow \mathbb{R}$ is:
 	- **convex** if for every $x, y \in X$ and $t \in [0,1]$, we have $f(tx + (1-t)y) \le tf(x) + (1-t)f(y)$. 
 	- **strictly convex** if for every $x, y \in X$ such that $x \ne y$ and $t \in (0,1)$, we have $f(tx + (1-t)y) < tf(x) + (1-t)f(y)$. 
 	- **(strictly) concave** if $-f$ is (strictly) convex.
-- Let $f:\mathbb{R}^n \rightarrow \mathbb{R}$ be twice partially differentiable at some point $x^* \in \mathbb{R}^n$. The **Hessian** of $f$ at $x^*$ is the matrix of its second-order partial derivatives, denoted as $\nabla^2 f(x^*)$. 
-	- If the second-order partial derivatives are continuous, the Hessian $\nabla^2 f(x^*)$ is symmetric.
 - Let $X \subseteq \mathbb{R}^n$ be an open convex set, and let $f:X \rightarrow \mathbb{R}$ be twice continuously differentiable on $X$. Then,
 	- $f$ is convex **if and only if** its Hessian $\nabla^2 f(x) \succeq 0$ for all $x \in X$. 
 	- $f$ is strictly convex **if** its Hessian $\nabla^2 f(x) \succ$ for all $x \in X$.
@@ -36,7 +31,7 @@ This document relies on basic knowledge of linear algebra. For a full list of re
 - Let $f:\mathbb{R}^n \rightarrow \mathbb{R}$ be twice continuously differentiable in an open set $S$:
 	- **Second-Order Necessary Condition**: Let $x^* \in S$ be a local minimizer of a function $f:\mathbb{R}^n \rightarrow \mathbb{R}$, then $\nabla^2 f(x^*) \succeq 0$.
 	- **Second-Order Sufficient Condition:** Suppose there is an $x^* \in S$ with $\nabla f(x^*) = 0$ and $\nabla^2 f(x^*) \succ 0$, then, $x^*$ is a local minimizer of $f$.
-- **Weierstrass' Theorem:** Let $X \subset \mathbb{R}^n$ be a compact (closed and bounded) non-empty set, and let $f:X \rightarrow \mathbb{R}$ be a continuous function. Then $f$ has a global minimizer.
+- **Weierstrass' Theorem:** Let $X \subset \mathbb{R}^n$ be a compact (closed and bounded) non-empty set, and let $f:X \rightarrow \mathbb{R}$ be a continuous function. Then $f$ has a global minimizer (and, by the same argument, a global maximizer). This is the $\mathbb{R}^n$ generalization of the Extreme Value Theorem from [[1. Univariate Calculus]].
 
 Roadmap for finding unconstrained global minimizers analytically:
 1. Find $\mathbf{x}^*$ such that $\nabla f (\mathbf{x}^*)=\mathbf{0}$.
