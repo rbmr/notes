@@ -1,0 +1,14 @@
+# Cloudflare Pages _headers — copied into public/ at deploy time.
+# Docs: https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+  # Machine-readable license signal (scrapers/agents can read this header)
+  Link: <https://creativecommons.org/licenses/by/4.0/>; rel="license"
+
+# Fingerprinted assets never change — cache them hard
+/static/*
+  Cache-Control: public, max-age=31536000, immutable

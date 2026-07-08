@@ -1,4 +1,4 @@
-name: Deploy Quartz site to GitHub Pages
+name: Deploy Quartz site to Cloudflare Pages
 
 on:
   push:
@@ -9,15 +9,13 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: "pages"
+  group: "deploy-cloudflare"
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -37,18 +35,14 @@ jobs:
       - name: Build Quartz
         run: npx quartz build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: public
+      # robots.txt and _headers must sit at the deploy root (public/).
+      # quartz/static maps to /static, so we inject these here instead.
+      - name: Add root files (robots.txt, _headers)
+        run: cp deploy/robots.txt deploy/_headers public/
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy public --project-name=notes --branch=main

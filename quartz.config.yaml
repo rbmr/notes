@@ -7,7 +7,7 @@ configuration:
   analytics:
     provider: plausible
   locale: en-US
-  baseUrl: rbmr.github.io/notes
+  baseUrl: notes.mertensrh.com
   ignorePatterns:
     - private
     - templates
@@ -133,7 +133,9 @@ plugins:
   - source: github:quartz-community/og-image
     enabled: true
   - source: github:quartz-community/cname
-    enabled: true
+    # Disabled: on Cloudflare Pages the custom domain is set in the dashboard,
+    # so we must NOT emit a GitHub-Pages CNAME file.
+    enabled: false
   - source: github:quartz-community/canvas-page
     enabled: true
   - source: github:quartz-community/content-page
@@ -216,6 +218,7 @@ plugins:
     options:
       links:
         GitHub: https://github.com/rbmr/notes
+        "License: CC BY 4.0": https://creativecommons.org/licenses/by/4.0/
   - source: github:quartz-community/recent-notes
     enabled: true
   - source: github:quartz-community/spacer
