@@ -2,9 +2,9 @@ Why is organizing knowledge so difficult?
 
 ### Introduction
 
-I believe the difficulty in organizing knowledge comes down to discrepancy between how we store knowledge, versus how we consume it. **Knowledge itself is associative, but we consume it linearly**.
+I believe the difficulty in organizing knowledge comes down to discrepancy between how we store knowledge, versus how we consume it. Specifically, **knowledge itself is associative, but we consume it linearly**.
 
-When we read an article or a book, we generally read it from top to bottom, in the order decided upon by the author. Frequently, this information is further organized through nested categorization. This suggests some strict hierarchy. In some cases, this works perfectly well, for example a manual, or a story which are influenced by chronology. But things break apart when the connections between parts of the content become more complex.
+When we read an article or a book, we generally read it from top to bottom, in the order decided upon by the author. Frequently, this information is further organized through nested categorization. This suggests some strict hierarchy. In some cases, this works perfectly well, for example a manual, or a story which are both examples influenced by chronology. But things break apart when the connections between parts of the content become more complex.
 
 My favorite example for this conflict is in the difference between books on Systemic Anatomy versus Regional Anatomy. Systemic Anatomy organizes anatomy by biological function first, and region (physical proximity) second. Regional anatomy organizes our knowledge by physical proximity first, and biological function second.  This shows two books containing largely the same knowledge can be drastically different based solely on the organization of knowledge within. Both approaches are equally valid, it just depends where the author wants the emphasis to lie. 
 
