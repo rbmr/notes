@@ -167,8 +167,8 @@ TODO: explain the following more formally
 ### Derivative Free Optimization
 
 For some functions, it is not (always) possible to compute the derivative. Reasons include:
-- The function is non-differentiable
-- The function is the result of an external program, experiment or simulation.
+- The function is non-differentiable.
+- The function is the result of an external program, experiment or simulation, and thus no derivative exist.
 - The derivatives are too expensive to compute
 
 Subdifferentials
@@ -181,7 +181,7 @@ Subdifferentials
 Coordinate Descent
 
 - (idea: we want to perform line search, but the search direction cannot be determined using the gradient, instead we use the basis vectors)
-- (strategy: in what order do we determine the search directions? examples: cyclic, back and forth, others, some converge to local minimizer, some can iterate endlessly)
+- (strategy: in what order do we determine the search directions? examples: cyclic, back and forth, others. Add note that some strategies converge to local minimizer, some can iterate endlessly)
 
 Golden Section Method
 
@@ -193,5 +193,30 @@ Nelder-Mead Simplex Method
 
 ### Constrained Optimization
 
-- (provide formal definition of constrained optimization problem)
-- (todo write layout for the other sections)
+Suppose we have a constrained optimization problem formulated as follows:
+$$
+\begin{align}
+\inf f(\mathbf{x}) & \\
+\text{subject to } c_{i}(\mathbf{x})&=0 \quad \forall i \in \mathcal{E} \\
+c_{i}(\mathbf{x})&\geq 0\quad \forall i  \in \mathcal{I}
+\end{align}
+$$
+where:
+- $f$ is the objective function
+- $c_{i}$ are the constraints
+- $f$ and $c_{i}$ are assumed to be (twice) continuously differentiable
+- $\mathcal{E}$ is the index set of the equality constraints
+- $\mathcal{I}$ is the index set of the inequality constraints 
+
+Now we have constraints, only looking at the objective function to determine optimality is insufficient. It might be that there is a descent direction, but you must also be able to move in this direction without violating any of the constraints. Therefore, we must redetermine what it means for a point $x$ to be a minimizer. 
+
+Suppose we are at a feasible point $x$, and we want to take a small step $s$ such that the objective function decreases, meaning $f(x+s)<f(x)$. Using a first order Taylor approximation, we know $f(x+s) \approx f(x) + \nabla f(x)^\top s$, so for the objective to decrease we need $\nabla f(x)^\top s<0$. If we can find a step $s$ that decreases the objective AND keeps us feasible, than $x$ is not a minimizer.
+
+Suppose we are on some equality constraint $c_{i}(x)=0$. To stay feasible, we must walk tangentially to it. Using a first order Taylor approximation we know $c_{i}(x+s)\approx c_{i}(x)+\nabla c_{i}(x)^\top s$. Since $c_{i}(x)=0$, staying feasible requires $\nabla c_{i}(x)^\top s=0$. If $x$ is a minimizer, no direction $s$ can simultaneously satisfy $\nabla c_{i}(x)^\top s=0$ and $\nabla f(x)^\top s<0$. This only happens when the objective gradient is perfectly parallel to the constraint gradient. Therefore, $\nabla f(x)=\lambda_{i}\nabla c_{i}(x)$ for some constant $\lambda_{i}$.
+
+For inequality constraints $c_{j}(x) \geq 0$, we split in two cases:
+1. Inactive constraint $c_{j}(x)>0$: in this case the point is safely inside the boundary. We can take a small step in any direction without violating the constraint. So we only need $\nabla f(x)=0$.
+2. Active constraint $c_{j}(x)=0$: in this case the point is on the edge. A step $s$ must either move along the boundary (tangent) or point inward toward the feasible region. Specifically, we require $\nabla c_{j}(x)^\top s \geq 0$. To prevent finding a descent direction $\nabla f(x)^\top s <0$, $\nabla f(x)$ must point in the exact same outward direction as the constraint gradient. Therefore $\nabla f(x)=\lambda_{j}\nabla c_{j}(x)$, but specifically $\lambda_{j}\geq 0$.
+To combine both cases without needing piecewise functions, we do the following. We know that either $\lambda_{j}=0$ (inactive case), or $c_{j}(x)=0$ (active case). We can enforce this by adding the **complementary slackness condition** $\lambda_{j}c_{j}(x)=0$.
+
+Suppose then we combine multiple of these equality and inequality constraints. To stay feasible, any step $s$ must satisfy the geometric rules for all active constraints at once (tangential for equalities, inwards/tangential for inequalities). If $x$ is truly a minimizer, any direction $s$ that points in a descent direction $\nabla f(x)^\top s <0$ violates at least one constraint. The constraints combined form a barrier that leaves no escape route.  
