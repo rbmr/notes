@@ -191,7 +191,7 @@ Nelder-Mead Simplex Method
 
 - (explain the full algorithm, ensure intuition is clear)
 
-### Constrained Optimization
+### KKT Conditions
 
 Suppose we have a constrained optimization problem formulated as follows:
 $$
@@ -208,15 +208,48 @@ where:
 - $\mathcal{E}$ is the index set of the equality constraints
 - $\mathcal{I}$ is the index set of the inequality constraints 
 
-Now we have constraints, only looking at the objective function to determine optimality is insufficient. It might be that there is a descent direction, but you must also be able to move in this direction without violating any of the constraints. Therefore, we must redetermine what it means for a point $x$ to be a minimizer. 
+In unconstrained optimization, a point $x$ is a local minimizer if there is no direction $s$ that decreases the objective function. With constraints, this condition must be updated to: a point $x$ is a local minimizer if there is no **feasible** descent direction $s$.
 
-Suppose we are at a feasible point $x$, and we want to take a small step $s$ such that the objective function decreases, meaning $f(x+s)<f(x)$. Using a first order Taylor approximation, we know $f(x+s) \approx f(x) + \nabla f(x)^\top s$, so for the objective to decrease we need $\nabla f(x)^\top s<0$. If we can find a step $s$ that decreases the objective AND keeps us feasible, than $x$ is not a minimizer.
+1. Suppose we are at a feasible point $x$, we want to find a small step $s$ such that the objective function decreases, while ensuring all constraints remain satisfied. If $x$ is a local minimizer, then no such step $s$ exists.
+2. Using a first-order Taylor approximation, we know $g(x+s) \approx g(x) + \nabla g(x)^\top s$ for any function $g$.
+3. Decreasing objective function means $f(x+s) < f(x)$, therefore $\nabla f(x)^\top s<0$.
+4. For all equality constraints ($i \in \mathcal{E}$), we must remain on the boundary, that is $c_{i}(x+s)=0$. Since $c_{i}(x)=0$, we must walk tangent to the constraint, that is $\nabla c_{i}(x)^\top s=0$.
+5. For all inactive inequality constraints ($i \in \mathcal{I}$ where $c_{i}(x)>0$), we are strictly inside the boundary. Therefore any sufficiently small step $s$ in any direction will not violate the constraint. This $\nabla c_{i}(x)^\top s$ can be anything.
+6. For all active inequality constraints ($i \in \mathcal{I}$ where $c_{i} = 0$), we are on the edge of the inequality boundary. To stay inside the feasible region $c_{i}(x+s)\geq 0$ we must walk either tangent to the boundary or point inward, that is $\nabla c_{i}(x)^\top s \geq 0$.
+7. For $x$ to be a local minimizer, there must be no $s$ such that all of the above conditions 3-6 hold simultaneously. Notice that the constraints on $s$ are all linear. We want to show this region is empty.
+8. One such way it to rewrite the search for the steepest descent direction $s$ that satisfies all constraints as a linear programming (LP) problem. 
+	$$
+	\begin{align} \min_{s} \quad & \nabla f(x)^\top s \\ \text{subject to} \quad & \nabla c_{i}(x)^\top s = 0 \quad \forall i \in \mathcal{E} \\ & \nabla c_{j}(x)^\top s \geq 0 \quad \forall j \in \mathcal{I}_{active} \end{align}
+	$$
+9. Trivially, $s=0$ is a feasible solution ($x$ was feasible, thus $x + s =x$ is also feasible). However, $\nabla f(x)^\top s=0$, thus $s$ is not a valid descent direction. To show no feasible descent condition exists for $x$, we must show $s=0$ is an optimal solution of the LP problem. 
+10. We know from [[Linear Optimisation]] that a solution $s$ is optimal if it is both primal feasible and dual feasible, we already know $s=0$ is primal feasibly, so we only need to show it is also dual feasible. Rewriting the conditions for dual feasibility (not shown here), we get the **stationarity condition**: 
+	$$
+	\nabla f(x) = \sum_{i \in \mathcal{E}} \lambda_i \nabla c_i(x) + \sum_{i \in \mathcal{I}_{active}} \lambda_i \nabla c_i(x)
+	$$
+	Where the constants (called **Lagrange multipliers**) $\lambda_{i}$ capture how each constraint restricts movement:
+	- For equality constraints $\lambda_{i} \in \mathbb{R}$ because equality constraints restrict movement in both directions.
+	- For active inequality constraints $\lambda_{i} \geq 0$ because they only restrict movement in one direction.
+11. To write this linear combination elegantly without needing to manually separate active and inactive linear inequalities, we introduce the **complementary slackness condition**: $\lambda_{i}c_{i}(x)=0$ for all $i \in \mathcal{I}$. This rule guarantees that if an inequality is inactive ($c_{i}(x) > 0$), then its multiplier must be zero ($\lambda_{i}=0$), effectively removing its contribution from the sum.
+12. Combing all of this, we get the full Karush-Kuhn-Tucker (KKT) conditions. Assuming some constraint qualifications hold, if $x^*$ is a local minimizer, there exists some Lagrange multipliers $\lambda^*$ such that each of the following conditions hold:
+	1. **Stationarity**: $\nabla f(x^*)=\sum_{i \in \mathcal{E \cup \mathcal{I}}}\lambda_{i}^* \nabla c_{i}(x^*)$
+	2. **Primal Feasibility**: 
+		- $c_{i}(x^*)=0\quad \forall i \in \mathcal{E}$
+		- $c_{i}(x^*) \geq 0 \quad \forall i \in \mathcal{I}$
+	- **Dual Feasibility**: $\lambda_{i}^*\geq 0\quad \forall i \in \mathcal{I}$
+	- **Complementary Slackness**: $\lambda_{i}^*c_{i}(x^*)=0 \quad \forall i \in \mathcal{I}$.
 
-Suppose we are on some equality constraint $c_{i}(x)=0$. To stay feasible, we must walk tangentially to it. Using a first order Taylor approximation we know $c_{i}(x+s)\approx c_{i}(x)+\nabla c_{i}(x)^\top s$. Since $c_{i}(x)=0$, staying feasible requires $\nabla c_{i}(x)^\top s=0$. If $x$ is a minimizer, no direction $s$ can simultaneously satisfy $\nabla c_{i}(x)^\top s=0$ and $\nabla f(x)^\top s<0$. This only happens when the objective gradient is perfectly parallel to the constraint gradient. Therefore, $\nabla f(x)=\lambda_{i}\nabla c_{i}(x)$ for some constant $\lambda_{i}$.
+(todo: add note that this relies on some assumptions that are not guaranteed to be true (explain exactly which steps dont always work), then provide a brief example where it does not hold)
 
-For inequality constraints $c_{j}(x) \geq 0$, we split in two cases:
-1. Inactive constraint $c_{j}(x)>0$: in this case the point is safely inside the boundary. We can take a small step in any direction without violating the constraint. So we only need $\nabla f(x)=0$.
-2. Active constraint $c_{j}(x)=0$: in this case the point is on the edge. A step $s$ must either move along the boundary (tangent) or point inward toward the feasible region. Specifically, we require $\nabla c_{j}(x)^\top s \geq 0$. To prevent finding a descent direction $\nabla f(x)^\top s <0$, $\nabla f(x)$ must point in the exact same outward direction as the constraint gradient. Therefore $\nabla f(x)=\lambda_{j}\nabla c_{j}(x)$, but specifically $\lambda_{j}\geq 0$.
-To combine both cases without needing piecewise functions, we do the following. We know that either $\lambda_{j}=0$ (inactive case), or $c_{j}(x)=0$ (active case). We can enforce this by adding the **complementary slackness condition** $\lambda_{j}c_{j}(x)=0$.
+### Constraint Qualification
 
-Suppose then we combine multiple of these equality and inequality constraints. To stay feasible, any step $s$ must satisfy the geometric rules for all active constraints at once (tangential for equalities, inwards/tangential for inequalities). If $x$ is truly a minimizer, any direction $s$ that points in a descent direction $\nabla f(x)^\top s <0$ violates at least one constraint. The constraints combined form a barrier that leaves no escape route.  
+(todo: explain slaters condition, and explain how it guarantees that the KKT )
+
+(todo: explain the linear independence constraint qualification, and explain how it guarantees )
+
+### Second Order Conditions
+
+(todo: write the second order conditions here)
+
+### Perturbing Constraints
+
+(todo: explain perturbing a constraint formally, then explain we want to answer how this impacts the optimal objective value. Then show how this relates to the Lagrange multipliers  )
