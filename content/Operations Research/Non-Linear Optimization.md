@@ -207,6 +207,8 @@ where:
 - $\mathcal{E}$ is the index set of the equality constraints
 - $\mathcal{I}$ is the index set of the inequality constraints 
 
+### Lagrangian Function
+
 (todo: also explain the Lagrangian and its properties)
 
 ### Duality
