@@ -24,7 +24,7 @@ Another question is how to represent this mathematical knowledge. How would it b
 
 ### Prompt and Response
 
-To get some direction, I then sent this ramble to Claude Fable 5, and added the following prompt:
+To get some direction, I then sent this ramble to Claude, and added the following prompt:
 
 > I think almost the hardest part of the problem is even defining what the problem is. I am still stuck at "what is mathematics". Could we maybe attempt a high level, yet concrete definition of both "the game", and "what constitutes improvement". Think long and deep about this question. What are existing attempts with respect to this problem? Where did they differ from my intuition, how where they similar?
 
