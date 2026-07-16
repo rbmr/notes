@@ -234,19 +234,6 @@ $$
 Furthermore, if we define the slack variables for the dual as $\mathbf{y_{s}}$, and set $\mathbf{y}=[\mathbf{y_{0}^{\top}\ \mathbf{y}_{s}^{\top}}]^{\top}$ This gives the extended form of the dual as:
 $$\begin{aligned} \min_{\mathbf{y}_{0}} \quad & \mathbf{b}^\top \mathbf{y}_{0} \\ \text{s.t.} \quad & \begin{bmatrix} A_0^\top & -I \end{bmatrix} \mathbf{y} = \mathbf{c}_0 \\ & \mathbf{y} \ge \mathbf{0} \end{aligned}$$
 
-### Lagrangian Function
-
-Consider a general constrained optimization problem $(P)$, with optimal value $v(P)$:
-$$
-\max_{x} \{f(x) : g_{i}(x) \le 0, i=1,\dots,m; x \ge 0\}
-$$
-
-To relax a difficult problem, the constraints $g_{i}(x) \le 0$ are removed and instead penalized in the objective function using non-negative multipliers $y_{i} \ge 0$. This creates the Lagrangian function for $y = [y_{1}, \dots, y_{m}]^T$, defined as $\Theta(y) = \max_{x} \{f(x) - \sum_{i=1}^m y_{i} g_{i}(x), x \ge 0\}$.  
-
-For any choice of $y \ge 0$, the Lagrangian function yields an upper bound on $v(P)$. This holds because, for the primal optimal solution $x^*$, we have $f(x^*) - \sum_{i=1}^m y_{i} g_{i}(x^*) \ge f(x^*) = v(P)$, given that $g_{i}(x^*) \le 0$. 
-
-The Lagrangian dual problem seeks the best (smallest) upper bound by solving $\min_{y} \{\Theta(y) : y \ge 0\}$. For linear programming, solving this Lagrangian dual problem is equivalent to solving the standard dual LP problem.
-
 ### Duality Theorems
 
 - **Weak Duality Theorem**: Let $\mathbf{x}$ and $\mathbf{y}$ be feasible solutions of a linear programming problem $(P)$ and its dual $(D)$ respectively, then $\mathbf{c}^{T}\mathbf{x} \leq \mathbf{b}^{T} \mathbf{y}$.  
