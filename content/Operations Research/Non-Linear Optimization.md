@@ -287,8 +287,6 @@ Suppose we want to perform line search, but without relying on derivatives. We n
 
 How do we determine the search direction?
 
-- (idea: we want to perform line search, but the search direction cannot be determined using the gradient, instead we use the basis vectors)
-- (strategy: in what order do we determine the search directions? examples: cyclic, back and forth, others. Add note that some strategies converge to local minimizer, some can iterate endlessly)
 - **Coordinate Descent** performs line search by selecting its search directions $p_k$ from the set of standard basis vectors $\{e_1,\dots,e_n\}$ and then searching for a good next iterate along the line $\{x_k + \alpha p_k : \alpha \in \mathbb{R}\}$. We basically optimize one coordinate at a time.
 - In what order should the coordinate directions be searched? Example strategies:
 	- **Cyclic**: $e_1, e_2, \dots, e_n, e_1, e_2, \dots$
@@ -418,13 +416,15 @@ For $x$ to be a local minimizer, there must be no $s$ such that each of the afor
 
 The stationarity condition may be alternatively derived as follows:
 
-1. First we simplify by interpreting all equality constraints as two linear inequality constraints, such that only linear inequalities remain.
+1. First we simplify by interpreting each equality constraint as two inequality constraints ($c_{i}(x) \geq 0$ and $-c_{i}(x) \geq 0$), such that only inequalities remain.
 2. Suppose we are at a feasible point $x$. Any step $s$ we take can be evaluated by its dot product with the gradient vectors of the constraints $\nabla c_{i}(x)$ or objective $\nabla f(x)$. 
 	- Feasibility requires $\nabla c_{i}(x)^\top s\geq 0$ for all active inequality constraints.
 	- Non-descent requires $\nabla f(x)^\top s \geq 0$.
-3. For $x$ to be a local minimizer, every feasible step $s$, must also be a non-descent step. Geometrically, this means the entire feasible space (the intersection of all the half spaces defined by the constraint), must fit completely inside the non-decent half space.
-4. (todo: show this is only the case if and only if the stationarity conditions hold)
-5. (finally, we need to show this is equivalent to the lambda in R case for the linear equalities)
+3. For $x$ to be a local minimizer, every feasible step $s$, must also be a non-descent step. Geometrically, this means the entire feasible cone (the intersection of all the half spaces defined by the active constraints), must fit completely inside the non-descent half space.
+4. This containment holds **if and only if** $\nabla f(x)$ is a non-negative combination of the active constraint gradients: $\nabla f(x) = \sum_{i} \lambda_i \nabla c_i(x)$ with all $\lambda_i \geq 0$ — which is exactly the stationarity condition (with dual feasibility).
+	- ($\Leftarrow$) If $\nabla f(x) = \sum_i \lambda_i \nabla c_i(x)$ with $\lambda_i \geq 0$, then any feasible step $s$ satisfies $\nabla f(x)^\top s = \sum_i \lambda_i\, \nabla c_i(x)^\top s \geq 0$, as a sum of products of non-negative numbers. So every feasible step is a non-descent step.
+	- ($\Rightarrow$) This direction is **Farkas' Lemma**: for any vectors $g, a_1, \dots, a_m \in \mathbb{R}^n$, exactly one of the following holds: either $g = \sum_i \lambda_i a_i$ for some $\lambda \geq 0$, or there exists an $s$ with $a_i^\top s \geq 0$ for all $i$ and $g^\top s < 0$. Geometrically: the non-negative combinations of the $a_i$ form a convex cone; any vector outside this cone can be separated from it by a hyperplane, and the normal vector $s$ of that separating hyperplane is precisely a step that is feasible (to first order) yet descending. Applied with $g = \nabla f(x)$ and the $a_i$ the active constraint gradients: if $\nabla f(x)$ lies outside the cone, a feasible descent direction exists, so $x$ is not a local minimizer.
+5. Finally, we recover the equality-constrained case: an equality constraint $c_{i}(x) = 0$ was split into the two always-active inequalities $c_{i}(x) \geq 0$ and $-c_{i}(x) \geq 0$, with multipliers $\lambda_{i}^+, \lambda_{i}^- \geq 0$. Their joint contribution to the combination is $\lambda_{i}^+\nabla c_{i}(x) - \lambda_{i}^-\nabla c_{i}(x) = (\lambda_{i}^+ - \lambda_{i}^-)\nabla c_{i}(x)$, and since $\lambda_{i}^+ - \lambda_{i}^-$ can take any real value, this is equivalent to a single free multiplier $\lambda_{i} \in \mathbb{R}$ — exactly how the stationarity condition treats equality constraints.
 
 ### Constraint Qualification
 
