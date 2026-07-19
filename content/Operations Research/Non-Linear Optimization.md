@@ -281,23 +281,78 @@ Theorems for minimization/maximization frequently rely on a gradient. For convex
 	- **Maximum**: $\partial(\max\{f,g\})(x)$ equals $\partial f(x)$ where $f(x) > g(x)$, equals $\partial g(x)$ where $g(x) > f(x)$, and equals $\text{conv}(\partial f(x) \cup \partial g(x))$ at the kink where $f(x) = g(x)$.
 		- The **convex hull** $\text{conv}(S)$ is the smallest convex set containing $S$, or equivalently, the set of all convex combinations of points in $S$.
 
-- (define subgradient)
-- (define subdifferential)
-- (given some point for which zero in the subdifferential then if f is convex, point is global minimizer, if f is strictly convex, then the point is the unique global minimizer)
-- (state: you can compute subdifferentials of more complex convex functions using the subdifferentials for simpler convex functions, then provide the rules for combining functions one by one)
+### Coordinate Descent and Golden Section Method
 
-Coordinate Descent
+Suppose we want to perform line search, but without relying on derivatives. We need to re-answer the two core questions for line search.
+
+How do we determine the search direction?
 
 - (idea: we want to perform line search, but the search direction cannot be determined using the gradient, instead we use the basis vectors)
 - (strategy: in what order do we determine the search directions? examples: cyclic, back and forth, others. Add note that some strategies converge to local minimizer, some can iterate endlessly)
+- **Coordinate Descent** performs line search by selecting its search directions $p_k$ from the set of standard basis vectors $\{e_1,\dots,e_n\}$ and then searching for a good next iterate along the line $\{x_k + \alpha p_k : \alpha \in \mathbb{R}\}$. We basically optimize one coordinate at a time.
+- In what order should the coordinate directions be searched? Example strategies:
+	- **Cyclic**: $e_1, e_2, \dots, e_n, e_1, e_2, \dots$
+	- **Back-and-forth**: $e_1, e_2, \dots, e_{n-1}, e_n, e_{n-1}, \dots, e_2, e_1, e_2, \dots$
+	- More advanced strategies such as: at the end of $n$ step cycle, additionally search along the net progress direction of that cycle, $x_k - x_{k-n}$.
+- Some strategies provably converge to a local minimizer, while others can iterate endlessly.
 
-Golden Section Method
+How do we determine the step size?
 
-- (explain golden section method)
+- The **golden section method** approximates a local minimizer of any continuous function $\phi: \mathbb{R} \to \mathbb{R}$ without relying on the derivative.
+	- This is the derivative free alternative to the bisection method.
+- The full algorithm: 
+	1. pick a tolerance $\epsilon > 0$ and initialize $L < M < U$ such that $(M-L)/(U-M) \in \{\varphi, 1/\varphi\}$, where $\varphi$ is the positive solution to $\varphi^2-\varphi-1=0$.
+	2. Place the test point in the longer subinterval: if $U - M > M - L$, set $T \leftarrow L + (U-L)/\varphi$, otherwise set $T \leftarrow L + (U-L)(1 - 1/\varphi)$.
+	3. If $\phi(T) > \phi(M)$: shrink away from $T$'s side (set $U \leftarrow T$ if $T > M$, or $L \leftarrow T$ if $T < M$).
+	4. If $\phi(T) \le \phi(M)$: $T$ becomes the new interior point; discard the segment on the far side of $M$ (if $T > M$: set $L \leftarrow M$, $M \leftarrow T$; if $T < M$: set $U \leftarrow M$, $M \leftarrow T$).
+	5. If $U - L \le \epsilon$, return $M$, otherwise repeat from 2.
+- In every iteration the interval width shrinks by the factor $1/\varphi \approx 0.618$, so the bracket width converges linearly to zero, slightly slower than bisection's factor $0.5$, which is the price of not using derivatives.
 
-Nelder-Mead Simplex Method
+Derivation of the Golden Section Method
 
-- (explain the full algorithm, ensure intuition is clear)
+- Suppose we know three points $L < M < U$ such that $\phi(M) < \phi(L)$ and $\phi(M) < \phi(U)$. Then there must be some local minimizer $x^*$ of $\phi$ in $(L,U)$. We say the points $L$, $M$, and $U$ bracket a minimizer.
+- To shrink the interval $(L,U)$, we evaluate $\phi$ at a new test point $T$ somewhere inside the interval. We then compare $\phi(T)$ with $\phi(M)$, and discard either $L$ or $U$ while ensuring the remaining three points still validly bracket the minimizer. We repeat this process until the width of the interval falls below a desired threshold.
+- This raises a core design question: 
+	- How should we initialize the interior point $M$?
+	- How do we pick the test point $T$?
+- As a first guess, suppose we initialize symmetrically by placing $M$ exactly in the middle of $L$ and $U$, and then test a point $T$ exactly halfway between $L$ and $M$.
+	- If $\phi(T) < \phi(M)$, the new bracketing triple is $(L, T, M)$, which has a width equal to $0.5$ times the original interval.
+	- If $\phi(T) \ge \phi(M)$, the new bracketing triple is $(T, M, U)$, which has a width equal to $0.75$ times the original interval.
+	- While this successfully brackets the minimum, the reduction factor fluctuates wildly depending on the function's shape.
+	- To ensure a good worst case performance, it is preferable to reduce the bracket by a predictable, constant factor in every single iteration.
+- To achieve a predictable reduction, we abandon symmetric initialization. Instead, $M$ divides the interval asymmetrically, and $T$ is always placed inside the larger of the two subintervals. This placement divides the entire search space $[L, U]$ into three structural segments:
+	- $a$: the width of the smaller original subinterval (the side not containing $T$).
+	- $b$: the distance between the old interior point $M$ and the test point $T$.
+	- $c$: the distance from $T$ to the nearest outer boundary ($L$ or $U$).
+- Two natural requirements uniquely determine the optimal layout of these segments:
+	- **Symmetric reduction**: The width of the next interval should not depend on the outcome of the function comparison. The two possible new interval widths are $a + b$ (if we drop $c$) and $b + c$ (if we drop $a$). Equating them gives $a + b = b + c$, which simplifies exactly to $a = c$.
+	- **Scale invariance:** The relative ratio between the subintervals must be preserved so the same logic applies forever. The ratio of the larger subinterval to the smaller one in the current step is $\frac{b+c}{a}$. Because $a=c$, the sub intervals in the next iteration will have widths $a$ and $b$ (or equivalently $c$ and $b$). The segment $a$ must be the larger one (if $b$ were larger, equating the ratios $\frac{b+a}{a} = \frac{b}{a}$ would imply the contradiction $1=0$), making the new ratio $\frac{a}{b}$. Preservation of the ratio gives: $\frac{b+c}{a} = \frac{a}{b}$.
+- Substituting $c = a$ into the scale invariance requirement yields $\frac{b+a}{a} = \frac{a}{b}$. Defining the target ratio as $\rho = a/b$, this simplifies to $\frac{1}{\rho} + 1 = \rho$, or $\rho^2 = \rho + 1$. The positive solution is the golden section:$$\varphi = \frac{1}{2} + \frac{1}{2}\sqrt{5} \approx 1.618$$
+- Using this ratio for initializing $M$, and selecting $T$ inside the larger interval ensures the size of the interval shrinks at a constant rate.
+
+### Nelder-Mead Simplex Method
+
+- All line search methods move a single point along a single direction per iteration. The **Nelder-Mead simplex method** instead maintains a cloud of $n+1$ points and moves the entire cloud downhill. It often works reasonably in practice, though its convergence theory is rather limited.
+- A **simplex** is the convex hull of $n+1$ points $x_1, \dots, x_{n+1} \in \mathbb{R}^n$ such that the differences $x_2 - x_1, \dots, x_{n+1} - x_1$ are linearly independent (the points genuinely span all $n$ dimensions): a triangle in $\mathbb{R}^2$, a tetrahedron in $\mathbb{R}^3$. 
+	- The **standard simplex** is formed by the origin $\mathbf{0}$ and the standard basis vectors $\mathbf{e}_{1}, \mathbf{e_{2}}, \dots, \mathbf{e}_{n}$.
+	- The **regular simplex** is a simplex where all edges between its points are the exact same length.
+- At the start of every iteration, relabel the points from best to worst: $f(x_1) \le f(x_2) \le \dots \le f(x_{n+1})$. The iteration then tries to replace the worst point $x_{n+1}$ with a better one. All candidate replacements lie on the line through $x_{n+1}$ and the **centroid** of the $n$ best points:
+	$$
+	\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i
+	$$
+	Moving away from the worst point, through the middle of the better ones, is the simplex's replacement for a descent direction. The candidates are:
+	- The **reflection** $r = \bar{x} + (\bar{x} - x_{n+1})$: the worst point mirrored through the centroid.
+	- The **expansion** $e = \bar{x} + 2(\bar{x} - x_{n+1})$: extends the reflection twice as far out from the centroid.
+	- The **outside contraction** $c_1 = \bar{x} + \frac{1}{2}(\bar{x} - x_{n+1})$: halfway between the centroid and reflection.
+	- The **inside contraction** $c_2 = \bar{x} + \frac{1}{2}(x_{n+1} - \bar{x})$: halfway between the centroid and the worst point.
+- The iteration logic is driven by how good the reflection turns out to be:
+	1. Compute $r$. If $f(x_1) \le f(r) < f(x_n)$, the reflection is neither the best nor among the worst of the new simplex: accept it (replace $x_{n+1}$ by $r$) and start the next iteration.
+	2. If $f(r) < f(x_1)$, the reflection beats every current point, so the direction is promising, so we explore further: compute the expansion $e$, and replace $x_{n+1}$ by the better of $r$ and $e$.
+	3. If $f(r) \ge f(x_n)$, the reflection is still worse than the $n$ best points, so the simplex likely stepped over the valley, we try a more conservative candidate:
+		- If $f(r) < f(x_{n+1})$ (the reflection is better than the point it was meant to replace): compute the outside contraction $c_1$: if $f(c_1) < f(r)$, replace $x_{n+1}$ by $c_1$.
+		- If $f(r) \ge f(x_{n+1})$ (the reflection is even worse than the point it was meant to replace): compute the inside contraction $c_2$: if $f(c_2) < f(x_{n+1})$, replace $x_{n+1}$ by $c_2$.
+	4. **Shrinking**: if no replacement was made, the simplex is apparently too large to capture the local landscape in any probed direction, shrink it towards the best point by replacing every $x_i$ by $\frac{1}{2}(x_i + x_1)$.
+- Intuition for the resulting behaviour: the simplex crawls downhill, stretching out (expansions) while a direction keeps paying off, and contracting/shrinking once it surrounds a minimizer, so that the cloud collapses onto it.
 
 ### Constrained Optimization
 
