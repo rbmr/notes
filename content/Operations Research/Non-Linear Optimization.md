@@ -369,6 +369,10 @@ where:
 - $\mathcal{E}$ is the index set of the equality constraints
 - $\mathcal{I}$ is the index set of the inequality constraints 
 
+Additional remarks:
+- A point is said to be **feasible** if it satisfies all constraints, a feasible point $\mathbf{x}$ is often called a **solution**, a global minimizer is called an **optimal solution**, a local minimizer a **locally optimal solution**.
+- The problem is stated with $\inf$ rather than $\min$ because a minimizer is not guaranteed to exist, when one does exist, the infimum is attained and equals the minimum.
+
 ### Lagrangian Function
 
 (todo: also explain the Lagrangian and its properties)
