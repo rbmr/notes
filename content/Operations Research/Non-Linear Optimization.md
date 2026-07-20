@@ -365,7 +365,7 @@ $$
 where:
 - $f$ is the objective function
 - $c_{i}$ are the constraints
-- $f$ and $c_{i}$ are assumed to be (twice) continuously differentiable
+- $f$ and $c_{i}$ are assumed to be (twice) continuously differentiable for the gradient and hessian to be fully defined and continuous everywhere.
 - $\mathcal{E}$ is the index set of the equality constraints
 - $\mathcal{I}$ is the index set of the inequality constraints 
 
@@ -380,7 +380,7 @@ $$
 \mathcal{L}(\mathbf{x}, \boldsymbol{\lambda})=f(\mathbf{x})-\sum_{i\in\mathcal{E}\cup \mathcal{I}}\lambda_{i}c_{i}(\mathbf{x})
 $$
 
-The fundamental property of the Lagrangian: maximizing the Lagrangian over the Lagrange multipliers (with $\lambda_i \geq 0$ for the inequality constraints) recovers the original constrained problem. For any $\mathbf{x} \in \mathbb{R}^n$:
+The fundamental property of the Lagrangian: *maximizing* the Lagrangian over the Lagrange multipliers $\boldsymbol{\lambda}$ (with $\lambda_i \geq 0$ for the inequality constraints) recovers the original constrained problem. For any $\mathbf{x} \in \mathbb{R}^n$:
 $$
 \sup_{\substack{\lambda_{i} \in \mathbb{R},\ i \in \mathcal{E} \\ \lambda_{i} \geq 0,\ i \in \mathcal{I}}}\mathcal{L}(\mathbf{x},\boldsymbol{\lambda})=\begin{cases}
 f(\mathbf{x})&\text{if } \mathbf{x} \text{ is feasible} \\ 
@@ -396,185 +396,135 @@ Consequently, the original constrained optimization problem can be rewritten as 
 $$
 \inf_{\mathbf{x}\in \mathbb{R}^n}\, \{f(\mathbf{x}) : \mathbf{x} \text{ feasible}\} \;=\; \inf_{\mathbf{x}\in \mathbb{R}^n}\ \sup_{\substack{\lambda_{i} \in \mathbb{R},\ i \in \mathcal{E} \\ \lambda_{i} \geq 0,\ i \in \mathcal{I}}} \mathcal{L}(\mathbf{x},\boldsymbol{\lambda})
 $$
-The inner supremum acts as an infinitely harsh penalty: infeasible points are ruled out by their infinite objective value rather than by explicit constraints. This reformulation is the core idea behind duality and for the augmented Lagrangian method, both covered below.
+The inner supremum acts as an infinitely harsh penalty: infeasible points are ruled out by their infinite objective value rather than by explicit constraints. 
 
-### Duality
+This reformulation is the core idea behind duality and for the augmented Lagrangian method, both covered below.
 
-- In the context of duality, the original constrained optimization problem is called the **primal problem**, and $v(P)$ is used to denote its optimal value, that is, the lowest value of $f(\mathbf{x})$ among all feasible $\mathbf{x} \in \mathbb{R}^n$.
-- Suppose we take some fixed Lagrange multipliers $\mathbf{\lambda}$ with $\lambda_{i} \geq 0$ for $i \in \mathcal{I}$, and $\lambda_{i} \in \mathbb{R}$ for $i \in \mathcal{E}$.  For all feasible $x$, the equality terms are zero, and the inequality terms satisfy $\lambda_{i}c_{i}(x) \geq 0$, thus
-	$$
-	\mathcal{L}(x,\lambda) = f(x) - \sum_{i}\lambda_{i}c_{i}(x) \leq f(x)
-	$$
-- Suppose we drop the constraints entirely, instead minimizing the Lagrangian over all $\mathbf{x} \in \mathbb{R}^n$ (including infeasible points). This minimum over all $\mathbf{x}\in \mathbb{R}^n$ must be lower than the minimum over only feasible $\mathbf{x}$, thus
-	$$
-	\inf_{\mathbf{x} \in \mathbb{R}^n} \mathcal{L}(\mathbf{x},\boldsymbol{\lambda}) \leq v(P)
-	$$
-- We define the **dual (objective) function** as this infinum $q(\boldsymbol{\lambda}) :=\inf_{\mathbf{x} \in \mathbb{R}^n} \mathcal{L}(\mathbf{x},\boldsymbol{\lambda})$. Every valid $\boldsymbol{\lambda}$ gives an easy-to-compute lower bound $q(\boldsymbol{\lambda})$ on our difficult true answer $v(P)$.
-- The **dual problem** $(D)$ asks for the best (largest) such lower bound:
-	$$
-	\begin{align}
-	\sup_{\lambda}\quad & q(\lambda) = \inf_{x}\,\mathcal{L}(x,\lambda) \\
-	\text{subject to}\quad & \lambda_{i} \geq 0 \quad \forall i \in \mathcal{I}
-	\end{align}
-	$$
-- Min-max view: by the sup-property of the Lagrangian, the primal problem is $\inf_{x}\sup_{\lambda}\mathcal{L}(x,\lambda)$; the dual problem is $\sup_{\lambda}\inf_{x}\mathcal{L}(x,\lambda)$, the same expression with the order of optimization swapped.
-
-TODO: rewrite this section as follows:
-1. define the primal problem and the primal optimal solution v(P) 
-2. as defined in the previous section, the primal problem can be expressed as (restate the Lagrange min-max definition). 
-3. Suppose instead we fix some valid Lagrange multipliers, and consider varying x first.
-4. for all feasible x, the Lagrange function gives a lower bound on the objective function of the original problem
-5. the infinum over all x must be lower than the infinum over all feasible x of the Lagrange function
-6. combine 4 and 5, to state that the infinum over all x for the Lagrange function provides a proper lower bound on the optimal solution to the original problem.
-7. the dual problem aims to find the best (largest) such lower bound (state full definition), the dual optimal objective function is defined as this lower bound (restate q(lambda) = the infinum)
-8. put the primal problem and dual problem next to each other in a table in full to show that they are basically the same but with the order of optimization swapped. 
-
-### Duality Theorems
-
-- **Weak Duality**: if $x$ is feasible for $(P)$ and $\lambda$ is feasible for $(D)$, then $f(x) \geq q(\lambda)$. (This is the lower-bound argument above; it holds for any problem, convex or not.)
-- If $(P)$ is convex, then the dual objective $q$ is concave and its domain $\{\lambda : q(\lambda) > -\infty\}$ is convex. The dual is therefore itself a convex problem (maximizing a concave function over a convex set) — even if the primal is hard, the dual is well-behaved.
-	- In fact, $q$ is concave for *any* primal problem: for fixed $x$, $\mathcal{L}(x,\lambda)$ is affine in $\lambda$, and a pointwise infimum of affine functions is concave.
-- If $(P)$ is convex with optimal solution $x^*$, and $f$ and the $c_{i}$ are differentiable at $x^*$, then any $\lambda^*$ for which $(x^*, \lambda^*)$ is a KKT point is an optimal solution of $(D)$. Conversely, solving the (often easier) dual problem produces multipliers with which KKT points can be constructed and optimality can be proven.
-- **Strong Duality**: suppose $(P)$ is convex. If Slater's condition holds for $(P)$, then $(D)$ has an optimal solution and $v(P) = v(D)$. Symmetrically, if Slater's condition holds for $(D)$, then $(P)$ has an optimal solution and $v(P) = v(D)$.
-	- For linear problems this recovers the strong duality theorem of [[Linear Optimisation]].
-- Slater's condition matters, even for convex problems. Example: $\inf\{x : -x^2 \geq 0\}$ is convex ($-x^2$ is concave), with feasible region $\{0\}$ and optimal value $0$ — but no strictly feasible point exists. The dual function is:
-	$$
-	q(\lambda) = \inf_{x}\{x + \lambda x^2\} = \begin{cases}-\infty & \text{if } \lambda = 0 \\ -\frac{1}{4\lambda} & \text{if } \lambda > 0\end{cases}
-	$$
-	so $v(D) = \sup_{\lambda > 0} -\frac{1}{4\lambda} = 0 = v(P)$: the optimal values coincide, yet the supremum is not attained — the dual problem has no optimal solution.
-
-
+%% From here I start struggling %%
 ### KKT Conditions
 
-We define a **descent direction** as a direction $s$ for a point $x$, such that the directional derivative is strictly negative $\nabla f(x)^\top s< 0$. In unconstrained optimization, a point $x$ is a local minimizer if there is no such descent direction. In constrained optimization, a point is a local minimizer if there is no **feasible** descent direction $s$.
+Intuition for local minima in constrained optimization
 
-Suppose we are at a feasible point $x$, a feasible descent direction is a direction $s$ such that the objective function decreases, while ensuring all constraints remain satisfied. Using a first-order Taylor approximation, we know $g(x+s) \approx g(x) + \nabla g(x)^\top s$ for any function $g$. This gives us the following four conditions on $s$:
+- We define a **descent direction** as a direction $s$ for a point $x$, such that the directional derivative is strictly negative, $\nabla f(x)^\top s< 0$. 
+- In unconstrained optimization, if a point $x$ is a local minimizer, there is no such descent direction, or equivalently, by Fermat's theorem, $\nabla f(x) = 0$. The converse fails in general: a stationary point is not guaranteed to be a local minimizer, it could be a saddle point.
+- In constrained optimization, if a point is a local minimizer, there similarly is no feasible descent direction $s$. A **feasible descent direction** is a direction $s$ such that the objective function decreases, while ensuring all constraints remain satisfied. 
+- We are looking for the constrained analogue of Fermat's theorem. 
+
+Suppose we are at a feasible point $x$. Using a first-order Taylor approximation, we know $g(x+s) \approx g(x) + \nabla g(x)^\top s$ for any differentiable function $g$. This gives us the following four conditions on $s$:
 
 1. Decreasing objective function means $f(x+s) < f(x)$, therefore $\nabla f(x)^\top s<0$.
-2. For all equality constraints ($i \in \mathcal{E}$), we must remain on the boundary, that is $c_{i}(x+s)=0$. Since $c_{i}(x)=0$, we must walk tangent to the constraint, that is $\nabla c_{i}(x)^\top s=0$.
+2. For all equality constraints ($i \in \mathcal{E}$), we must remain on the boundary, that is $c_{i}(x+s)=0$. By feasibility of $x$ we have $c_{i}(x)=0$, we must walk tangent to the constraint, that is $\nabla c_{i}(x)^\top s=0$.
 3. For all inactive inequality constraints ($i \in \mathcal{I}$ where $c_{i}(x)>0$), we are strictly inside the boundary. Therefore any sufficiently small step $s$ in any direction will not violate the constraint. This $\nabla c_{i}(x)^\top s$ can be anything.
 4. For all active inequality constraints ($i \in \mathcal{I}$ where $c_{i} = 0$), we are on the edge of the inequality boundary. To stay inside the feasible region $c_{i}(x+s)\geq 0$ we must walk either tangent to the boundary or point inward, that is $\nabla c_{i}(x)^\top s \geq 0$.
 
-For $x$ to be a local minimizer, there must be no $s$ such that each of the aforementioned conditions hold simultaneously. 
-1. We can write the search for the steepest descent direction $s$ that satisfies all constraints as a linear programming (LP) problem. 
+For $x$ to be a local minimizer, there must be no $s$ that satisfies condition 1 together with conditions 2 to 4. 
+
+(todo: show that under these conditions, stationarity must hold)
+
+To write the stationarity condition as a single sum over the full index set $\mathcal{E} \cup \mathcal{I}$, without separating active from inactive inequality constraints by hand, we use the **complementary slackness condition**, $\lambda_i c_i(x) = 0$ for all $i \in \mathcal{I}$. This condition is already met for any active $i$, since $c_i(x) = 0$, and if the constraint is inactive $c_{i}(x)>0$, the condition ensures $\lambda_i = 0$ such that its contribution is removed from the stationarity condition.
+
+We arrive at the full **Karush-Kuhn-Tucker (KKT) conditions**. Assuming some constraint qualification holds (see below), if $x^*$ is a local minimizer, then there exist Lagrange multipliers $\lambda^*$ such that each of the following conditions hold:
+1. **Stationarity**: 
 	$$
-	\begin{align} \min_{s} \quad & \nabla f(x)^\top s \\ \text{subject to} \quad & \nabla c_{i}(x)^\top s = 0 \quad \forall i \in \mathcal{E} \\ & \nabla c_{j}(x)^\top s \geq 0 \quad \forall j \in \mathcal{I}_{active} \end{align}
+	\nabla f(x^*)=\sum_{i \in \mathcal{E} \cup \mathcal{I}}\lambda_{i}^* \nabla c_{i}(x^*)
 	$$
-2. Trivially, $s=0$ is a feasible solution ($x$ was feasible, thus $x + s =x$ is also feasible). However, $\nabla f(x)^\top s=0$, thus $s$ is not a valid descent direction. To show no feasible descent condition exists for $x$, we must show $s=0$ is an optimal solution of the LP problem. 
-3. We know from [[Linear Optimisation]] that a solution $s$ is optimal if it is both primal feasible and dual feasible, we already know $s=0$ is primal feasible, so we only need to show it is also dual feasible. Rewriting the conditions for dual feasibility (not shown here), we get the **stationarity conditions**: 
-	$$
-	\nabla f(x) = \sum_{i \in \mathcal{E}} \lambda_i \nabla c_i(x) + \sum_{i \in \mathcal{I}_{active}} \lambda_i \nabla c_i(x)
-	$$
-	Where the Lagrange multipliers $\lambda_{i}$ capture how each constraint restricts movement:
-	- For equality constraints $\lambda_{i} \in \mathbb{R}$ because equality constraints restrict movement in both directions.
-	- For active inequality constraints $\lambda_{i} \geq 0$ because they only restrict movement in one direction.
-4. To write this linear combination elegantly without needing to manually separate active and inactive linear inequalities, we introduce the **complementary slackness condition**: $\lambda_{i}c_{i}(x)=0$ for all $i \in \mathcal{I}$. This rule guarantees that if an inequality is inactive ($c_{i}(x) > 0$), then its multiplier must be zero ($\lambda_{i}=0$), effectively removing its contribution from the sum.
-5. Combining all of this, we get the full **Karush-Kuhn-Tucker (KKT) conditions**. Assuming some constraint qualification holds (see the Constraint Qualification section), if $x^*$ is a local minimizer, there exist some Lagrange multipliers $\lambda^*$ such that each of the following conditions hold:
-	1. **Stationarity**: $\nabla f(x^*)=\sum_{i \in \mathcal{E \cup \mathcal{I}}}\lambda_{i}^* \nabla c_{i}(x^*)$
-	2. **Primal Feasibility**: 
-		- $c_{i}(x^*)=0\quad \forall i \in \mathcal{E}$
-		- $c_{i}(x^*) \geq 0 \quad \forall i \in \mathcal{I}$
-	3. **Dual Feasibility**: $\lambda_{i}^*\geq 0\quad \forall i \in \mathcal{I}$
-	4. **Complementary Slackness**: $\lambda_{i}^*c_{i}(x^*)=0 \quad \forall i \in \mathcal{I}$.
+2. **Primal Feasibility**: 
+	- $c_{i}(x^*)=0\quad \forall i \in \mathcal{E}$
+	- $c_{i}(x^*) \geq 0 \quad \forall i \in \mathcal{I}$
+3. **Dual Feasibility**: $\lambda_{i}^*\geq 0\quad \forall i \in \mathcal{I}$
+4. **Complementary Slackness**: $\lambda_{i}^*c_{i}(x^*)=0 \quad \forall i \in \mathcal{I}$
+
+A pair $(x^*, \lambda^*)$ satisfying all four conditions is called a **KKT point**.
 
 Notes:
-
-- A pair $(x^*, \lambda^*)$ satisfying all four conditions is called a **KKT point**. 
-- The stationarity condition is equivalent to stating that $x^*$ is a stationary point of the Lagrangian in $x$: $\nabla_x \mathcal{L}(x^*, \lambda^*) = \nabla f(x^*) - \sum_i \lambda_i^* \nabla c_i(x^*) = 0$. For this reason it is also called **Lagrangian stationarity**. Note how it generalizes Fermat's theorem: without constraints it reduces to $\nabla f(x^*) = 0$.
-
-The KKT conditions are not automatically necessary — the derivation contains a leap of faith:
-
-- We used first-order Taylor approximations to decide which steps $s$ preserve feasibility. This implicitly assumes that the linearized constraints faithfully describe the feasible region near $x$: that we can actually move (approximately) along any direction the linearization allows.
-- Counterexample: consider $\inf\{x : c_1(x) = x^2 = 0\}$, i.e. $f(x) = x$. The only feasible point is $x^* = 0$, which is therefore the optimal solution. But stationarity would demand $1 = f'(x^*) = \lambda_1 c_1'(x^*) = \lambda_1 \cdot 2x^* = 0$, which no multiplier $\lambda_1$ can satisfy: the minimizer is not a KKT point.
-	- What broke: the linearization $c_1(x^* + s) \approx c_1(x^*) + c_1'(x^*)\,s = 0$ claims *every* direction $s$ preserves feasibility to first order, while in reality *no* direction does (the feasible region is the single point $\{0\}$).
-- Assumptions that rule out such degenerate constraint geometry are called **constraint qualifications**, covered after the next section.
-
-### Alternative Intuition for Stationarity
-
-The stationarity condition may be alternatively derived as follows:
-
-1. First we simplify by interpreting each equality constraint as two inequality constraints ($c_{i}(x) \geq 0$ and $-c_{i}(x) \geq 0$), such that only inequalities remain.
-2. Suppose we are at a feasible point $x$. Any step $s$ we take can be evaluated by its dot product with the gradient vectors of the constraints $\nabla c_{i}(x)$ or objective $\nabla f(x)$. 
-	- Feasibility requires $\nabla c_{i}(x)^\top s\geq 0$ for all active inequality constraints.
-	- Non-descent requires $\nabla f(x)^\top s \geq 0$.
-3. For $x$ to be a local minimizer, every feasible step $s$, must also be a non-descent step. Geometrically, this means the entire feasible cone (the intersection of all the half spaces defined by the active constraints), must fit completely inside the non-descent half space.
-4. This containment holds **if and only if** $\nabla f(x)$ is a non-negative combination of the active constraint gradients: $\nabla f(x) = \sum_{i} \lambda_i \nabla c_i(x)$ with all $\lambda_i \geq 0$ — which is exactly the stationarity condition (with dual feasibility).
-	- ($\Leftarrow$) If $\nabla f(x) = \sum_i \lambda_i \nabla c_i(x)$ with $\lambda_i \geq 0$, then any feasible step $s$ satisfies $\nabla f(x)^\top s = \sum_i \lambda_i\, \nabla c_i(x)^\top s \geq 0$, as a sum of products of non-negative numbers. So every feasible step is a non-descent step.
-	- ($\Rightarrow$) This direction is **Farkas' Lemma**: for any vectors $g, a_1, \dots, a_m \in \mathbb{R}^n$, exactly one of the following holds: either $g = \sum_i \lambda_i a_i$ for some $\lambda \geq 0$, or there exists an $s$ with $a_i^\top s \geq 0$ for all $i$ and $g^\top s < 0$. Geometrically: the non-negative combinations of the $a_i$ form a convex cone; any vector outside this cone can be separated from it by a hyperplane, and the normal vector $s$ of that separating hyperplane is precisely a step that is feasible (to first order) yet descending. Applied with $g = \nabla f(x)$ and the $a_i$ the active constraint gradients: if $\nabla f(x)$ lies outside the cone, a feasible descent direction exists, so $x$ is not a local minimizer.
-5. Finally, we recover the equality-constrained case: an equality constraint $c_{i}(x) = 0$ was split into the two always-active inequalities $c_{i}(x) \geq 0$ and $-c_{i}(x) \geq 0$, with multipliers $\lambda_{i}^+, \lambda_{i}^- \geq 0$. Their joint contribution to the combination is $\lambda_{i}^+\nabla c_{i}(x) - \lambda_{i}^-\nabla c_{i}(x) = (\lambda_{i}^+ - \lambda_{i}^-)\nabla c_{i}(x)$, and since $\lambda_{i}^+ - \lambda_{i}^-$ can take any real value, this is equivalent to a single free multiplier $\lambda_{i} \in \mathbb{R}$ — exactly how the stationarity condition treats equality constraints.
+- (todo: stationarity condition is equivalent to x^* being a stationary point of the lagrangian in x for some lambda)
+- (todo: constraint qualifications are still necessary)
+- (todo: kkt conditions are necessary but not sufficient for a local minimizer, the second order conditions are capable of providing actual sufficient conditions)
 
 ### Constraint Qualification
 
-A **constraint qualification** (CQ) is an assumption on the constraints guaranteeing that their linearization faithfully describes the feasible region near a point. It repairs the KKT theorem: if $x^*$ is a local minimizer *and* a constraint qualification holds, then $x^*$ satisfies the KKT conditions. This course uses two constraint qualifications: Slater's condition (one global check, but only for convex problems) and the LICQ (a check per point, for general problems).
+(TODO: write this)
 
-Slater's condition:
+### Second Order conditions
 
-- A constrained optimization problem is called **convex** if:
-	- the objective $f$ is convex,
-	- every equality constraint is affine: $c_{i}(x) = a_{i}^\top x + b_{i}$ for all $i \in \mathcal{E}$, and
-	- every inequality constraint function $c_{i}$ for $i \in \mathcal{I}$ is concave.
-	- Note the direction: a *concave* $c_i$ makes the region $\{x : c_{i}(x) \geq 0\}$ convex. The feasible region is then an intersection of convex sets (hyperplanes and super-level sets), and is therefore itself convex.
-- **Slater's condition** holds if there exists a strictly feasible point: an $\bar{x}$ with $c_{i}(\bar{x}) = 0$ for all $i \in \mathcal{E}$ and $c_{i}(\bar{x}) > 0$ for all $i \in \mathcal{I}$ (every inequality constraint is inactive at $\bar{x}$).
-- **Theorem**: for a convex problem satisfying Slater's condition, the KKT conditions are necessary *and sufficient* for global optimality: $x^*$ is an optimal solution if and only if there exist multipliers $\lambda^*$ such that $(x^*, \lambda^*)$ is a KKT point.
-	- This is remarkably strong: convexity upgrades the KKT conditions from a necessary condition for local minimizers to an exact characterization of global minimizers.
+(TODO: write this)
 
-Linear independence constraint qualification:
+### Duality
 
-- The **linear independence constraint qualification (LICQ)** holds at a feasible point $x^*$ if the set of active constraint gradients
-	$$
-	\{\nabla c_{i}(x^*) : c_{i}(x^*) = 0,\ i \in \mathcal{E}\cup\mathcal{I}\}
-	$$
-	is linearly independent.
-- **Theorem (Karush-Kuhn-Tucker)**: if $x^*$ is a local minimizer of the constrained problem at which the LICQ holds, then there exist Lagrange multipliers $\lambda^*$ such that the KKT conditions hold at $(x^*, \lambda^*)$.
-- Unlike Slater's condition, the LICQ does not require convexity — but it must be verified point by point, and it only yields necessity (a KKT point still need not be a minimizer).
-- Revisiting the counterexample $\inf\{x : x^2 = 0\}$: at $x^* = 0$ the constraint is active with gradient $\nabla c_{1}(x^*) = 2x^* = 0$, and a set containing the zero vector is never linearly independent. The LICQ indeed fails, consistent with the absence of multipliers there.
+Having established when a KKT point is guaranteed to exist, and when one is guaranteed to be a minimizer, we turn to what the Lagrange multipliers themselves represent.
 
-Roadmap for finding constrained global minimizers analytically:
-1. Find all KKT points.
-2. Is the problem convex, and does Slater's condition hold?
-	1. Yes? Any KKT point is an optimal solution. Done.
-	2. No? Continue.
-3. Additionally find all feasible points at which the LICQ does not hold. These are extra candidates: they may be local minimizers that the KKT conditions miss.
-4. Take the best candidate (KKT or non-LICQ point). Argue it is an optimal solution, either via Weierstrass' theorem (if the feasible region is non-empty and compact, a global minimizer exists, and it must be among the candidates), or via a case-specific argument.
+- In the context of duality, the original constrained optimization problem is called the **primal problem** $(P)$, and $v(P)$ denotes its optimal value, the lowest value of $f(\mathbf{x})$ among all feasible $\mathbf{x} \in \mathbb{R}^n$.
+- By the sup-property of the Lagrangian, the primal problem is the min-max problem
+	$$
+	v(P) = \inf_{\mathbf{x} \in \mathbb{R}^n}\ \sup_{\substack{\lambda_{i} \in \mathbb{R},\ i \in \mathcal{E} \\ \lambda_{i} \geq 0,\ i \in \mathcal{I}}} \mathcal{L}(\mathbf{x},\boldsymbol{\lambda})
+	$$
+- Suppose instead we fix some valid multipliers $\boldsymbol\lambda$ ($\lambda_i \in \mathbb{R}$ for $i \in \mathcal{E}$, $\lambda_i \geq 0$ for $i \in \mathcal{I}$) and vary $\mathbf{x}$ first. For every feasible $\mathbf{x}$, the equality terms of the Lagrangian vanish and the inequality terms satisfy $\lambda_i c_i(\mathbf{x}) \geq 0$, so
+	$$
+	\mathcal{L}(\mathbf{x},\boldsymbol\lambda) = f(\mathbf{x}) - \sum_i \lambda_i c_i(\mathbf{x}) \leq f(\mathbf{x})
+	$$
+	Interpretation: The Lagrangian $\mathcal{L}(\mathbf{x},\boldsymbol{\lambda})$, at any valid $\boldsymbol\lambda$ is a lower bound on the primal objective $f(\mathbf{x})$ for all *feasible* $\mathbf{x}$.
+- Taking the infimum over all $\mathbf{x} \in \mathbb{R}^n$, including infeasible points, can only lower this bound further:
+	$$
+	\inf_{\mathbf{x} \in \mathbb{R}^n} \mathcal{L}(\mathbf{x}, \boldsymbol\lambda) \;\leq\; \inf_{\mathbf{x} \text{ feasible}} \mathcal{L}(\mathbf{x},\boldsymbol\lambda) \;\leq\; \inf_{\mathbf{x} \text{ feasible}} f(\mathbf{x}) \;=\; v(P)
+	$$
+- We define the **dual (objective) function** as this infimum, $q(\boldsymbol\lambda) := \inf_{\mathbf{x} \in \mathbb{R}^n} \mathcal{L}(\mathbf{x},\boldsymbol\lambda)$. Thus, every valid $\boldsymbol\lambda$ gives an easy-to-compute lower bound $q(\boldsymbol\lambda)$ on the true optimal value $v(P)$.
+- The **dual problem** $(D)$ asks for the best (largest), such lower bound:
+	$$
+	\begin{align}
+	\sup_{\lambda}\quad & q(\lambda) = \inf_{x\in \mathbb{R}^n}\,\mathcal{L}(x,\lambda) \\
+	\text{subject to}\quad & \lambda_{i} \geq 0 \quad \forall i \in \mathcal{I}
+	\end{align}
+	$$
+	The optimal value of the dual is denoted as $v(D)$.
 
-### Second Order Conditions
 
-In unconstrained optimization, the second-order conditions distinguish minimizers among stationary points using the Hessian of $f$ (see [[4. Multivariate Calculus#Extreme values]]). The constrained versions differ in two ways: the relevant curvature is that of the *Lagrangian*, and it only needs to be checked along directions that stay on the active constraints.
+Side by side, the primal and dual problems are the same expression with the order of optimization swapped:
 
-- Setting: $f$ and all $c_{i}$ twice continuously differentiable, and $(x^*, \lambda^*)$ a KKT point. The Hessian (in $x$) of the Lagrangian is:
+| Primal $(P)$                                    | Dual $(D)$                                      |
+| ----------------------------------------------- | ----------------------------------------------- |
+| $\inf_{x}\sup_{\lambda} \mathcal{L}(x,\lambda)$ | $\sup_{\lambda}\inf_{x} \mathcal{L}(x,\lambda)$ |
+(todo: add proper domains here for x and lambda)
+
+### Duality Theorems
+
+
+- **Weak Duality**: if $x$ is feasible for $(P)$ and $\lambda$ is feasible for $(D)$, then $f(x) \geq q(\lambda)$. This is exactly the lower-bound argument from the previous section, and it holds for any problem, convex or not.
+- If $(P)$ is convex, the dual objective $q$ is concave and its domain $\{\lambda : q(\lambda) > -\infty\}$ is convex, so the dual is itself a convex problem, maximizing a concave function over a convex set, even if the primal is hard. In fact $q$ is concave for any primal problem, convex or not: for fixed $x$, $\mathcal{L}(x,\lambda)$ is affine in $\lambda$, and a pointwise infimum of affine functions is concave.
+- If $(P)$ is convex with optimal solution $x^*$, and $f$ and the $c_{i}$ are differentiable at $x^*$, then any $\lambda^*$ for which $(x^*, \lambda^*)$ is a KKT point is an optimal solution of $(D)$. Conversely, solving the often easier dual problem produces multipliers with which KKT points can be constructed and optimality can be proven.
+- **Strong Duality**: suppose $(P)$ is convex. If Slater's condition holds for $(P)$, then $(D)$ has an optimal solution and $v(P) = v(D)$. Symmetrically, if Slater's condition holds for $(D)$, then $(P)$ has an optimal solution and $v(P) = v(D)$.
+- Slater's condition matters, even for convex problems. Consider $\inf\{x : -x^2 \geq 0\}$, which is convex since $-x^2$ is concave, with feasible region $\{0\}$ and optimal value $0$, but no strictly feasible point exists. The dual function is:
 	$$
-	\nabla^2_{xx}\mathcal{L}(x^*, \lambda^*) = \nabla^2 f(x^*) - \sum_{i \in \mathcal{E}\cup\mathcal{I}}\lambda_{i}^*\nabla^2 c_{i}(x^*)
+	q(\lambda) = \inf_{x}\{x + \lambda x^2\} = \begin{cases}-\infty & \text{if } \lambda = 0 \\ -\frac{1}{4\lambda} & \text{if } \lambda > 0\end{cases}
 	$$
-- The relevant test directions are the $w \in \mathbb{R}^n$ tangent to all binding constraints:
-	$$
-	\nabla c_{i}(x^*)^\top w = 0 \quad \text{for all } i \in \mathcal{E}, \text{ and all } i \in \mathcal{I} \text{ with } \lambda_{i}^* > 0
-	$$
-	Why exactly these: along such $w$, the objective is flat to first order — by stationarity, $\nabla f(x^*)^\top w = \sum_{i}\lambda_{i}^* \nabla c_{i}(x^*)^\top w = 0$ — so the first-order conditions say nothing about them and second-order information must decide. In all other feasible directions, the first-order conditions already force the objective upward.
-- **Second-Order Necessary Condition**: if $x^*$ is a local minimizer at which a constraint qualification (Slater or LICQ) holds, and $\lambda^*$ are Lagrange multipliers for which the KKT conditions hold, then:
-	$$
-	w^\top \left(\nabla^2 f(x^*) - \sum_{i \in \mathcal{E}\cup\mathcal{I}}\lambda_{i}^*\nabla^2 c_{i}(x^*)\right) w \geq 0 \quad \text{for all test directions } w
-	$$
-- **Second-Order Sufficient Condition**: if $x^*$ is feasible, the KKT conditions hold at $(x^*, \lambda^*)$, and the inequality above is *strict* for all test directions $w \neq 0$, then $x^*$ is a local minimizer. (No constraint qualification is needed for this direction.)
-- The unconstrained conditions are the special case without constraints: the Lagrangian reduces to $f$ and every direction is a test direction, recovering $\nabla^2 f(x^*) \succeq 0$ (necessary) and $\succ 0$ (sufficient).
-- Why the Hessian of the Lagrangian rather than of $f$? Walking along a *curved* active constraint is not the same as walking along its tangent: the constraint's curvature bends the path in a second-order way, which changes the objective value at second order. The correction term $-\sum_{i}\lambda_{i}^*\nabla^2 c_{i}(x^*)$ accounts exactly for this, weighting each constraint's curvature by how strongly it binds ($\lambda_{i}^*$).
+	so $v(D) = \sup_{\lambda > 0} -\frac{1}{4\lambda} = 0 = v(P)$. The optimal values coincide, yet the supremum is not attained, so the dual problem has no optimal solution.
 
 ### Perturbing Constraints
 
-The Lagrange multipliers are not just certificates of optimality; they measure how much each constraint costs.
+Beyond certifying optimality and pricing the dual problem, the Lagrange multipliers measure how much each constraint costs.
 
-- Formally, we perturb constraint $j$ by $\epsilon \neq 0$: replace $c_{j}(x) = 0$ by $c_{j}(x) = \epsilon$ (or $c_{j}(x) \geq 0$ by $c_{j}(x) \geq \epsilon$). We want to know how the optimal objective value responds. Let $x^*$ be a local minimizer of the original problem with KKT multipliers $\lambda^*$, and let $x^*(\epsilon)$ be the local minimizer after the perturbation. For sufficiently small $\epsilon$, the set of active constraints does not change.
-- First-order derivation (each $\approx$ is a first-order Taylor approximation):
-	1. Constraint $j$ moves from being active at $0$ to being active at $\epsilon$:
-	$$\epsilon = c_{j}(x^*(\epsilon)) - c_{j}(x^*) \approx \nabla c_{j}(x^*)^\top[x^*(\epsilon) - x^*]$$
-	2. Every other active constraint $i \neq j$ stays put:
-	$$0 = c_{i}(x^*(\epsilon)) - c_{i}(x^*) \approx \nabla c_{i}(x^*)^\top[x^*(\epsilon) - x^*]$$
-	3. Combine with stationarity (inactive constraints drop out since $\lambda_{i}^* = 0$ by complementary slackness):
+Formally, we perturb constraint $j$ by $\epsilon \neq 0$, that is, we replace $c_{j}(x) = 0$ by $c_{j}(x) = \epsilon$ (or $c_{j}(x) \geq 0$ by $c_{j}(x) \geq \epsilon$). We want to know how the optimal objective value changes as a consequence of this perturbation. Let $x^*$ be a local minimizer of the original problem with KKT multipliers $\lambda^*$, and let $x^*(\epsilon)$ be the local minimizer after the perturbation. 
+
+1. For sufficiently small $\epsilon$, the set of active constraints does not change.
+2. Constraint $j$ moves from being active at $0$ to being active at $\epsilon$, so $c_{j}(x^*)=-\epsilon$, which by first order Taylor approximation gives:
 	$$
-	f(x^*(\epsilon)) - f(x^*) \approx \nabla f(x^*)^\top[x^*(\epsilon) - x^*] = \sum_{i \in \mathcal{E}\cup\mathcal{I}}\lambda_{i}^*\,\nabla c_{i}(x^*)^\top[x^*(\epsilon) - x^*] = \lambda_{j}^*\,\epsilon
+	\epsilon = c_{j}(x^*(\epsilon)) - c_{j}(x^*) \approx \nabla c_{j}(x^*)^\top[x^*(\epsilon) - x^*]
 	$$
-- Conclusion: $\lambda_{j}^*$ measures the sensitivity of the optimal objective value to changes in the right-hand side of constraint $j$: loosening constraint $j$ by $\epsilon$ changes the optimal value by approximately $\lambda_{j}^*\epsilon$.
-- This gives complementary slackness an economic meaning: an inactive inequality constraint has room to spare, so perturbing it slightly changes nothing — its price must be zero.
-- This is the non-linear generalization of the shadow price interpretation of the dual variables in [[Linear Optimisation#Shadow Prices]].
+3. Every other active constraint $i \neq j$ is unmodified, thus $x^*(\epsilon)$ is not changed under the constraint either:
+	$$
+	0 = c_{i}(x^*(\epsilon)) - c_{i}(x^*) \approx \nabla c_{i}(x^*)^\top[x^*(\epsilon) - x^*]
+	$$
+4. First order Taylor approximation of the objective function gives:
+	$$
+	f(x^*(\epsilon)) - f(x^*) \approx \nabla f(x^*)^\top[x^*(\epsilon) - x^*]
+	$$
+5. Combine with stationarity (inactive constraints drop out since $\lambda_{i}^* = 0$ by complementary slackness):
+	$$
+	\nabla f(x^*)^\top[x^*(\epsilon) - x^*] = \sum_{i \in \mathcal{E}\cup\mathcal{I}}\lambda_{i}^*\,\nabla c_{i}(x^*)^\top[x^*(\epsilon) - x^*] = \lambda_{j}^*\,\epsilon
+	$$
+
+Conclusion: $\lambda_{j}^*$ measures the sensitivity of the optimal objective value to changes in the right-hand side of constraint $j$. Loosening constraint $j$ by $\epsilon$ changes the optimal value by approximately $\lambda_{j}^*\epsilon$. 
+
+This also gives complementary slackness an economic meaning: an inactive inequality constraint has room to spare, so perturbing it slightly changes nothing. Its price must be zero.
 
 ### Quadratic Penalty
 
@@ -597,7 +547,7 @@ Finding minimizers analytically via the KKT conditions can be a lot of work. The
 
 The augmented Lagrangian method repairs the quadratic penalty method: by additionally maintaining an estimate of the Lagrange multipliers, it can converge to the constrained minimizer *without* sending $\mu \to \infty$.
 
-Derivation. Consider again the equality-constrained problem $\inf\{f(x) : c_{i}(x) = 0 \ \forall i \in \mathcal{E}\}$. By the sup-property of the Lagrangian (restricted to the equality constraints), this problem equals $\inf_{x}\sup_{\lambda}\mathcal{L}(x,\lambda)$. We could try to numerically minimize $g(x) = \sup_{\lambda}\mathcal{L}(x,\lambda)$ directly — but $g$ equals $f$ on the feasible region and $\infty$ everywhere else, so it is not continuous in $x$ and useless for numerical minimization.
+Derivation. Consider again the equality-constrained problem $\inf\{f(x) : c_{i}(x) = 0 \ \forall i \in \mathcal{E}\}$. By the sup-property of the Lagrangian (restricted to the equality constraints), this problem equals $\inf_{x}\sup_{\lambda}\mathcal{L}(x,\lambda)$. We could try to numerically minimize $g(x) = \sup_{\lambda}\mathcal{L}(x,\lambda)$ directly. But $g$ equals $f$ on the feasible region and $\infty$ everywhere else, so it is not continuous in $x$ and useless for numerical minimization.
 
 The fix: keep a current multiplier estimate $\bar{\lambda} \in \mathbb{R}^{|\mathcal{E}|}$ and a parameter $\mu > 0$, and dampen the inner maximization by penalizing deviations of $\lambda$ from $\bar{\lambda}$:
 $$
@@ -611,7 +561,7 @@ Substituting the maximizer back in yields a closed form, the **augmented Lagrang
 $$
 \mathcal{L}_A(x, \bar{\lambda}, \mu) = f(x) - \sum_{i \in \mathcal{E}}\bar{\lambda}_{i}c_{i}(x) + \frac{\mu}{2}\sum_{i \in \mathcal{E}}[c_{i}(x)]^2
 $$
-This is exactly the Lagrangian (at the fixed estimate $\bar{\lambda}$) *augmented* with the quadratic penalty — equivalently, the quadratic penalty function $Q(x,\mu)$ tilted by the multiplier term. Unlike $\sup_{\lambda}\mathcal{L}$, it is smooth in $x$ and can be minimized numerically.
+This is exactly the Lagrangian, at the fixed estimate $\bar{\lambda}$, *augmented* with the quadratic penalty. Equivalently, it is the quadratic penalty function $Q(x,\mu)$ tilted by the multiplier term. Unlike $\sup_{\lambda}\mathcal{L}$, it is smooth in $x$ and can be minimized numerically.
 
 The **augmented Lagrangian method**:
 1. Initialize $k \leftarrow 1$, $\mu_1 > 0$, $x_0 \in \mathbb{R}^n$, and $\lambda_1 \in \mathbb{R}^{|\mathcal{E}|}$.
@@ -631,9 +581,7 @@ Why this fixes the quadratic penalty's problem:
 	$$
 	\|x_k - x^*\| \leq \frac{M\|\lambda_k - \lambda^*\|}{\mu_k} \qquad\text{and}\qquad \|\lambda_{k+1} - \lambda^*\| \leq \frac{M\|\lambda_k - \lambda^*\|}{\mu_k}
 	$$
-- Reading the theorem: there are two knobs for improving the approximation of $x^*$ — increasing $\mu_k$ (which risks ill-conditioning, as before) or improving the multiplier estimate $\lambda_k$. The second bound shows the multiplier update is a contraction once $\mu_k > M$: the estimates $\lambda_k$ converge to $\lambda^*$ on their own, dragging $x_k \to x^*$ along, all at a fixed and moderate $\mu$. The ill-conditioning problem is avoided.
-
-Worked example: $\inf\{x^2 : x - 1 = 0\}$ has augmented Lagrangian $\mathcal{L}_A(x,\lambda,\mu) = x^2 - \lambda(x-1) + \frac{\mu}{2}(x-1)^2$, whose exact minimizer is $x = (\lambda + \mu)/(2 + \mu)$. Taking $\mu_k = 1$ for all $k$ and $\lambda_1 = 0$: $x_1 = \frac{1}{3}$, $\lambda_2 = \frac{2}{3}$, $x_2 = \frac{5}{9}$, $\lambda_3 = \frac{10}{9}$, $x_3 = \frac{19}{27}$, … — the iterates converge to the optimal solution $x^* = 1$ with multiplier $\lambda^* = 2$, without ever increasing $\mu$.
+- Reading the theorem: there are two knobs for improving the approximation of $x^*$: increasing $\mu_k$, which risks ill-conditioning as before, or improving the multiplier estimate $\lambda_k$. The second bound shows the multiplier update is a contraction once $\mu_k > M$: the estimates $\lambda_k$ converge to $\lambda^*$ on their own, dragging $x_k \to x^*$ along, all at a fixed and moderate $\mu$. The ill-conditioning problem is avoided.
 
 ### Interior Point Methods
 
@@ -641,8 +589,8 @@ The quadratic penalty and augmented Lagrangian methods approach the feasible reg
 
 - Setting: $\inf\{f(x) : x \in X\}$, where $f$ is convex and $X \subset \mathbb{R}^n$ is a convex set.
 - A **barrier function** $\Phi$ for $X$ is a function such that:
-	- the domain of $\Phi$ is the interior of $X$;
-	- $\nabla^2\Phi(x) \succ 0$ for all $x \in \text{int}(X)$ (strictly convex); and
+	- the domain of $\Phi$ is the interior of $X$.
+	- $\nabla^2\Phi(x) \succ 0$ for all $x \in \text{int}(X)$, that is $\Phi$ is strictly convex.
 	- $\Phi(x) \to \infty$ as $x$ approaches the boundary of $X$.
 - Common barriers:
 	- For a ball-like set $\{x : t - \|x\|^2 \geq 0\}$ (with $t > 0$): $\Phi(x) = -\log(t - \|x\|^2)$.
@@ -652,8 +600,8 @@ The quadratic penalty and augmented Lagrangian methods approach the feasible reg
 	$$
 	f(x) + \mu\,\Phi(x)
 	$$
-	with an unconstrained method (typically Newton's method — the barrier is built to have a positive definite Hessian). Then decrease $\mu$ towards $0$ and repeat, warm-starting from the previous minimizer.
-	- For large $\mu$ the barrier dominates and the minimizer sits safely in the interior; as $\mu \downarrow 0$ the objective takes over and the minimizers approach the constrained optimum — while every individual iterate remains strictly feasible.
-- The curve of minimizers $\{x(\mu) : \mu > 0\}$, where $x(\mu) = \arg\min_x f(x) + \mu\Phi(x)$, is called the **central path**; interior point methods effectively follow it towards $\mu \to 0$.
-- Interior point methods efficiently solve several important classes of convex problems: linear programs (LP), convex quadratic programs (QP; e.g. portfolio optimization), second-order cone programs (SOCP; e.g. robust optimization), and semidefinite programs (SDP; e.g. approximation algorithms). Interior point methods are also one of the polynomial-time LP algorithms mentioned in [[Linear Optimisation#Klee-Minty Problem]].
+	with an unconstrained method, typically Newton's method, since the barrier is built to have a positive definite Hessian. Then decrease $\mu$ towards $0$ and repeat, warm-starting from the previous minimizer.
+	- For large $\mu$, the barrier dominates and the minimizer sits safely in the interior. As $\mu \downarrow 0$, the objective takes over and the minimizers approach the constrained optimum, while every individual iterate remains strictly feasible.
+- The curve of minimizers $\{x(\mu) : \mu > 0\}$, where $x(\mu) = \arg\min_x f(x) + \mu\Phi(x)$, is called the **central path**. Interior point methods effectively follow it towards $\mu \to 0$.
+- Interior point methods efficiently solve several important classes of convex problems: linear programs (LP), convex quadratic programs (QP, for example portfolio optimization), second-order cone programs (SOCP, for example robust optimization), and semidefinite programs (SDP, for example approximation algorithms). Interior point methods are also one of the polynomial-time LP algorithms mentioned in [[Linear Optimisation#Klee-Minty Problem]].
 - In practice, constrained problems are handed to off-the-shelf solvers, e.g. Gurobi or CBC for (mixed-integer) linear problems, Mosek or SDPT3/SeDuMi for convex conic problems, and BARON for non-convex problems. Such solvers typically guarantee global optimality.
