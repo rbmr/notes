@@ -407,7 +407,7 @@ Intuition for local minima in constrained optimization
 
 - We define a **descent direction** as a direction $s$ for a point $x$, such that the directional derivative is strictly negative, $\nabla f(x)^\top s< 0$. 
 - In unconstrained optimization, if a point $x$ is a local minimizer, there is no such descent direction, or equivalently, by Fermat's theorem, $\nabla f(x) = 0$. The converse fails in general: a stationary point is not guaranteed to be a local minimizer, it could be a saddle point.
-- In constrained optimization, if a point is a local minimizer, there similarly is no feasible descent direction $s$. A **feasible descent direction** is a direction $s$ such that the objective function decreases, while ensuring all constraints remain satisfied. 
+- In constrained optimization, if a point is a local minimizer, there is no *feasible* descent direction $s$. A **feasible descent direction** is a direction $s$ such that the objective function decreases, while ensuring all constraints remain satisfied. 
 - We are looking for the constrained analogue of Fermat's theorem. 
 
 Suppose we are at a feasible point $x$. Using a first-order Taylor approximation, we know $g(x+s) \approx g(x) + \nabla g(x)^\top s$ for any differentiable function $g$. This gives us the following four conditions on $s$:
@@ -419,7 +419,7 @@ Suppose we are at a feasible point $x$. Using a first-order Taylor approximation
 
 For $x$ to be a local minimizer, there must be no $s$ that satisfies condition 1 together with conditions 2 to 4. 
 
-(todo: show that under these conditions, stationarity must hold)
+(todo: to build intuition, first show how to do it for one inequality, state that equalities are easier than inequalities, then show n equalities, and finally state the intuition for n inequalities and n equalities (not the actual proof but rather something like "the region of feasible s is described by a cone, farkas' lemma states that ..., thus if the gradient is in the cone, no feasible descent s exists"), and the resulting stationarity condition)
 
 To write the stationarity condition as a single sum over the full index set $\mathcal{E} \cup \mathcal{I}$, without separating active from inactive inequality constraints by hand, we use the **complementary slackness condition**, $\lambda_i c_i(x) = 0$ for all $i \in \mathcal{I}$. This condition is already met for any active $i$, since $c_i(x) = 0$, and if the constraint is inactive $c_{i}(x)>0$, the condition ensures $\lambda_i = 0$ such that its contribution is removed from the stationarity condition.
 
@@ -441,13 +441,54 @@ Notes:
 - (todo: constraint qualifications are still necessary)
 - (todo: kkt conditions are necessary but not sufficient for a local minimizer, the second order conditions are capable of providing actual sufficient conditions)
 
+(todo: example for finding the KKT points)
+
 ### Constraint Qualification
 
-(TODO: write this)
+TODO:
+- provide an example where the constraint qualification does not hold, and show a local minimizer, where KKT fails to hold
+- state that the necessary conditions for KKT to hold are hard to show, so instead we use LICQ and Slater's as easy to show sufficient conditions instead.
+- explain Slaters
+- explain LICQ
+- full roadmap for finding 
+
 
 ### Second Order conditions
 
-(TODO: write this)
+
+TODO:
+- second order necessary condition (intuition)
+- second order necessary condition (stated formally)
+- second order sufficient condition (intuition)
+- second order sufficient condition (stated formally in full (it should be clear how it deviates from the necessary condition))
+
+### Perturbing Constraints
+
+Beyond certifying optimality and pricing the dual problem, the Lagrange multipliers measure how much each constraint costs.
+
+Formally, we perturb constraint $j$ by $\epsilon \neq 0$, that is, we replace $c_{j}(x) = 0$ by $c_{j}(x) = \epsilon$ (or $c_{j}(x) \geq 0$ by $c_{j}(x) \geq \epsilon$). We want to know how the optimal objective value changes as a consequence of this perturbation. Let $x^*$ be a local minimizer of the original problem with KKT multipliers $\lambda^*$, and let $x^*(\epsilon)$ be the local minimizer after the perturbation. 
+
+1. For sufficiently small $\epsilon$, the set of active constraints does not change.
+2. Constraint $j$ moves from being active at $0$ to being active at $\epsilon$, so $c_{j}(x^*)=-\epsilon$, which by first order Taylor approximation gives:
+	$$
+	\epsilon = c_{j}(x^*(\epsilon)) - c_{j}(x^*) \approx \nabla c_{j}(x^*)^\top[x^*(\epsilon) - x^*]
+	$$
+3. Every other active constraint $i \neq j$ is unmodified, thus $x^*(\epsilon)$ is not changed under the constraint either:
+	$$
+	0 = c_{i}(x^*(\epsilon)) - c_{i}(x^*) \approx \nabla c_{i}(x^*)^\top[x^*(\epsilon) - x^*]
+	$$
+4. First order Taylor approximation of the objective function gives:
+	$$
+	f(x^*(\epsilon)) - f(x^*) \approx \nabla f(x^*)^\top[x^*(\epsilon) - x^*]
+	$$
+5. Combine with stationarity (inactive constraints drop out since $\lambda_{i}^* = 0$ by complementary slackness):
+	$$
+	\nabla f(x^*)^\top[x^*(\epsilon) - x^*] = \sum_{i \in \mathcal{E}\cup\mathcal{I}}\lambda_{i}^*\,\nabla c_{i}(x^*)^\top[x^*(\epsilon) - x^*] = \lambda_{j}^*\,\epsilon
+	$$
+
+Conclusion: $\lambda_{j}^*$ measures the sensitivity of the optimal objective value to changes in the right-hand side of constraint $j$. Loosening constraint $j$ by $\epsilon$ changes the optimal value by approximately $\lambda_{j}^*\epsilon$. 
+
+This also gives complementary slackness an economic meaning: an inactive inequality constraint has room to spare, so perturbing it slightly changes nothing. Its price must be zero.
 
 ### Duality
 
@@ -483,7 +524,7 @@ Side by side, the primal and dual problems are the same expression with the orde
 | Primal $(P)$                                    | Dual $(D)$                                      |
 | ----------------------------------------------- | ----------------------------------------------- |
 | $\inf_{x}\sup_{\lambda} \mathcal{L}(x,\lambda)$ | $\sup_{\lambda}\inf_{x} \mathcal{L}(x,\lambda)$ |
-(todo: add proper domains here for x and lambda)
+(todo: add proper domains here for x and lambda, and replace the formulas with block quotes)
 
 ### Duality Theorems
 
@@ -498,33 +539,6 @@ Side by side, the primal and dual problems are the same expression with the orde
 	$$
 	so $v(D) = \sup_{\lambda > 0} -\frac{1}{4\lambda} = 0 = v(P)$. The optimal values coincide, yet the supremum is not attained, so the dual problem has no optimal solution.
 
-### Perturbing Constraints
-
-Beyond certifying optimality and pricing the dual problem, the Lagrange multipliers measure how much each constraint costs.
-
-Formally, we perturb constraint $j$ by $\epsilon \neq 0$, that is, we replace $c_{j}(x) = 0$ by $c_{j}(x) = \epsilon$ (or $c_{j}(x) \geq 0$ by $c_{j}(x) \geq \epsilon$). We want to know how the optimal objective value changes as a consequence of this perturbation. Let $x^*$ be a local minimizer of the original problem with KKT multipliers $\lambda^*$, and let $x^*(\epsilon)$ be the local minimizer after the perturbation. 
-
-1. For sufficiently small $\epsilon$, the set of active constraints does not change.
-2. Constraint $j$ moves from being active at $0$ to being active at $\epsilon$, so $c_{j}(x^*)=-\epsilon$, which by first order Taylor approximation gives:
-	$$
-	\epsilon = c_{j}(x^*(\epsilon)) - c_{j}(x^*) \approx \nabla c_{j}(x^*)^\top[x^*(\epsilon) - x^*]
-	$$
-3. Every other active constraint $i \neq j$ is unmodified, thus $x^*(\epsilon)$ is not changed under the constraint either:
-	$$
-	0 = c_{i}(x^*(\epsilon)) - c_{i}(x^*) \approx \nabla c_{i}(x^*)^\top[x^*(\epsilon) - x^*]
-	$$
-4. First order Taylor approximation of the objective function gives:
-	$$
-	f(x^*(\epsilon)) - f(x^*) \approx \nabla f(x^*)^\top[x^*(\epsilon) - x^*]
-	$$
-5. Combine with stationarity (inactive constraints drop out since $\lambda_{i}^* = 0$ by complementary slackness):
-	$$
-	\nabla f(x^*)^\top[x^*(\epsilon) - x^*] = \sum_{i \in \mathcal{E}\cup\mathcal{I}}\lambda_{i}^*\,\nabla c_{i}(x^*)^\top[x^*(\epsilon) - x^*] = \lambda_{j}^*\,\epsilon
-	$$
-
-Conclusion: $\lambda_{j}^*$ measures the sensitivity of the optimal objective value to changes in the right-hand side of constraint $j$. Loosening constraint $j$ by $\epsilon$ changes the optimal value by approximately $\lambda_{j}^*\epsilon$. 
-
-This also gives complementary slackness an economic meaning: an inactive inequality constraint has room to spare, so perturbing it slightly changes nothing. Its price must be zero.
 
 ### Quadratic Penalty
 
