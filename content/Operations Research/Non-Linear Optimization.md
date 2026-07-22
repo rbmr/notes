@@ -370,8 +370,8 @@ where:
 - $\mathcal{I}$ is the index set of the inequality constraints 
 
 Additional remarks:
-- A point $\mathbf{x}$ is said to be **feasible** if it satisfies all constraints.
-- A feasible point $\mathbf{x}$ is often called a **solution**, in which case a global minimizer is called an **optimal solution**, and a local minimizer a **locally optimal solution**.
+- A point $\mathbf{x}$ is said to be **feasible** if it satisfies all constraints. We call the set of all feasible points the **feasible region**.
+- A feasible point $\mathbf{x}$ is sometimes called a **solution**, in which case a global minimizer is called an **optimal solution**, and a local minimizer a **locally optimal solution**.
 - The problem is stated with $\inf$ rather than $\min$ because a minimizer is not guaranteed to exist, when one does exist, the infimum is attained and equals the minimum.
 
 ### Lagrangian Function
@@ -532,28 +532,36 @@ The only feasible point is $x^* = 0$, so it is trivially the global minimizer. Y
 
 ### Constraint Qualification
 
-A **constraint qualification** is a condition on the constraints at $x^*$ that guarantees each local minimizer is a KKT point. 
+A **constraint qualification** is a condition on the constraints that guarantees every local minimizer is a KKT point.
 
-The weakest, exactly-necessary constraint qualifications are awkward to verify in practice. Instead we use two easy-to-check *sufficient* qualifications: Slater's condition and the linear independence constraint qualification (LICQ). Each, when it holds, guarantees KKT is necessary; neither is required in general.
+The weakest, exactly-necessary constraint qualifications are awkward to verify in practice. Instead we use two easy-to-check *sufficient* qualifications: Slater's condition and the linear independence constraint qualification (LICQ). Each, when it holds, guarantees KKT is necessary, neither is required in general.
 
  Recall a **convex optimization problem** requires the feasible region to be convex, and the objective function to also be convex. For the feasible region to be convex, it is sufficient to require each constraint on its own to define a convex set of feasible points, since the intersection of convex sets is also a convex set. Formalizing this, we get the following requirements for a convex optimization problem:
-- the objective $f$ is convex;
-- the equalities are affine: $c_i(x) = a_i^\top x + b_i$ for some $a_i \in \mathbb{R}^n$, $b_i \in \mathbb{R}$, for all $i \in \mathcal{E}$;
+- the objective $f$ is convex,
+- the equalities are affine: $c_i(x) = a_i^\top x + b_i$ for some $a_i \in \mathbb{R}^n$, $b_i \in \mathbb{R}$, for all $i \in \mathcal{E}$,
 - the inequalities are concave: $-c_i$ is convex for all $i \in \mathcal{I}$ (so the feasible region $\{c_i(x) \geq 0\}$ is convex).
 
 **Slater's condition** holds if there exists some *strictly feasible* point $\hat{x}$: $c_i(\hat{x}) = 0$ for all $i \in \mathcal{E}$ and $c_i(\hat{x}) > 0$ (strict) for all $i \in \mathcal{I}$. Slater's is a property of the whole problem (it needs one strictly feasible point), not of a particular candidate $x^*$.
 
-For a *convex* optimization problem satisfying Slater's condition, the KKT conditions are **necessary and sufficient** for global optimality. Like any constraint qualification, Slater's guarantees necessity, but combined with convexity it also makes the KKT conditions sufficient, so any KKT point is automatically a global minimizer. 
+Slater's condition, combined with the convexity of the constraints and objective function determine the guarantees the KKT conditions provide.
+(todo: maybe add a proof here)
+
+|                          | Non-Convex Constraints                    | Convex Constraints                                                                                       |
+| ------------------------ | ----------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Non-Convex Objective** | Slater's condition provides no guarantees | Slater's  condition makes the KKT conditions **necessary** for every **local** minimizer.                |
+| **Convex Objective**     | Slater's condition provides no guarantees | Slater's condition makes the KKT conditions **necessary AND sufficient** for every **global** minimizer. |
 
 **Linear independence constraint qualification (LICQ)** (general). LICQ holds at a feasible $x^*$ if the active constraint gradients
 $$
 \{\nabla c_i(x^*) : c_i(x^*) = 0,\ i \in \mathcal{E} \cup \mathcal{I}\}
 $$
-are linearly independent. If LICQ holds at a local minimizer $x^*$, then $x^*$ satisfies the KKT conditions (and the multipliers $\lambda^*$ are unique). Unlike Slater's, LICQ is checked pointwise at a candidate $x^*$ and applies to nonconvex problems, but it delivers only necessity, not sufficiency. Revisiting the failure example: at $x^* = 0$ constraint $c_1$ is active with $\nabla c_1(0) = 0$, and the singleton $\{0\}$ is linearly dependent, so LICQ fails, consistent with KKT failing there.
+are linearly independent. If LICQ holds at a local minimizer $x^*$, then $x^*$ satisfies the KKT conditions (and the multipliers $\lambda^*$ are unique). 
+
+Differences: Unlike Slater's, LICQ needs to be checked at each candidate $x^*$ and applies to non-convex problems, but it delivers only necessity, not sufficiency.
 
 ### Second Order conditions
 
-The KKT conditions are first-order and only necessary. As in unconstrained optimization, second-order (curvature) information sharpens them: it provides an extra necessary condition, and a genuine *sufficient* condition for local optimality.
+The KKT conditions are first-order and only necessary for local minima. As in unconstrained optimization, second-order (curvature) information can provide more guarantees: it provides an extra necessary condition, and a genuine sufficient condition for local optimality.
 
 Two ingredients recur:
 - The relevant curvature is that of the **Lagrangian in $x$**, not $f$ alone: the **Hessian of the Lagrangian** $\nabla_{xx}^2 \mathcal{L}(x^*, \lambda^*) = \nabla^2 f(x^*) - \sum_{i \in \mathcal{E} \cup \mathcal{I}} \lambda_i^* \nabla^2 c_i(x^*)$. The multiplier terms correct for the way the constraints curve the feasible surface.
