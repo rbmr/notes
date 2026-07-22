@@ -25,6 +25,13 @@ Convexity is the property that makes optimization problems globally tractable: i
 	- $f$ is strictly convex **if** its Hessian $\nabla^2 f(x) \succ 0$ for all $x \in X$. 
 	- Note a positive definite hessian is sufficient but not necessary for strict convexity, for example: $f(x)=x^4$ is strictly convex, yet $f''(0) = 0$.
 	- This generalizes the univariate characterization: a function in one variable is convex if and only if its second derivative is non-negative everywhere.
+	- To compute the Hessian of an objective written in matrix notation (e.g. $\mathbf{x}^\top A\mathbf{x}$ or $\|A\mathbf{x}-\mathbf{b}\|^2$), see [[4. Multivariate Calculus#Gradients and Hessians in Matrix Notation]].
+- Checking the definition or the Hessian directly is often unnecessary: convexity is usually easiest to establish by recognizing $f$ as built from simpler convex functions. The following operations **preserve convexity**, and each has a one-line justification, so none need to be memorized by rote:
+	- **Nonnegative combination**: if $f, g$ are convex and $\alpha, \beta \ge 0$, then $\alpha f + \beta g$ is convex. Adding the two defining inequalities, each scaled by a nonnegative weight, preserves the inequality.
+	- **Affine precomposition**: if $f$ is convex, then $x \mapsto f(Ax + b)$ is convex. An affine map sends a line segment to a line segment, so it cannot introduce any new bend for $f$ to curve the wrong way on.
+	- **Pointwise maximum**: if $f_1, \dots, f_k$ are convex, then $\max_i f_i$ is convex (and likewise a pointwise supremum of convex functions). Intuition: the region on or above the graph of $\max_i f_i$ is exactly the intersection of the regions above each $f_i$, and an intersection of convex sets is convex (see [[#Convex Optimization Problem]]).
+	- **Scalar composition**: for $h: \mathbb{R} \to \mathbb{R}$ and a convex or concave inner function $g$, the composition $h \circ g$ is convex when the signs line up: $g$ convex with $h$ convex nondecreasing, or $g$ concave with $h$ convex nonincreasing. This is just sign bookkeeping on the 1D chain rule $(h\circ g)'' = h''(g)\,(g')^2 + h'(g)\,g''$: the first term is $\ge 0$ when $h$ is convex, and the second is $\ge 0$ when the monotonicity of $h$ matches the curvature of $g$.
+	- Useful base cases: every **affine** function $a^\top x + b$ is both convex and concave (zero Hessian); every **norm** is convex (by the triangle inequality and homogeneity); and a **quadratic form** $x^\top A x$ is convex if and only if $A \succeq 0$.
 - **Convex Fermat Theorem**: Let $f:\mathbb{R}^n \rightarrow \mathbb{R}$ be a continuously differentiable, convex function. Then, $x^* \in \mathbb{R}^n$ is a global minimizer of $f$ if and only if $\nabla f(x^*) = 0$. If $f$ is strictly convex, then $x^*$ is the unique global minimizer of $f$ if and only if $\nabla f(x^*) = 0$.
 	- Contrast this with the plain Fermat's theorem: stationarity is normally only *necessary* for *local* minimizers; under convexity it becomes an exact characterization of *global* minimizers.
 
@@ -374,6 +381,31 @@ Additional remarks:
 - A feasible point $\mathbf{x}$ is sometimes called a **solution**, in which case a global minimizer is called an **optimal solution**, and a local minimizer a **locally optimal solution**.
 - The problem is stated with $\inf$ rather than $\min$ because a minimizer is not guaranteed to exist, when one does exist, the infimum is attained and equals the minimum.
 
+### Convex Optimization Problem
+
+A **convex optimization problem** is the special case of the constrained problem above where global optimization becomes tractable: every local minimizer is automatically a global minimizer, and (as shown later) the KKT conditions become *sufficient*, not just necessary. Achieving this requires two things: a convex objective and a convex feasible region.
+
+Convexity of the objective is checked with the function rules from the [[#Convexity]] section. Convexity of the feasible region is built up from the constraints, using the rules below for recognizing convex sets.
+
+Operations that **preserve convexity of sets** (each follows directly from the segment definition of a convex set):
+- **Intersection**: the intersection of any collection of convex sets is convex. If a line segment lies inside every set of the collection, it lies inside their intersection too. (Contrast with unions: the union of two convex sets is generally *not* convex.)
+- **Affine preimage**: if $S$ is convex, then $\{x : Ax + b \in S\}$ is convex. An affine map sends segments to segments, so the points landing in $S$ form a convex set.
+- **Affine image**: if $S$ is convex, then $\{Ax + b : x \in S\}$ is convex, for the same reason.
+- **Sublevel sets of a convex function**: for a convex function $f$, the sublevel set $\{x : f(x) \le \alpha\}$ is convex for every $\alpha \in \mathbb{R}$. If $f$ stays below $\alpha$ at both endpoints of a segment, convexity keeps its graph below the chord, hence below $\alpha$, along the whole segment. Symmetrically, the superlevel set $\{x : g(x) \ge \alpha\}$ of a *concave* function $g$ is convex (apply the rule to $-g$).
+	- The converse fails: a set can be a sublevel set of a non-convex function too, so this is a sufficient, not necessary, test for a set's convexity.
+
+These rules turn each constraint into a convex feasible set:
+- An **affine equality** $c_i(x) = a_i^\top x + b_i = 0$ defines a hyperplane, which is convex: it is the intersection of the two sublevel sets $\{c_i(x) \le 0\}$ and $\{-c_i(x) \le 0\}$ of the affine (hence convex) functions $\pm c_i$. Note a nonlinear equality generally does *not* define a convex set (e.g. $\|x\|^2 = 1$ is a sphere), which is why equalities must be affine.
+- A **concave inequality** $c_i(x) \ge 0$ defines a convex set: $c_i$ concave means $-c_i$ is convex, so $\{x : c_i(x) \ge 0\} = \{x : -c_i(x) \le 0\}$ is a sublevel set of a convex function. This is the sense in which *concavity of a $\ge$ constraint yields convexity of its feasible set*.
+- The full feasible region is the intersection of all these individual constraint sets, so by the intersection rule it is convex.
+
+Collecting the requirements, a constrained optimization problem is a **convex optimization problem** if:
+- the objective $f$ is convex,
+- the equality constraints are affine: $c_i(x) = a_i^\top x + b_i$ for some $a_i \in \mathbb{R}^n$, $b_i \in \mathbb{R}$, for all $i \in \mathcal{E}$,
+- the inequality constraints are concave: $-c_i$ is convex for all $i \in \mathcal{I}$ (so each $\{c_i(x) \ge 0\}$ is convex).
+
+The payoff of this structure is developed in the sections below: local minimizers are global (the constrained analogue of the [[#Convexity|Convex Fermat theorem]]), and under Slater's condition the KKT conditions become both necessary and sufficient for global optimality.
+
 ### Lagrangian Function
 
 The **Lagrangian function** of a constrained optimization problem puts the constraints into the objective, attaching to each constraint a variable price $\lambda_i$, called its **Lagrange multiplier**:
@@ -536,10 +568,7 @@ A **constraint qualification** is a condition on the constraints that guarantees
 
 The weakest, exactly-necessary constraint qualifications are awkward to verify in practice. Instead we use two easy-to-check *sufficient* qualifications: Slater's condition and the linear independence constraint qualification (LICQ). Each, when it holds, guarantees KKT is necessary, neither is required in general.
 
- Recall a **convex optimization problem** requires the feasible region to be convex, and the objective function to also be convex. For the feasible region to be convex, it is sufficient to require each constraint on its own to define a convex set of feasible points, since the intersection of convex sets is also a convex set. Formalizing this, we get the following requirements for a convex optimization problem:
-- the objective $f$ is convex,
-- the equalities are affine: $c_i(x) = a_i^\top x + b_i$ for some $a_i \in \mathbb{R}^n$, $b_i \in \mathbb{R}$, for all $i \in \mathcal{E}$,
-- the inequalities are concave: $-c_i$ is convex for all $i \in \mathcal{I}$ (so the feasible region $\{c_i(x) \geq 0\}$ is convex).
+Recall the **convex optimization problem** (see [[#Convex Optimization Problem]]): the objective $f$ is convex, the equality constraints are affine, and the inequality constraints are concave, which together make both the objective and the feasible region convex.
 
 **Slater's condition** holds if there exists some *strictly feasible* point $\hat{x}$: $c_i(\hat{x}) = 0$ for all $i \in \mathcal{E}$ and $c_i(\hat{x}) > 0$ (strict) for all $i \in \mathcal{I}$. Slater's is a property of the whole problem (it needs one strictly feasible point), not of a particular candidate $x^*$.
 
