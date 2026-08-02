@@ -19,9 +19,7 @@ Dependency Management:
 Running code:
 - Run a single command using the venv: `uv run <command>`
 
----
-
-## Code style
+### Code style
 
 We use automated tools to enforce code style. 
 
@@ -36,9 +34,7 @@ Commands:
 
 Code style should be enforced before merging to master.
 
----
-
-## Code Organization
+### Code Organization
 
 Simple rules for code organization are:
 
@@ -48,7 +44,7 @@ Simple rules for code organization are:
 
 ---
 
-## Date and Time
+### Date and Time
 
 Use the standard `date`, `time`, and `datetime` objects from the `datetime` module. All datetimes should be made timezone-aware. For this we use `ZoneInfo` from the standard library `zoneinfo`.
 
@@ -92,7 +88,7 @@ assert now == now_parsed  # False!
 
 ---
 
-## Paths
+### Paths
 
 File paths should not break even when the package is moved between computers or operating systems. For this we use `Path` from the standard library `pathlib`.
 
@@ -116,7 +112,7 @@ config_path = Path.cwd() / "config" / "settings.toml"
 
 ---
 
-## Logging
+### Logging
 
 One should use named loggers from the python `logging` module to log information during the execution of a script. These loggers may then be easily configured per file or module, per logging level, or per log output method (console, file, etc).
 
@@ -133,7 +129,7 @@ logger.error("Information that must be paid attention to")
 
 ---
 
-## Environmental variables
+### Environmental variables
 
 We shall not store secrets in the code itself as this is highly insecure. Secrets shall be stored in a `.env` file which shall NOT be committed to GitHub. These secrets may then be loaded into the environmental variables using the `load_dotenv` function from the `dotenv` library (`uv add python-dotenv`). These variables can be retrieved using `os.environ`. This way, none of the code on GitHub contains any secrets.
 
@@ -167,7 +163,7 @@ make_request(SECRET_API_KEY)
 
 ---
 
-## Pandas Persistence
+### Pandas Persistence
 
 Whenever we save or share tabular data we do so using `.parquet` files, as they are significantly more (size-)efficient than `.csv` files. On top of this, parquet files store the data types of each of the columns aswell, including datetimes.
 
@@ -207,7 +203,7 @@ Pandas needs pyarrow or fastparquet to use parquet, we generally recommend using
 
 ---
 
-## Automated Testing
+### Automated Testing
 
 We use `pytest` for automated testing. We avoid using the built-in `unittest` library, as its API is significantly worse.
 
@@ -237,7 +233,7 @@ def test_double_2():
 
 ---
 
-## String Formatting
+### String Formatting
 
 We use **f-strings** to put variables inside strings. They are the standard because they are clean, easy to read, and fast. Do not use `+` to join strings or the older `.format()` method.
 
