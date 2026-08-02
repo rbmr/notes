@@ -1,20 +1,20 @@
 ### Dependency Management
 
-A python project is likely to rely on external dependencies. It is important to ensure dependencies are recorded exactly such that 
+A python project is likely to rely on external dependencies. To manage these dependencies properly, it is recommended to use a dependency manager. 
 
-We use **uv** for dependency management and packaging. 
+Many dependency managers exist, and which is "ideal" is subject to debate. As of July 2026, we recommend using **uv**.
 
 Install uv here: [https://docs.astral.sh/uv/#installation](https://docs.astral.sh/uv/#installation)
 
-We generally use in-project virtual environments, this ensures IDEs can reliably automatically detect your virtual environments, and the virtual environment is cleaned up when the project is deleted. uv automatically creates and uses in-project virtual environments (`.venv`) by default when using its project commands. 
+We recommend using in-project virtual environments (inside a `.venv` folder in the project root), this ensures IDEs can reliably automatically detect your virtual environments, and the virtual environment is cleaned up when the project is deleted. uv automatically creates and uses in-project virtual environments by default. 
 
-You can set up uv in a new project using `uv init`.
+You can set up uv in a python project using `uv init`.
 
 Dependency Management:
 - Adding dependencies: `uv add <package>`
 - Removing dependencies: `uv remove <package>`
 - Updating dependencies: `uv lock --upgrade-package <package>` for a specific package, `uv lock --upgrade` for all packages.
-- Creating the virtual environment (`.venv`) and installing dependencies: `uv sync`
+- Creating the virtual environment and installing dependencies: `uv sync`
 
 Running code:
 - Run a single command using the venv: `uv run <command>`
@@ -32,21 +32,24 @@ Commands:
 - Lint and fix issues: `uv run ruff check --fix`
 - Fail if checker encounters issues  `uv run ruff check`
 
-Code style should be enforced before merging to master.
+Code style should be enforced before every commit.
+
+### Type Hinting
+
+(TODO: explain type hinting as a way to document code, aswell as allow the IDE to catch errors before runtime)
 
 ### Code Organization
 
 Simple rules for code organization are:
 
-*   **DRY: Don’t Repeat Yourself**: Avoid duplicate code. Instead of copy-pasting, or rewriting the same logic multiple times, put shared logic into reusable functions or classes. This makes the code easier to maintain and read, as changes only need to be made in one place.
-*   **FAIL-FAST:** Code should be written to report errors as early as possible. Don't hide exceptions or return `None` when an error state occurs. This makes debugging much easier because the root cause of a problem is closer to where the error is reported.
-*   Use python type hinting wherever possible. This allows IDEs to provide more accurate type checking and autocompletion.
+* **DRY: Don’t Repeat Yourself**: Avoid duplicate code. Instead of copy-pasting, or rewriting the same logic multiple times, put shared logic into reusable functions or classes. This makes the code easier to maintain and read, since changes only happen in one place.
+* **FAIL-FAST:** Code should be written to report errors as early as possible. Don't hide exceptions or return `None` when an error state occurs. This makes debugging much easier because the root cause of a problem is closer to where the error is reported.
 
----
+### Datetimes
 
-### Date and Time
+(TODO: reorganize these notes to first introduce time as float seconds since epoch (introduce time library). Then explain humans naturally describe time using a date and a time, leading into the existing notes).
 
-Use the standard `date`, `time`, and `datetime` objects from the `datetime` module. All datetimes should be made timezone-aware. For this we use `ZoneInfo` from the standard library `zoneinfo`.
+Use the standard `date`, `time`, and `datetime` objects from the `datetime` module. Datetimes are ambiguous without timezone information. All datetimes should be made timezone-aware. For this we use `ZoneInfo` from the standard library `zoneinfo`.
 
 > We shall not use `pytz` for time zones, as `zoneinfo` is the modern and official standard included with python.
 
@@ -85,8 +88,6 @@ assert now == now_parsed  # False!
 
 # isoformat is preferred.
 ```
-
----
 
 ### Paths
 
@@ -200,38 +201,6 @@ df_from_parquet = pd.read_parquet("products.parquet")
 ```
 
 Pandas needs pyarrow or fastparquet to use parquet, we generally recommend using pyarrow (`uv add pyarrow`).
-
----
-
-### Automated Testing
-
-We use `pytest` for automated testing. We avoid using the built-in `unittest` library, as its API is significantly worse.
-
-Install using `uv add pytest --dev`
-
-To run tests you use `uv run pytest`
-
-Tests are discovered automatically, default rules are:
-*   Search for files named `test_*.py` or `*_test.py`. 
-*   Within those files, find and run classes named `Test*` (without an `__init__` method) that contain methods named `test_*.py`.
-*   Within those files, find and run functions named `test_*.py`.
-
-Example test:
-
-```python
-# test_example.py
-
-def double(x: int) -> int:
-    return 2 * x
-
-def test_double_1():
-    assert double(1) == 2 # Passes!
-
-def test_double_2():
-    assert double(2) == 5 # Fails!
-```
-
----
 
 ### String Formatting
 
