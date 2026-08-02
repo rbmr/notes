@@ -163,7 +163,7 @@ To ensure a system is reproducible across different machines, engineers use **De
 - **The Manifest:** This file lists the high-level requirements of the project. It defines what the project needs and usually specifies version ranges. It is optimized for human readability and flexibility.
 - **The Lock File:** Because version ranges in a manifest can resolve to different actual versions over time, the Lock File provides an absolute snapshot. It records the exact version and cryptographic hash of every library and transitive dependency in the tree.
 
-By committing the Lock File to version control, engineers ensure **Deterministic Installs**. This guarantees that "it works on my machine" translates to "it works on every machine," as every environment will resolve the dependency graph to the exact same bits.
+By committing the Lock File to version control, engineers ensure **Deterministic Installs**. This aims to guarantee that "it works on my machine" translates to "it works on every machine," as every environment will resolve the dependency graph to the exact same bits.
 
 #### Containerization
 
