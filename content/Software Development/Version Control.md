@@ -1,6 +1,8 @@
 TODO:
-- Explain Git
+- Introduce software as something that evolves over time.
 - Explain Semantic Versioning
+- Explain Git
+	- Explain the broad idea behind git ("multiple people being able to work on code at the same time"), Then explain basic terms: repository, commits, branches, merging, and rebasing. Then embed this video as an alternative method for learning how it works: https://youtu.be/Ala6PHlYjmw. 
 - Explain Conventional Commits
 - Collaboration: Rules of thumb for commit and PR size. 
 	- Commit: commit message is a single sentence, the change made should be understood using the commit message alone.

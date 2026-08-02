@@ -1,38 +1,13 @@
+Guide for dealing with columnar data in python
 
+### Storing Data
 
+TODO: explain columnar data formats: csv, xlsx, and parquet. Pay little attention to csv and xlsx assuming they are already known. Then introduce parquet as the significantly more efficient format.
 
-Whenever we save or share tabular data we do so using `.parquet` files, as they are significantly more (size-)efficient than `.csv` files. On top of this, parquet files store the data types of each of the columns aswell, including datetimes.
+### DataFrames
 
-It is important to note that `.csv` stores information using plaintext, and may therefore be opened and read by any text editor, `.parquet` files are not stored using plaintext, and must therefore be read by a specific reader. This is the only real benefit of `.csv` over `.parquet`.
+TODO: explain dataframe as the term commonly used for a table. state many packages for handling dataframes exist, with the most popular one being pandas, but state pandas is quite outdated, and polars is preferred (and why).
 
-Pandas DataFrame’s may be persisted (saved) and loaded to and from `.parquet` in the same way one might do that with `.csv`.
+### Time Series
 
-```python
-import pandas as pd
-
-# Create a simple DataFrame for demonstration
-data = {
-    'product_id': [101, 102, 103],
-    'product_name': ['Laptop', 'Mouse', 'Keyboard'],
-    'price': [1200, 25, 75]
-}
-df = pd.DataFrame(data)
-
-# Less efficient:
-
-# Save the DataFrame to a .csv file
-df.to_csv("products.csv", index=False)
-
-# Load the DataFrame from the .csv file
-df_from_csv = pd.read_csv("products.csv")
-
-# More efficient:
-
-# Save the DataFrame to a .parquet file
-df.to_parquet("products.parquet", index=False)
-
-# Load the DataFrame from the .parquet file
-df_from_parquet = pd.read_parquet("products.parquet")
-```
-
-Pandas needs pyarrow or fastparquet to use parquet, we generally recommend using pyarrow (`uv add pyarrow`).
+TODO: explain how to handle time series data. Specifically, how time series aggregations work, downsampling, upsampling, interpolation, specifically understanding how time differences and date differences work, how they are handled in cases of daylight savings (e.g. adding 1 day to 28 march (or 24 october) 2026 at 02.30 amsterdam time), or irregular months (e.g., adding 1 month to 31st of january), and such, and how these are aligned in the context of downsampling, upsampling, etc.
