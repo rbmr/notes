@@ -2,11 +2,11 @@
 
 A python project is likely to rely on external dependencies. To manage these dependencies properly, it is recommended to use a dependency manager. 
 
-Many dependency managers exist, and which is "ideal" is subject to debate. As of July 2026, we recommend using **uv**.
+Many dependency managers exist, and which is ideal is subject to debate. As of July 2026, we recommend using **uv**.
 
 Install uv here: [https://docs.astral.sh/uv/#installation](https://docs.astral.sh/uv/#installation)
 
-We recommend using in-project virtual environments (inside a `.venv` folder in the project root), this ensures IDEs can reliably automatically detect your virtual environments, and the virtual environment is cleaned up when the project is deleted. uv automatically creates and uses in-project virtual environments by default. 
+We recommend using in-project virtual environments, that is, you store the virtual environment in a `.venv` folder in the project root. This ensures IDEs can reliably automatically detect your virtual environments, and the virtual environment is cleaned up when the project is deleted. uv automatically creates and uses in-project virtual environments by default. 
 
 You can set up uv in a python project using `uv init`.
 
@@ -36,14 +36,16 @@ Code style should be enforced before every commit.
 
 ### Type Hinting
 
-(TODO: explain type hinting as a way to document code, aswell as allow the IDE to catch errors before runtime)
+(TODO: state that python uses dynamic typing, then explain type hinting as a way to document code, aswell as allow the IDE to catch errors before runtime, then state a general rule of thumb is to add just enough type hints that allow IDEs to guess types of all variables. Specifically, ensure all functions have properly typed parameters and return values.  )
 
 ### Code Organization
 
 Simple rules for code organization are:
 
 * **DRY: Don’t Repeat Yourself**: Avoid duplicate code. Instead of copy-pasting, or rewriting the same logic multiple times, put shared logic into reusable functions or classes. This makes the code easier to maintain and read, since changes only happen in one place.
-* **FAIL-FAST:** Code should be written to report errors as early as possible. Don't hide exceptions or return `None` when an error state occurs. This makes debugging much easier because the root cause of a problem is closer to where the error is reported.
+* **FAIL-FAST**: Code should be written to report errors as early as possible. Don't hide exceptions or return `None` when an error state occurs. This makes debugging much easier because the root cause of a problem is closer to where the error is reported.
+* **Low Coupling, High Cohesion**: Coupling refers to the degree of interdependence between modules, and cohesion refers to the degree to which the elements in a single module belong together. We want low coupling, high cohesion.
+- **No Global Variables**: (TODO: explain why global state is bad, and what to use instead (parameters, attributes), explain why global constants are fine)
 
 ### Datetimes
 
@@ -69,7 +71,7 @@ now_ams = datetime.now(ams_tz)
 
 We use UTC as much as possible, as it is the universal standard and does not have Daylight Savings Time complexity.
 
-When converting dates, times, and time deltas to and from a string, we use the ISO 8601 standard as much as possible. This is standard, and robust.
+When converting dates, times, and time deltas to and from a string, we use the ISO 8601 standard as much as possible. ISO8601 is the standard used across all programming languages, and ensures no information is lost upon serialization.
 
 ```python
 # Converts to ISO 8601 string
@@ -111,8 +113,6 @@ from pathlib import Path
 config_path = Path.cwd() / "config" / "settings.toml"
 ```
 
----
-
 ### Logging
 
 One should use named loggers from the python `logging` module to log information during the execution of a script. These loggers may then be easily configured per file or module, per logging level, or per log output method (console, file, etc).
@@ -128,11 +128,9 @@ logger.warning("Information that a user is likely to want to pay attention to")
 logger.error("Information that must be paid attention to")
 ```
 
----
+### Environment variables
 
-### Environmental variables
-
-We shall not store secrets in the code itself as this is highly insecure. Secrets shall be stored in a `.env` file which shall NOT be committed to GitHub. These secrets may then be loaded into the environmental variables using the `load_dotenv` function from the `dotenv` library (`uv add python-dotenv`). These variables can be retrieved using `os.environ`. This way, none of the code on GitHub contains any secrets.
+We shall not store secrets in the code itself as this is highly insecure. Secrets shall be stored in a `.env` file which shall NOT be committed to GitHub. These secrets may then be loaded into the environment variables using the `load_dotenv` function from the `dotenv` library (`uv add python-dotenv`). These variables can be retrieved using `os.environ`. This way, none of the code on GitHub contains any secrets.
 
 Insecure:
 
@@ -161,46 +159,6 @@ SECRET_API_KEY = os.environ["SECRET_API_KEY"]
 
 make_request(SECRET_API_KEY)
 ```
-
----
-
-### Pandas Persistence
-
-Whenever we save or share tabular data we do so using `.parquet` files, as they are significantly more (size-)efficient than `.csv` files. On top of this, parquet files store the data types of each of the columns aswell, including datetimes.
-
-It is important to note that `.csv` stores information using plaintext, and may therefore be opened and read by any text editor, `.parquet` files are not stored using plaintext, and must therefore be read by a specific reader. This is the only real benefit of `.csv` over `.parquet`.
-
-Pandas DataFrame’s may be persisted (saved) and loaded to and from `.parquet` in the same way one might do that with `.csv`.
-
-```python
-import pandas as pd
-
-# Create a simple DataFrame for demonstration
-data = {
-    'product_id': [101, 102, 103],
-    'product_name': ['Laptop', 'Mouse', 'Keyboard'],
-    'price': [1200, 25, 75]
-}
-df = pd.DataFrame(data)
-
-# Less efficient:
-
-# Save the DataFrame to a .csv file
-df.to_csv("products.csv", index=False)
-
-# Load the DataFrame from the .csv file
-df_from_csv = pd.read_csv("products.csv")
-
-# More efficient:
-
-# Save the DataFrame to a .parquet file
-df.to_parquet("products.parquet", index=False)
-
-# Load the DataFrame from the .parquet file
-df_from_parquet = pd.read_parquet("products.parquet")
-```
-
-Pandas needs pyarrow or fastparquet to use parquet, we generally recommend using pyarrow (`uv add pyarrow`).
 
 ### String Formatting
 
