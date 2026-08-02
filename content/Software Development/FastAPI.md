@@ -70,18 +70,6 @@ You can customize how errors are formatted by using the `@app.exception_handler(
 
 TODO: write about how logging should be handled.
 
-### Rate Limiting
-
-TODO: write about how rate limiting should be handled.
-
-### Cookies
-
-TODO: write about handling cookies.
-
-### Cross-Site Request Forgery (CSRF)
-
-TODO: write about how session authentication for a frontend should be handled.
-
 ### Pydantic Settings
 
 The `pydantic-settings` package allows you to manage your project config and environment variables using Pydantic models. It automatically reads from environment variables or `.env` files, performs type validation, and can parse strings into native Python types (like converting "true" to a boolean or "1,2,3" to a list).
@@ -203,3 +191,15 @@ FastAPI is a web framework, not a web server. It defines how your application be
 To handle this in production, deployments typically rely on the following two packages working together:
 - Uvicorn: The standard ASGI server recommended by the FastAPI documentation. Uvicorn is responsible for handling the actual network connections.
 - Gunicorn: is a process manager that allows you to start and manage multiple Uvicorn "worker" processes in parallel. If a worker dies, Gunicorn automatically restarts it, ensuring your application remains highly available, resilient, and capable of utilizing multiple CPU cores.
+
+### Rate Limiting
+
+TODO: write about how rate limiting should be handled.
+
+### Cookies
+
+TODO: write about handling cookies.
+
+### Cross-Site Request Forgery (CSRF)
+
+TODO: write about how session authentication for a frontend should be handled.

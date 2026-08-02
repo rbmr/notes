@@ -1,9 +1,9 @@
 TODO:
 - Introduce software as something that evolves over time.
-- Explain Semantic Versioning
-- Explain Git
-	- Explain the broad idea behind git ("multiple people being able to work on code at the same time"), Then explain basic terms: repository, commits, branches, merging, and rebasing. Then embed this video as an alternative method for learning how it works: https://youtu.be/Ala6PHlYjmw. 
-- Explain Conventional Commits
+- Define Version control software. 
+- Explain Git, as the VCS created by Linus Torvalds, where the name has no clear meaning (https://github.com/git/git/blob/e83c5163316f89bfbde7d9ab23ca2e25604af290/README). 
+- Basic Git Guide: repository, commits, branches, merging, and rebasing. Then embed this video as an alternative method for learning how it works: https://youtu.be/Ala6PHlYjmw. 
+- Explain Semantic Versioning and Conventional Commits, link to their official specs.
 - Collaboration: Rules of thumb for commit and PR size. 
 	- Commit: commit message is a single sentence, the change made should be understood using the commit message alone.
 	- PR: collection of related commits. PRs are reviewed before they are merged into master.
