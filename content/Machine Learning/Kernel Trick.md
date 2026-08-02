@@ -1,3 +1,0 @@
-Linear Algorithms work by finding a linear boundary (a straight line or plane) to separate the data. However, real-world data is often not linearly separable in its original space. To fix this, we could map the data to a higher dimensional space where it is linearly separable.
-
-However, explicitly calculating these new higher dimensional coordinates for every data point is computationally expensive. The **kernel trick** relies on the realization that many algorithms only rely on the dot product of data points, not their actual coordinates. We then use a kernel function $K(x_{1}, x_{2})$ to compute the dot-product in the higher-dimensional space directly from the original lower-dimensional data.
