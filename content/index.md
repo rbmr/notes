@@ -17,9 +17,9 @@ As it turns out, [[Organizing Knowledge]] is quite difficult. By thinking about 
 
 I have divided my notes into 5 main categories:
 
-1. Mathematics
-2. Computer Science
-3. Software Development
-4. Machine Learning
-5. Projects
+1. [[Mathematics/index|Mathematics]], the foundational mathematics for all that follows. Notes include basic set theory, logic, linear algebra, calculus, probability, statistics and mathematical optimization.
+2. [[Computer Science/index|Computer Science]], the theory of computation: algorithms, data structures, and systems concepts, independent of any particular language or tool.
+3. [[Software Development/index|Software Development]] the actual process of writing and shipping code: languages, tools, and workflows.
+4. [[Machine Learning/index|Machine Learning]], the theory related to systems that learn from data.
+5. [[Projects/index|Projects]] everything else: notes related to a specific project or one-off exploration that doesn't fit any of the other categories.
 
