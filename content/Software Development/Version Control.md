@@ -1,0 +1,14 @@
+TODO:
+- Explain Git
+- Explain Semantic Versioning
+- Explain Conventional Commits
+- Collaboration: Rules of thumb for commit and PR size. 
+	- Commit: commit message is a single sentence, the change made should be understood using the commit message alone.
+	- PR: collection of related commits. PRs are reviewed before they are merged into master.
+- Collaboration: Agents
+	- Suppose you are using coding agent to help you code, and the code you create will be reviewed by other humans, then it is common courtesy to review every commit yourself.
+	- The following is a list of example rules for the coding agent.
+		- The agent may make changes, and stage them, but only the user may commit and pushes these changes.
+		- The agent may never take credit for a change, this may lead to the false assumption that the resulting code was unverified by the user, which it was not. 
+		- The agent may suggest names for commits and PRs when code changes are finalized.
+		- An exception to the rule of not "no commits" is when the user needs help with git operations. Such as when rebasing, cherry picking or merging changes, because in this case all changes were already reviewed.
