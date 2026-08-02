@@ -1,7 +1,6 @@
 ---
 title: Robert's Notes
 ---
-
 Hi! Welcome to my notes.
 
 [About Me](https://mertensrh.com/)

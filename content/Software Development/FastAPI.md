@@ -8,7 +8,7 @@ To understand FastAPI, it is essential to first understand the two independent, 
 - Starlette is a lightweight, high-performance ASGI (Asynchronous Server Gateway Interface) framework/toolkit. It serves as the underlying web engine, handling the network protocols, routing, asynchronous concurrency, the request/response cycle, and WebSockets.
 - FastAPI is the API framework that combines Starlette's web capabilities with Pydantic's data validation, while adding its own developer-experience enhancements. Such as a dependency injection system and automatic generation of interactive OpenAPI (Swagger) documentation directly from your Python type hints.
 
-### FastAPI Guidelines
+### General Guidelines
 
 To keep your FastAPI applications clean, maintainable, and performant, follow these core development guidelines.
 
@@ -16,12 +16,12 @@ To keep your FastAPI applications clean, maintainable, and performant, follow th
 
 **2. Use Native Type Hints for Responses**: Prefer Python's native return type hints (e.g., `async def get_object() -> ExampleModel:`) instead of passing the `response_model` argument into the route decorator. Native type hints allow your IDE to accurately type-check what your function actually returns, is more explicit, and keeps the route decorator uncluttered. 
 
-When returning objects like database models, explicitly convert them into your Pydantic schemas before returning:
+When returning objects (such as database models), explicitly convert them into your Pydantic schemas before returning:
 ```python
 return ExampleModel.model_validate(obj, from_attributes=True)
 ```
 
-**3. Adopt Pydantic v2 Syntax**: FastAPI fully supports Pydantic v2, which offers massive performance improvements and a cleaner API. Always use the modern, future-proof syntax over older v1 methods:
+**3. Adopt Pydantic v2 Syntax**: FastAPI fully supports Pydantic v2, which offers significant performance improvements and a cleaner API. Always use the modern, future-proof syntax over older v1 methods:
 - Use `.model_validate()` instead of the legacy `.from_orm()`.
 - Use `.model_dump()` instead of `.dict()`.
 - Use `model_config = ConfigDict(...)` at the class level instead of the nested `class Config:` block for model configuration.
@@ -29,10 +29,10 @@ return ExampleModel.model_validate(obj, from_attributes=True)
 **4. Leverage Dependency Injection (Depends)**: It is likely that many endpoints will require the same setup and teardown of the same resources. FastAPI's dependency injection allows you to define these operations once, and inject them into your endpoints using `Depends()`. For testing, you can modify the dependencies that are injected by using the built-in `app.dependency_overrides`, instead of using error-prone patching.
 
 **5. Dont block the Async event loop**: If you define an endpoint with `async def`, you must ensure that no synchronous, blocking operations (like heavy CPU computations, large file processing, or synchronous API requests) occur within it, as it will freeze the API for all users.
-- If you must execute blocking code, define your endpoint as a standard def. FastAPI will automatically run it in a separate thread pool.
+- If you must execute blocking code, modify your endpoint to use a standard a `def`. FastAPI will automatically run it in a separate thread pool.
 - If you need to perform heavy background work after returning a response, delegate that work to FastAPI's `BackgroundTasks` or an external task queue like Celery.
 
-**6. Use Lifespan** For resources that need to be set up and torn down along with the FastAPI app, you should use the `lifespan` parameter on the FastAPI application instance. By defining these tasks within a lifespan context manager, they share the exact same event loop as the rest of the application. This allows you to execute asynchronous teardown operations smoothly, which is not possible using standard libraries like `atexit`.
+**6. Use Lifespan**: For resources that need to be set up and torn down along with the FastAPI app, you should use the `lifespan` parameter on the FastAPI application instance. By defining these tasks within a lifespan context manager, they share the exact same event loop as the rest of the application. This allows you to execute asynchronous teardown operations smoothly, which can be tedious using standard libraries like `atexit`.
 
 ### Request and Response
 
@@ -42,7 +42,7 @@ However, there are specific scenarios where accessing the underlying ASGI reques
 
 - **Client Connection Metadata**: When you need network-level information about the incoming connection. This includes accessing the user's IP address (`request.client.host`) for rate-limiting or security logging, or reading the requested URL (`request.base_url`) to dynamically construct absolute links in your response.
 - **Middleware State Access**: FastAPI provides `request.state` as a designated space to safely pass contextual data between your middleware and your endpoints.
-- **Empty Bodies (HTTP 204):** When an endpoint has no data to return (e.g., a successful `DELETE` operation), you must return a bare response (e.g. `Response(status_code=status.HTTP_204_NO_CONTENT)`) to prevent FastAPI from trying to serialize a `null` body.    
+- **Empty Bodies (HTTP 204)**: When an endpoint has no data to return (e.g., a successful `DELETE` operation), you must return a bare response (e.g. `Response(status_code=status.HTTP_204_NO_CONTENT)`), instead of `None`, to prevent FastAPI from trying to serialize a `null` body.    
 - **Cookie Management:** When you need to set or delete HTTP-only cookies, such as session tokens during a `/login` or `/logout` flow. You inject `response: Response` into the route parameters to access `response.set_cookie()`, but return the pydantic object as normal.
 - **Non-JSON Media:** When you are returning files, streaming data, or outputting custom content types like PDFs, CSVs, or raw HTML (using specific subclasses like `FileResponse`, `StreamingResponse`, or `HTMLResponse`).
 - **Dynamic Headers:** When you need to conditionally inject custom HTTP headers into the response based on the request's outcome.
@@ -74,6 +74,10 @@ TODO: write about how logging should be handled.
 
 TODO: write about how rate limiting should be handled.
 
+### Cookies
+
+TODO: write about handling cookies.
+
 ### Cross-Site Request Forgery (CSRF)
 
 TODO: write about how session authentication for a frontend should be handled.
@@ -84,7 +88,7 @@ The `pydantic-settings` package allows you to manage your project config and env
 
 **Pitfall 1**: creating a single, massive `Settings` class that loads every environment variable your entire application could possibly need. 
 
-Instead, break config down into modular cohesive settings classes based on where they are used. For example, have separate classes for `DatabaseSettings`, `RedisSettings`, and `AuthSettings`. This allows scripts to use the same resources as the FastAPI app, but not require ALL the secrets.
+Instead, break config down into modular cohesive settings classes based on where they are used. For example, have separate classes for `DatabaseSettings`, `RedisSettings`, and `AuthSettings`. This allows a script to use the same logic as the FastAPI app, but not require ALL the secrets.
 
 **Pitfall 2**: initializing settings as global variables at the module level. If you do this, the environment variables are read and validated the moment the file is imported. This leads to crashes when these variables dont exist, even if the specific code being executed doesn't require them.
 
@@ -94,10 +98,16 @@ Instead, wrap the instantiation of your settings with a function. To maintain pe
 
 ### Long-Lived Dependencies
 
-To determine the appropriate approach, we start by stating our core assumption. **By Long-Lived dependencies, we are referring to dependencies that are initialized once, and are then expected to remain the same throughout the lifetime of the app or script, and would only ever be updated during runtime for the sake of tests**. 
+By **Long-Lived dependencies**, we are referring to dependencies that:
+1. are initialized at most once
+2. are expected to remain constant throughout the entire lifetime of the app or script, except possibly during tests. 
 
-The most common ways to use settings (constants) in functions are as follows:
-1. **Direct access**: the function retrieves its dependencies itself. This keeps the function signatures simple, but causes the dependencies to be baked into the function, forcing you to use patching (and to reset caches) for tests. This also breaks when multiple threads want to rely on different values for the same global variables, such as during parallelized testing.
+Examples of long-lived dependencies include: settings extracted from environment variables, database or network clients, or derived constants.
+
+Functions (and endpoints), frequently rely on such long-lived dependencies. 
+
+The most common ways to handle long-lived dependencies are as follows:
+1. **Direct access**: any function retrieves its dependencies itself inside the method body. This keeps the function signatures simple, but causes the dependencies to be baked into the function, forcing you to use patching (and/or reset caches) for tests. This also breaks when multiple threads want to rely on different dependencies.
 2. **Dependency Injection**: we inject the dependencies into the function. This is naturally supported by FastAPI's automatic dependency injection via `Depends()`. A downside of this approach is that this may lead to parameter bloat, or prop drilling, which is the tedious process of passing the injected settings down through many function calls.
 3. **Service Classes**: we create a service class that accepts the settings in its constructor, and allows its methods to access the settings via `self.settings.*`, or some variant thereof. You then inject an instance of this service class into any of the methods that rely on it. You may also create a cached getter for the instance of the service class that relies on the default settings. 
 
@@ -111,7 +121,7 @@ Option 2 and 3 essentially only vary by notation, as both benefit from dependenc
 
 Now that we have established the API layer we need a place to write the actual business logic of the application. 
 
-A common pitfall in web development is writing complex logic directly inside the route definition. Instead, your endpoints should remain as thin as possible. An endpoint's only responsibilities should be receiving the validated request, delegating the work to a specialized function, and returning the formatted response. Everything else must be separated into dedicated "services." 
+A common pitfall in web development is writing complex logic directly inside the route definition. Instead, your endpoints should remain thin. An endpoint's only responsibilities should be receiving the validated request, delegating the work to a specialized function, and returning the formatted response. Everything else must be separated into dedicated "services." 
 
 Services should operate on standard data structures, ORM models, or Pydantic schemas. They should never import or interact with FastAPI-specific objects like Request, Response, or Depends.
 
