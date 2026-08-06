@@ -242,10 +242,11 @@
       "installedAt": "2026-07-07T11:31:17.564Z"
     },
     "table-of-contents": {
-      "source": "github:quartz-community/table-of-contents",
-      "resolved": "https://github.com/quartz-community/table-of-contents.git",
-      "commit": "6984305e5dae0830c025450e160f12610406f7a4",
-      "installedAt": "2026-07-07T11:31:15.977Z"
+      "source": "github:rbmr/table-of-contents#fix/toc-highlight-scroll-jump",
+      "resolved": "https://github.com/rbmr/table-of-contents.git",
+      "commit": "aa3d8a6886649c430e30615ebff2fddb412fe7e6",
+      "ref": "fix/toc-highlight-scroll-jump",
+      "installedAt": "2026-08-06T14:42:17.717Z"
     },
     "tag-list": {
       "source": "github:quartz-community/tag-list",
