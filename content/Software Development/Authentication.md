@@ -47,7 +47,7 @@ To solve the decentralized authentication issue, we introduce one new component,
 Suppose a user is interacting with app A. 
 - **Login**: A user on app A's frontend logs in using their credentials. Instead of sending them to App A's backend, the frontend sends them straight to the Auth Service. The Auth Service validates them, creates a new token, then returns this token to the user.
 - **Subsequent requests**: the frontend attaches this token to every request it makes to App A's backend, exactly as before. How the backend validates this token depends on the type of token being used.
-	- Value Token: (TODO write this)
+	- Value Token: App A's backend verifies the token's signature itself, locally, using a public key the Auth Service publishes for this purpose. No request to the Auth Service is needed at all.
 	- Opaque Token: App A's backend forwards the token to an Auth Service endpoint, which looks it up and responds with the associated user (and any permissions), or an error if the token is invalid or expired. This is called **introspection**.
 - In the case of opaque tokens, this adds a network round-trip to every request across every app, but it means validation, revocation, and user data now live in exactly one place.
 
