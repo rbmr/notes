@@ -38,7 +38,7 @@ The tradeoff:
 - Opaque tokens require a database lookup on every request, value tokens only require validation of the signature, which is generally more efficient.
 - Value tokens cannot be revoked, whereas opaque tokens can. Once issued and signed, a value token stays valid until it expires, even if the user's password changes, their permissions are pulled, or the token gets leaked. Opaque tokens require a lookup on every request, but can be revoked instantly and unconditionally, by deleting their record from the store.
 
-In company Z's case, instant revocation is a hard requirement. We need to be able to immediately cut off an employee who leaves the company, or react to a leaked token. Value tokens simply can't do that without adding some list of revoked tokens, which just reintroduces the same lookup opaque tokens already do directly. 
+In company Z's case, the ability to revoke a token is a hard requirement. We need to be able to cut off an employee who leaves the company, or react to a leaked token. Value tokens simply can't do that without adding some list of revoked tokens, which just reintroduces the same lookup opaque tokens already do directly. 
 
 ### Centralized Auth Service
 
@@ -52,6 +52,21 @@ Suppose a user is interacting with app A.
 - In the case of opaque tokens, this adds a network round-trip to every request across every app, but it means validation, revocation, and user data now live in exactly one place.
 
 Company Z has another requirement: to support gradual migration, as well as specialized authentication for any specific use case, each app's backend should be able to accept both its own locally-issued tokens, and tokens issued by the new Auth Service. The setup we are aiming for should not require all apps to fully migrate over onto the auth service instantly.
+
+### Performance
+
+Validating a token costs something on every single request, and that cost differs by token type and by how the validation is wired up.
+
+- An opaque token costs a store lookup on every request. Once that store lives behind a separate Auth Service, it also costs a network round-trip: the backend has to call out to the Auth Service's introspection endpoint and wait for a reply before it can even start handling the request.
+- A value token costs neither of those. Verifying a signature is a local, in-memory computation, done in microseconds, with no store and no network call involved.
+
+There are a few general ways to bring the cost of an opaque token down, without switching to a value token outright.
+
+- Move the store closer. Instead of routing every validation through an HTTP call to the Auth Service, expose the token store itself as a shared, low-latency cache (e.g. Redis) that every app backend can query directly. It's the exact same store, so revocation is exactly as instant as before, just reached over a faster path. The cost is coupling: every backend now needs to know the store's schema and location, rather than talking to one clean Auth Service API.
+- Go hybrid. Issue a short-lived, signed value token (an "access token") alongside a long-lived opaque token (a "refresh token"). Most requests validate the access token locally, for free. When it expires, the client uses the refresh token to obtain a new one. Revocation now works by revoking the refresh token, which stops new access tokens being minted, but any access token already handed out keeps working until it naturally expires. This is the standard pattern behind OAuth2 access and refresh tokens.
+- Cache the introspection result. A backend can cache an opaque token's introspection result locally for a few seconds, cutting out most round-trips at the cost of a revocation delay equal to that cache's TTL.
+
+For company Z, the revocation requirement from "Opaque vs. Value Tokens" largely rules out the hybrid pattern and TTL-based caching, since either would mean a revoked token keeps working for some window of time. Moving the store behind a shared low-latency cache doesn't have that downside, so that's the mitigation we adopt.
 
 ### Origins and Sites
 
@@ -69,7 +84,7 @@ Concretely: if App A's frontend is served from `a.z.com`, its backend from `api-
 We revisit the token-in-header approach:
 
 - For App A's frontend to attach the token to every request, its JavaScript has to be able to read the token, so today it sits somewhere JS can reach, such as `localStorage`.
-- **Cross-Site Scripting (XSS)** is when an attacker gets their own JavaScript to run inside App A's origin. for example by injecting a script through unescaped user input that later gets rendered on the page, or through a compromised third-party script the page loads.
+- **Cross-Site Scripting (XSS)** is when an attacker gets their own JavaScript to run inside App A's origin, for example by injecting a script through unescaped user input that later gets rendered on the page, or through a compromised third-party script the page loads.
 - Because that injected script runs inside App A's own origin, it has exactly the same access as A's legitimate code, which includes reading `localStorage`. This lets the attacker steal the token outright and replay it to fully impersonate the user, no login step required.
 - This motivates moving the token somewhere the page's own JavaScript can't read at all, which is exactly what the next section is about.
 
