@@ -23,3 +23,6 @@ I have divided my notes into 5 main categories:
 4. [[Machine Learning/index|Machine Learning]]: the theory related to systems that learn from data. Topics include Markov Decision Processes, Neural Networks, (Un)supervised Learning, and Game Theory.
 5. [[Projects/index|Projects]]: everything else. These are notes related to a specific project or one-off exploration that doesn't fit any of the other categories.
 
+### Disclaimer
+
+Many of these notes are unfinished or imperfect. They may contain TODOs, typos, or mistakes. That is what makes them notes. They are not meant to replace a books, articles, or lectures.
