@@ -1,10 +1,8 @@
 Suppose you want to quickly automate some simple process, and maybe share it with some people that dont know how to code. How would you do this?
 
-We tackle the issue from two perspectives: That of the user, and that of the developer.
-
-### User Experience
-
-First of all we consider the issue of ux. We divide this into accessibility (how easy it is to get access to the app), and usage (how easy it is to use the app for your use cases once you have it). 
+We tackle this problem from the perspective of ux. We divide into:
+1. accessibility (how easy it is to get access to the app),
+2. usage (how easy it is to use the app for your use cases). 
 
 The winner on both fronts is generally a website. Then, any person with access to a browser can use your tool. This comes with the following two limitations:
 1. The issue of deployment. For people to be able to use your app, you will need a server. If your tool can be built as a static web app, this is generally free, and comes with the added benefit of privacy as your site doesn't store or access any user data.
@@ -18,12 +16,7 @@ For command line interfaces (CLIs) a user installs the tool via a package manage
 
 The GUI approach is generally more intuitive for users that have little experience with the terminal. However, the CLI approach is generally easier to set up, and makes it easier for the users to write scripts that utilize the tool internally.
 
-Note: users may  a user to work with the source code directly. However, this is only really recommended if the requirements of users differ significantly, and they just need some starting point to work from.
-
-### Developer Experience
-
-(TODO: describe development, and deployment)
-
+Note: a use may also want to work with the source code directly. However, this is only really recommended if the requirements of users differ significantly, and they just need some starting point to work from. In this case you are actually just publishing a package.
 
 
 
