@@ -42,8 +42,4 @@ TODO: but not sure about the order:
 
 note: ensure each term is explained just before it is needed, and no forward references occur, that is, you may not rely on a term before it is explained.
 
-
-
-
-
-
+Also split up the switch to cookies into multiple steps such that switching to cookies, and allowing samesite lax / strict become separate steps. 
