@@ -15,6 +15,7 @@ TODO
 - the test should be (significantly) easier to understand than the code under test, quote "Production code is allowed to be clever (if performance or business logic demands it). Test code should be boring."
 - dont put your test code in your production code https://how-to-build-high-quality-software.com/do-not-clutter-production-code-with-test-code/
 - explain flaky tests, why they are bad, and common causes and fixes
+- explain test order should not matter
 
 ### Mocking
 

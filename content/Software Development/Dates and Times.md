@@ -131,4 +131,4 @@ Other concepts that weren't mentioned here but are relevant are:
 - Proleptic UTC
 - Leap second smearing
 - Converting between timescales (including unix time)
-- Disambiguating time intervals: 'seconds', 'minutes', 'hours', 'days', 'months', 'years', etc. How does pandas handle this? 
+- Disambiguating time intervals: 'seconds', 'minutes', 'hours', 'days', 'months', 'years', etc. 

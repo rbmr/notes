@@ -203,3 +203,7 @@ TODO: write about handling cookies.
 ### Cross-Site Request Forgery (CSRF)
 
 TODO: write about how session authentication for a frontend should be handled.
+
+### Cross Origin Resource Sharing (CORS)
+
+TODO: write about how CORS should be handled.
