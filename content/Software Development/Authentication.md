@@ -79,6 +79,8 @@ Before we can talk about how browsers treat requests between these different add
 
 Concretely: if App A's frontend is served from `a.z.com`, its backend from `api-a.z.com`, and the Auth Service from `auth.z.com`, every request between them is **cross-origin** (different host), but all three are **same-site** (they share the registrable domain `z.com`). A request to or from a domain the company doesn't own, e.g. an attacker's `evil.com`, is **cross-site**.
 
+(TODO: more thoroughly verify the article from here onwards)
+
 ### Cross-Site Scripting (XSS)
 
 We revisit the token-in-header approach:
