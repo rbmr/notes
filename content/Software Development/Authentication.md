@@ -51,7 +51,7 @@ Suppose a user is interacting with app A.
 	- Opaque Token: App A's backend forwards the token to an Auth Service endpoint, which looks it up and responds with the associated user (and any permissions), or an error if the token is invalid or expired. This is called **introspection**.
 - In the case of opaque tokens, this adds a network round-trip to every request across every app, but it means validation, revocation, and user data now live in exactly one place.
 
-Company Z has another requirement: to support gradual migration, aswell as specialized authentication for any specific use case, each app's backend should be able to accept both its own locally-issued tokens, and tokens issued by the new Auth Service. The setup we are aiming for should not require all apps to fully migrate over onto the auth service instantly.
+Company Z has another requirement: to support gradual migration, as well as specialized authentication for any specific use case, each app's backend should be able to accept both its own locally-issued tokens, and tokens issued by the new Auth Service. The setup we are aiming for should not require all apps to fully migrate over onto the auth service instantly.
 
 ### Origins and Sites
 
