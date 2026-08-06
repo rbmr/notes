@@ -25,4 +25,4 @@ I have divided my notes into 5 main categories:
 
 ### Disclaimer
 
-Many of these notes are unfinished or imperfect. They may contain TODOs, typos, or mistakes. That is what makes them notes. They are not meant to replace a books, articles, or lectures.
+Many of these notes are unfinished or imperfect. They may contain TODOs, typos, or mistakes. That is what makes them notes. They are not intended as replacement for actual books, articles, or lectures.
