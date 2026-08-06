@@ -9,7 +9,7 @@ Hi! Welcome to my notes.
 
 The notes are a combination of things I've encountered during my studies, and things I find interesting, although the intersection is quite large :)
 
-I write and organize notes myself, rather than taking the standard route of mirroring a specific course syllabus, or summarizing a textbook chapter-by-chapter.
+I aim to write and organize notes myself, rather than taking the standard route of mirroring a specific course syllabus, or summarizing a textbook chapter-by-chapter.
 
 As it turns out, [[Organizing Knowledge]] is quite difficult. By thinking about how to organize the notes, I am forced to acknowledge the deeper connections between subjects. This process of intentional organization has turned out to be just as important as the initial study.  
 
