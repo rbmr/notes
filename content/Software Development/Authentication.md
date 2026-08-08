@@ -36,7 +36,7 @@ The Initial Setup says every backend hands out a token, but not what that token 
 
 The tradeoff:
 - Opaque tokens require a database lookup on every request, value tokens only require validation of the signature, which is generally more efficient.
-- Value tokens cannot be revoked, whereas opaque tokens can. Once issued and signed, a value token stays valid until it expires, even if the user's password changes, their permissions are pulled, or the token gets leaked. Opaque tokens require a lookup on every request, but can be revoked instantly and unconditionally, by deleting their record from the store.
+- Value tokens cannot be revoked, whereas opaque tokens can. Once issued and signed, a value token stays valid until it expires, even if the user's password changes, their permissions are reduced, or the token gets leaked. Opaque tokens require a lookup on every request, but can be revoked instantly and unconditionally, by deleting their record from the store.
 
 In company Z's case, the ability to revoke a token is a hard requirement. We need to be able to cut off an employee who leaves the company, or react to a leaked token. Value tokens simply can't do that without adding some list of revoked tokens, which just reintroduces the same lookup opaque tokens already do directly. 
 
@@ -57,7 +57,7 @@ Company Z has another requirement: to support gradual migration, as well as spec
 
 Validating a token costs something on every single request, and that cost differs by token type and by how the validation is wired up.
 
-- An opaque token costs a store lookup on every request. Once that store lives behind a separate Auth Service, it also costs a network round-trip: the backend has to call out to the Auth Service's introspection endpoint and wait for a reply before it can even start handling the request.
+- An opaque token costs a store lookup on every request, and once that store lives behind a separate Auth Service, it also costs a network round-trip. 
 - A value token costs neither of those. Verifying a signature is a local, in-memory computation, done in microseconds, with no store and no network call involved.
 
 There are a few general ways to bring the cost of an opaque token down, without switching to a value token outright.
@@ -79,15 +79,13 @@ Before we can talk about how browsers treat requests between these different add
 
 Concretely: if App A's frontend is served from `a.z.com`, its backend from `api-a.z.com`, and the Auth Service from `auth.z.com`, every request between them is **cross-origin** (different host), but all three are **same-site** (they share the registrable domain `z.com`). A request to or from a domain the company doesn't own, e.g. an attacker's `evil.com`, is **cross-site**.
 
-(TODO: more thoroughly verify the article from here onwards)
-
 ### Cross-Site Scripting (XSS)
 
 We revisit the token-in-header approach:
 
-- For App A's frontend to attach the token to every request, its JavaScript has to be able to read the token, so today it sits somewhere JS can reach, such as `localStorage`.
-- **Cross-Site Scripting (XSS)** is when an attacker gets their own JavaScript to run inside App A's origin, for example by injecting a script through unescaped user input that later gets rendered on the page, or through a compromised third-party script the page loads.
-- Because that injected script runs inside App A's own origin, it has exactly the same access as A's legitimate code, which includes reading `localStorage`. This lets the attacker steal the token outright and replay it to fully impersonate the user, no login step required.
+- For App A's frontend to attach the token to every request, its JavaScript has to be able to read the token, so it has to sit somewhere JS can reach, such as `localStorage`.
+- **Cross-Site Scripting (XSS)** is when an attacker gets their own JavaScript to run on App A's frontend, for example by injecting a script through unescaped user input that later gets rendered on the page, or through a compromised third-party script the page loads.
+- Because that injected script runs inside App A's own frontend, it has exactly the same access as A's legitimate code, which includes reading `localStorage`. This lets the attacker steal the token outright and replay it to fully impersonate the user, no login step required.
 - This motivates moving the token somewhere the page's own JavaScript can't read at all, which is exactly what the next section is about.
 
 ### Cookies
