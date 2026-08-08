@@ -81,7 +81,7 @@ With that vocabulary in hand:
 
 - The **origin** of a URL is its scheme, host, and port, taken together. Two URLs share an origin only if all three match exactly. A different subdomain, scheme, or port is already a different origin.
 - The **site** of a URL is its registrable domain. Site ignores subdomains, scheme, and port entirely, so `a.z.com` and `auth.z.com` are different origins but the same site, and so are `https://a.z.com` and `http://a.z.com`.
-- Origin is strictly the finer-grained of the two. Any pair of URLs that's same-origin is automatically same-site, but not vice-versa.
+- Origin is strictly the finer-grained of the two. Any pair of URLs that's same-origin is automatically same-site, but any pair of URLs that is same-site is not guaranteed to be same-origin.
 
 Concretely: if App A's frontend is served from `a.z.com`, its backend from `api-a.z.com`, and the Auth Service from `auth.z.com`, every request between them is **cross-origin** (different host), but all three are **same-site** (they share the registrable domain `z.com`). A request to or from a domain the company doesn't own, e.g. an attacker's `evil.com`, is **cross-site**.
 
@@ -165,26 +165,40 @@ The static frontends hold no secrets and can still be efficiently served publicl
 
 ### Single Sign-On
 
-Even with a centralized Auth Service, company Z is still responsible for storing passwords, enforcing password policies, building password-reset flows, and ideally multi-factor authentication. This is a lot of undifferentiated, security-critical work that has nothing to do with what apps A, B, and C actually do.
+**Single Sign-On (SSO)** is the property that a user has exactly one set of login credentials, and logging in once with them instantly logs that user into every other related application, with no separate login screen anywhere else. 
 
-A **Single Sign-On (SSO) provider** is a service that authenticates a user once and lets that single authentication carry over to any number of separate applications, instead of each application authenticating the user on its own.
+A simple example are google's products. For youtube, gmail, google drive, google calendar, etc you only need to log in on one app, and you are automatically logged in to all others. 
 
-The mechanism behind this is a redirect-based handoff. When an application needs to know who the user is, it redirects the user's browser to the SSO provider instead of showing its own login form. The provider authenticates the user directly, or, if the user already has an active session with the provider (typically a cookie scoped to the provider's own origin), skips straight past that step. Either way, the provider then redirects the browser back to the application, along with proof of the user's identity. The application, on receiving that redirect, validates the proof and now knows who's logged in. Two concrete protocols implement this same shape, OIDC and SAML. The proof is typically an authorization code the application exchanges for a signed token, or a signed assertion, respectively.
-- This handoff is exactly what makes it "single" sign-on. Because the session the user authenticates lives at the provider's own origin, any number of unrelated applications can redirect there and all reuse that one session, without the user having to log in again at each one.
-- An SSO provider's own job, generally, is to be the one authoritative place identity actually lives. It holds (or federates further upstream to, e.g. an existing LDAP or Active Directory) the user directory and credentials, enforces policies like multi-factor authentication uniformly, and exposes all of it behind the protocol above, so every application redirecting to it gets these guarantees for free, without implementing any of it itself.
-- For company Z, our Auth Service is one such application. Instead of checking a password itself, it redirects the user to Z's SSO provider (e.g. Google Workspace, Microsoft Entra ID, or Okta), and once it gets identity proof back, issues one of our own tokens exactly as before. Because this only changes how the Auth Service confirms identity, nothing downstream changes: apps A, B, and C keep validating tokens exactly as before.
-- This does mean login for every internal app now depends on the SSO provider's availability, and account lifecycle is controlled by whoever manages that directory. That's an acceptable trade for Z, since employee identity is already centralized there for other purposes anyway. An employee gains access to every app the moment they're added to it, and loses access to everything the moment they're removed, without us maintaining any of that ourselves.
+A **Single Sign-On (SSO) provider** is the service that provides single sign on capabilities and can be freely integrated into your application.
 
-### Auth Service: Build vs. Buy
+- When an application needs to know who the user is, it redirects the user's browser to the SSO provider instead of showing its own login form.
+- The provider authenticates the user directly, or, if the user already has an active session with the provider (typically a cookie scoped to the provider's own origin), skips straight past that step.
+- The provider then redirects the browser back to the application, along with proof of the user's identity. The application validates that proof and then knows exactly who's logged in.
 
-None of the above says who actually writes and runs the Auth Service itself. Once an application needs something that federates to an SSO provider and issues its own tokens, there are, generally, three ways to get one.
+This handoff delivers "log in once, instantly logged in everywhere" from the previous section. Because the session lives at the SSO provider's own origin, any number of completely unrelated applications can redirect there and all reuse that one session, without the user logging in again at each one, and without these applications needing to share anything.
 
-- Build it. Write the Auth Service from scratch, with its own credential and token store, its own SSO redirect handling, and its own introspection endpoint. Full control over exactly how it behaves, at the cost of re-implementing a lot of well-trodden, security-critical machinery (session handling, token revocation, key rotation for signed tokens) that has little to do with what makes company Z's apps distinct.
-- Buy it, or rather, self-host it. Deploy existing, mature Identity and Access Management (IAM) software, such as Keycloak, and configure it to federate to the external SSO provider. This gets a battle-tested implementation of everything above immediately, along with native support for federating to multiple different SSO protocols, at the cost of one more piece of infrastructure to run, upgrade, and keep highly available.
-- Skip it. Don't build an intermediary Auth Service at all, and have every app validate the SSO provider's own tokens directly. Fewest moving parts, but no central place to add Z-specific claims or permissions on top of whatever the provider natively exposes, no revocation guarantees beyond whatever the provider itself offers, and every app is now coupled directly to that one specific provider.
+### Final Setup
 
-For company Z, the instant-revocation requirement and the introspection model already built into "Centralized Auth Service" both assume an Auth Service that we control. So we don't skip it, and we don't build it by hand either. We deploy an existing IAM system, such as Keycloak, and configure it to federate to Z's SSO provider. This is the concrete "how" behind the box this article has been calling the Auth Service all along. Every earlier section (opaque tokens, introspection, gradual per-app migration) still holds exactly as written.
+We now take a shot at formalizing the final setup.
 
-### Recommended Video
+- For browser auth we use cookies with `SameSite=Lax`, `Secure`, and `HttpOnly`.
+- For other auth we keep using tokens in request headers.
+- The aforementioned forms of authentication should be provided using a single auth service relying on opaque tokens, and some method of making introspection fast.  
+- Each individual app should still be able to have its own authentication independent of the centralized auth.
+- To ensure cookies work correctly, each frontend needs to be on the same site as all the backends it relies on, including the auth service. 
+- To additionally allow a user to login into only one of the internal apps, and be instantly logged into all others aswell, we ensure all apps backends and frontends are same site, and the cookie is set on the registrable domain.
+- To allow for easier load-balancing, and centralized security, we place a single gateway in front of all backends (including the auth service), and forward requests to each specific apps backend based on path. We then point the registrable domain at this gateway such that all backend's become same origin (and thus also same site).
+- The VPN protection is then applied directly to this app gateway, instead of on each app's backend independently.
+- The static frontend's keep being served through a CDN outside the gateway. As discussed they dont need the same VPN protection since they dont contain sensitive data by themselves. 
+- To ensure the static frontends can receive, store and use the cookies they need to be same site as the gateway, but they cannot be same origin since they need to be outside the gateway, thus the static frontends shall be deployed under subdomains of the registered domain. 
+- To allow CORS each of these frontends needs explicit permission by their respective backends. Alternatively, we can allow all frontends for all backends by configuring CORS on the gateway.
+- Similarly, to simplify the backends it could be possible to configure the gateway to handle the introspection automatically, and include the resulting details in headers when proxying the request to the backend. To ensure other requests cannot fake these same headers they need to be removed before proxying. 
+	- In this case, to ensure all other auth still works this should be optional, and the introspection logic should be triggered only when a token actually meant for introspection exists. And an immediate forward should happen otherwise.
+	- In this case, apps shall only be allowed to communicate with the backends via the gateway (not directly) since we otherwise cant guarantee the same security and load balancing behaviour, aswell as being unable to guarantee the headers "faking" successful authentication via introspection are removed.
+- (Todo: then also decide how to handle SSO)
+
+### Recommended Video 
+
+I believed this video was really good at resolving confusion.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/iX8g4LqF8p8?si=8SJh8fV-GbqrcV1m" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
