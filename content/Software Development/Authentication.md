@@ -150,6 +150,19 @@ However, we ONLY use these cookies (with `HttpOnly`, `Secure`, `SameSite=Lax`) f
 
 For scripts and machine users (CI pipelines, service-to-service calls, CLI tools), none of that applies. In this case we can just keep using the token in header approach, which is also generally simpler to manage.
 
+### Network Protection: VPN-Only Access
+
+Apps A, B, and C are internal company tools, they will only every used by employees. A simple way to instantly reduce security risks is to restrict access of the company tools to Z's corporate VPN.
+
+To implement this we have two options:
+
+1. **IP allowlist**: keep the apps deployed exactly as in the Initial Setup, publicly routable, but configure their firewalls to only accept connections from the VPN gateway's exit IP.
+2. **VPN into the network**: configure the VPN so that once connected, a client's traffic is routed directly into the company's private network, and deploy the apps' backends (and any server-rendered admin portals) with no public route at all, reachable only from inside that network. 
+
+The latter is generally more secure, but the former is generally easier to setup.
+
+The static frontends hold no secrets and can still be efficiently served publicly via a CDN as before. Only the backends need to move behind the VPN.
+
 ### Single Sign-On
 
 Even with a centralized Auth Service, company Z is still responsible for storing passwords, enforcing password policies, building password-reset flows, and ideally multi-factor authentication. This is a lot of undifferentiated, security-critical work that has nothing to do with what apps A, B, and C actually do.
@@ -171,13 +184,6 @@ None of the above says who actually writes and runs the Auth Service itself. Onc
 - Skip it. Don't build an intermediary Auth Service at all, and have every app validate the SSO provider's own tokens directly. Fewest moving parts, but no central place to add Z-specific claims or permissions on top of whatever the provider natively exposes, no revocation guarantees beyond whatever the provider itself offers, and every app is now coupled directly to that one specific provider.
 
 For company Z, the instant-revocation requirement and the introspection model already built into "Centralized Auth Service" both assume an Auth Service that we control. So we don't skip it, and we don't build it by hand either. We deploy an existing IAM system, such as Keycloak, and configure it to federate to Z's SSO provider. This is the concrete "how" behind the box this article has been calling the Auth Service all along. Every earlier section (opaque tokens, introspection, gradual per-app migration) still holds exactly as written.
-
-### Network Protection: VPN-Only Access
-
-Apps A, B, and C are internal company tools, so exposing them to the entire internet is more surface area than we need, on top of everything above. We restrict access to Z's corporate VPN.
-
-- Option 1: IP allowlist: keep the apps deployed exactly as in the Initial Setup, publicly routable, but configure their firewalls to only accept connections from the VPN gateway's exit IP. Minimal infrastructure change, but the apps are still, technically, internet-facing: their DNS resolves publicly and their TLS endpoint is reachable by anyone, protected only by an IP filter that could be misconfigured or bypassed by anything able to appear to originate from that address.
-- Option 2: VPN into the network: configure the VPN so that once connected, a client's traffic is routed directly into the company's private network, and deploy the apps' backends (and any server-rendered admin portals) with no public route at all, reachable only from inside that network. This removes the public attack surface entirely rather than filtering it, at the cost of a larger one-time infrastructure change: a VPN gateway actually attached to the private network, and careful routing so only the intended traffic uses the tunnel. The static frontends hold no secrets and can still be served publicly via a CDN as before. Only the backends need to move behind the VPN.
 
 ### Recommended Video
 
