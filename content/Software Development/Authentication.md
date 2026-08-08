@@ -70,12 +70,18 @@ For company Z, the revocation requirement from "Opaque vs. Value Tokens" largely
 
 ### Origins and Sites
 
-As of now, a single login touches several separately-hosted services: App A's frontend, App A's backend, and the Auth Service typically each live at a different address. 
+As of now, a single login touches several separately-hosted services: App A's frontend, App A's backend, and the Auth Service typically each live at a different address. Talking precisely about how browsers treat requests between these needs a handful of terms.
 
-Before we can talk about how browsers treat requests between these different addresses, we need two precise terms.
+- A URL's authority breaks down into a **scheme** (`https`), a **host** (`api-a.z.com`), and an optional **port** (`443` by default for `https`). Whatever comes after that is the **path** (`/login`).
+- A **domain** is any name in the DNS hierarchy. `com`, `z.com`, `a.z.com`, and `api-a.z.com` are all domains. A **host** is simply the domain that appears in a given URL, identifying which server that URL points to.
+- Domain X is a **subdomain** of domain Y, and Y a **superdomain** of X, when X equals Y or X ends in `.` followed by Y. `api-a.z.com` is a subdomain of both `z.com` and `com`. `z.com` is a superdomain of `api-a.z.com`. `a.z.com` and `api-a.z.com` are siblings, neither is a subdomain of the other.
+- A **registrable domain** is a domain made of one label plus whatever suffix browsers treat as public, `z.com` (public suffix `com`, label `z`), or `example.co.uk` (public suffix `co.uk`, label `example`). Which suffixes count as public isn't derivable from the domain string alone, `com` is one while `z.com` isn't, so browsers ship a maintained list of them, the Public Suffix List.
 
-- The **origin** of a URL is its scheme (e.g. `https`), host (e.g. `a.z.com`), and port, taken together. Two URLs share an origin only if all three match exactly. A different subdomain, scheme, or port is already a different origin.
-- The **site** of a URL is its registrable domain: informally, the company's domain plus whatever suffix the browser treats as public (e.g. `z.com`). Site ignores subdomains and ports, so `a.z.com` and `auth.z.com` are different origins but the same site.
+With that vocabulary in hand:
+
+- The **origin** of a URL is its scheme, host, and port, taken together. Two URLs share an origin only if all three match exactly. A different subdomain, scheme, or port is already a different origin.
+- The **site** of a URL is its registrable domain. Site ignores subdomains, scheme, and port entirely, so `a.z.com` and `auth.z.com` are different origins but the same site, and so are `https://a.z.com` and `http://a.z.com`.
+- Origin is strictly the finer-grained of the two. Any pair of URLs that's same-origin is automatically same-site, but not vice-versa.
 
 Concretely: if App A's frontend is served from `a.z.com`, its backend from `api-a.z.com`, and the Auth Service from `auth.z.com`, every request between them is **cross-origin** (different host), but all three are **same-site** (they share the registrable domain `z.com`). A request to or from a domain the company doesn't own, e.g. an attacker's `evil.com`, is **cross-site**.
 
