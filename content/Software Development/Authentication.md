@@ -100,26 +100,26 @@ Cookies have several independent attributes that can be set by the server to con
 	- This setting ignores scheme (HTTPS vs HTTP) and port entirely.
 - **Path** narrows within a host. It defaults to the path of the response that set the cookie, and a request only carries the cookie if its own path falls under it.
 - **Secure** restricts the channel. A `Secure` cookie is only ever sent over HTTPS, never plaintext HTTP, protecting it from network eavesdroppers.
-- **SameSite** controls whether a cookie crosses site boundaries at all, in either direction.  To understand it, we need three parties: (1) the **backend** that is trying to set or read the cookie, (2) the **browser** holding the cookie jar and enforcing the rules, and (3) whichever site actually **initiated** the request that reached that backend. SameSite compares that initiating site against the backend's site, using the same-site and cross-site distinction from "Origins and Sites":
+- **SameSite** controls whether a cookie crosses site boundaries at all, in either direction. To understand it, we need three parties: (1) the **backend** that is trying to set or read the cookie, (2) the **browser** holding the cookie jar and enforcing the rules, and (3) whichever site actually **initiated** the request that reached that backend. SameSite compares that initiating site against the backend's site, using the same-site and cross-site distinction from "Origins and Sites":
 	- `None` exchanges the cookie regardless of whether the initiator is same-site or cross-site (and must be paired with `Secure`).
 	- `Lax` blocks the exchange, in both directions, on cross-site subrequests, but still allows it on a top-level cross-site navigation via methods that are deemed "safe" like clicking a link.
 	- `Strict` blocks the exchange in every cross-site context, including top-level navigation. This is the strongest setting, at the cost that following a link from outside the site initially looks logged out.
 - **HttpOnly** doesn't change when the cookie is sent, only who can see it. It marks the cookie invisible to JavaScript entirely. The cookie is just sent automatically with every request depending on the aforementioned rules. 
 
-Taken together, each attribute determines an independent condition, not a substitute for the others. That is, the browser attaches a stored cookie to an outgoing request exactly when the request's host matches its `Domain`, the request's path falls under its `Path`, the request is HTTPS if the cookie is `Secure`, and the request satisfies the cookie's `SameSite` rule, all of it at once. `HttpOnly` plays no part in that decision. It only gates JavaScript's read access, never the browser's own send behavior.
+Taken together, each attribute determines an independent condition, not a substitute for the others. That is, the browser attaches a stored cookie to an outgoing request exactly when the request's host matches its `Domain`, the request's path falls under its `Path`, the request is HTTPS if the cookie is `Secure`, and the request satisfies the cookie's `SameSite` rule, all of it at once. `HttpOnly` plays no part in that decision. It only gates JavaScript's read access, never the browser's own send behaviour.
 
 ### Cross-Site Scripting (XSS)
 
 We revisit the token-in-header approach:
 
-- For App A's frontend to attach the token to every request, its JavaScript has to be able to read the token, so it has to sit somewhere JS can reach, such a browsers `localStorage`.
+- For App A's frontend to attach the token to every request, its JavaScript has to be able to read the token, so it has to sit somewhere JS can reach, such as the browser's `localStorage`.
 - **Cross-Site Scripting (XSS)** is when an attacker gets their own JavaScript to run on App A's frontend, for example by injecting a script through unescaped user input that later gets rendered on the page, or through a compromised third-party script the page loads.
-- Because that injected script runs inside App A's own frontend, it has exactly the same access as A's legitimate code, which includes reading `localStorage`. This lets the attacker steal the token outright and use it later it to fully impersonate the user.
+- Because that injected script runs inside App A's own frontend, it has exactly the same access as A's legitimate code, which includes reading `localStorage`. This lets the attacker steal the token outright and use it later to fully impersonate the user.
 - Storing the token in a cookie with `HttpOnly` would prevent this issue since the JavaScript cannot actually read the token from the cookie. 
 
 ### Cross-Site Request Forgery (CSRF)
 
-The auto attaching of cookies to requests can also come with certain risks. Whenever a malicious page on `evil.com` triggers a request to App A's backend, and the cookie's `SameSite` is `None`, the browser attaches the user's App A cookie exactly as if the request had come from App A's own frontend.
+The automatic attaching of cookies to requests can also come with certain risks. Whenever a malicious page on `evil.com` triggers a request to App A's backend, and the cookie's `SameSite` is `None`, the browser attaches the user's App A cookie exactly as if the request had come from App A's own frontend.
 
 This is called **Cross-Site Request Forgery (CSRF)**. The attacker's page forges a state-changing request that USES the victim's existing cookie directly, without ever needing to see or steal the token itself.
 
@@ -139,27 +139,27 @@ CORS and CSRF are easy to conflate but solve different problems.
 
 ### Moving the Token into a Cookie
 
-Now we know how cookies work, aswell as the three most common security concepts XSS, CSRF and CORS we attempt to make a decision on how to properly set, store and send the tokens within company Z.
+Now we know how cookies work, as well as the three most common security concepts XSS, CSRF and CORS, we attempt to make a decision on how to properly set, store and send the tokens within company Z.
 
 We move the token out of `localStorage` and into a cookie with settings:
 - `HttpOnly` to prevent XSS
 - `Secure` to prevent eavesdropping
-- `SameSite` set to`Lax` to prevent CSRF without any separate CSRF-token machinery. We pick `Lax` over `Strict`, since these are still browser sessions employees expect to follow links while already logged in, and `Strict` would prevent them from that kind of navigation.
+- `SameSite` set to `Lax` to prevent CSRF without any separate CSRF-token machinery. We pick `Lax` over `Strict`, since these are still browser sessions employees expect to follow links while already logged in, and `Strict` would prevent them from that kind of navigation.
 
-However, we ONLY use these cookies (with `HttpOnly`, `Secure`, `SameSite=Lax`) for anything running in a browser, since only a browser has a cookie jar, and the aforementioned nuances (CSRF, XSS, and CORS protection).
+However, we ONLY use these cookies (with `HttpOnly`, `Secure`, `SameSite=Lax`) for anything running in a browser, since only a browser has a cookie jar and actually needs to worry about the aforementioned nuances (CSRF, XSS, and CORS protection).
 
-For scripts and machine users (CI pipelines, service-to-service calls, CLI tools), none of that applies. In this case we can just keep using the token in header approach, which is also generally simpler to manage.
+For scripts and machine users (CI pipelines, service-to-service calls, CLI tools), none of that applies. In this case, we can just keep using the token-in-header approach, which is also generally simpler to manage.
 
 ### Network Protection: VPN-Only Access
 
-Apps A, B, and C are internal company tools, they will only every used by employees. A simple way to instantly reduce security risks is to restrict access of the company tools to Z's corporate VPN.
+Apps A, B, and C are internal company tools. They will only ever be used by employees. A simple way to instantly reduce security risks is to restrict access of the company tools to Z's corporate VPN.
 
-To implement this we have two options:
+To implement this, we have two options:
 
 1. **IP allowlist**: keep the apps deployed exactly as in the Initial Setup, publicly routable, but configure their firewalls to only accept connections from the VPN gateway's exit IP.
 2. **VPN into the network**: configure the VPN so that once connected, a client's traffic is routed directly into the company's private network, and deploy the apps' backends (and any server-rendered admin portals) with no public route at all, reachable only from inside that network. 
 
-The latter is generally more secure, but the former is generally easier to setup.
+The latter is generally more secure, but the former is generally easier to set up.
 
 The static frontends hold no secrets and can still be efficiently served publicly via a CDN as before. Only the backends need to move behind the VPN.
 
@@ -167,9 +167,9 @@ The static frontends hold no secrets and can still be efficiently served publicl
 
 **Single Sign-On (SSO)** is the property that a user has exactly one set of login credentials, and logging in once with them instantly logs that user into every other related application, with no separate login screen anywhere else. 
 
-A simple example are google's products. For youtube, gmail, google drive, google calendar, etc you only need to log in on one app, and you are automatically logged in to all others. 
+A simple example is Google's products. For YouTube, Gmail, Google Drive, Google Calendar, etc., you only need to log in on one app, and you are automatically logged in to all others. 
 
-A **Single Sign-On (SSO) provider** is the service that provides single sign on capabilities and can be freely integrated into your application.
+A **Single Sign-On (SSO) provider** is the service that provides single sign-on capabilities and can be freely integrated into your application.
 
 - When an application needs to know who the user is, it redirects the user's browser to the SSO provider instead of showing its own login form.
 - The provider authenticates the user directly, or, if the user already has an active session with the provider (typically a cookie scoped to the provider's own origin), skips straight past that step.
