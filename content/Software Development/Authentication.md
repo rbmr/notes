@@ -181,21 +181,23 @@ This handoff delivers "log in once, instantly logged in everywhere" from the pre
 
 We now take a shot at formalizing the final setup.
 
-- For browser auth we use cookies with `SameSite=Lax`, `Secure`, and `HttpOnly`.
-- For other auth we keep using tokens in request headers.
-- The aforementioned forms of authentication should be provided using a single auth service relying on opaque tokens, and some method of making introspection fast.  
-- Each individual app should still be able to have its own authentication independent of the centralized auth.
-- To ensure cookies work correctly, each frontend needs to be on the same site as all the backends it relies on, including the auth service. 
-- To additionally allow a user to login into only one of the internal apps, and be instantly logged into all others aswell, we ensure all apps backends and frontends are same site, and the cookie is set on the registrable domain.
-- To allow for easier load-balancing, and centralized security, we place a single gateway in front of all backends (including the auth service), and forward requests to each specific apps backend based on path. We then point the registrable domain at this gateway such that all backend's become same origin (and thus also same site).
-- The VPN protection is then applied directly to this app gateway, instead of on each app's backend independently.
-- The static frontend's keep being served through a CDN outside the gateway. As discussed they dont need the same VPN protection since they dont contain sensitive data by themselves. 
-- To ensure the static frontends can receive, store and use the cookies they need to be same site as the gateway, but they cannot be same origin since they need to be outside the gateway, thus the static frontends shall be deployed under subdomains of the registered domain. 
-- To allow CORS each of these frontends needs explicit permission by their respective backends. Alternatively, we can allow all frontends for all backends by configuring CORS on the gateway.
-- Similarly, to simplify the backends it could be possible to configure the gateway to handle the introspection automatically, and include the resulting details in headers when proxying the request to the backend. To ensure other requests cannot fake these same headers they need to be removed before proxying. 
-	- In this case, to ensure all other auth still works this should be optional, and the introspection logic should be triggered only when a token actually meant for introspection exists. And an immediate forward should happen otherwise.
-	- In this case, apps shall only be allowed to communicate with the backends via the gateway (not directly) since we otherwise cant guarantee the same security and load balancing behaviour, aswell as being unable to guarantee the headers "faking" successful authentication via introspection are removed.
-- (Todo: then also decide how to handle SSO)
+1. For browser auth we use cookies with `SameSite=Lax`, `Secure`, and `HttpOnly`.
+2. For other auth we keep using tokens in request headers.
+3. The aforementioned forms of authentication should be provided using a single auth service relying on opaque tokens, and some method of making introspection fast.  
+4. Each individual app should still be able to have its own authentication independent of the centralized auth.
+5. To ensure cookies work correctly, each frontend needs to be on the same site as all the backends it relies on, including the auth service.
+6. Furthermore, we want single sign on. A user should only need to log in to one app, and automatically be logged into all others. This can be achieved using an SSO provider, or by ensuring ALL backends and frontends are on the same site, and use the same auth service.
+7. To allow for easier load-balancing and centralized security, we place a single gateway in front of all backends (including the Auth Service), and forward requests to each app's backend based on path. 
+8. As a consequence of 7., all backends become same-origin (and thus also same-site), which also accomplishes 6.
+9. The VPN protection is then applied directly to this app gateway, instead of on each app's backend independently.
+10. The static frontends keep being served through a CDN outside the gateway. As discussed, they don't need the same VPN protection, since they don't contain sensitive data by themselves.
+11. For the browser to actually attach the auth cookie when a frontend calls the gateway, that frontend needs to be same-site with the gateway. The cookie itself is `HttpOnly`, so the frontend never reads or stores it directly. Only the browser's own cookie jar does. Since the frontends stay outside the gateway to keep their CDN benefits from the Initial Setup, they can't be same-origin with it, so we deploy them under subdomains of the registrable domain instead, close enough to stay same-site.
+12. To allow CORS, each of these frontends needs explicit permission from their respective backends. Alternatively, we can configure this once on the gateway instead of per-backend. The gateway would reflect back the specific request's `Origin`, checked against an allowlist of Z's own frontend subdomains.
+13. Similarly, to simplify the backends it could be possible to configure the gateway to handle the introspection automatically, and include the resulting details in headers when proxying the request to the backend. To ensure other requests cannot fake these same headers they need to be removed before proxying. 
+	- In this case, to ensure all other auth still works, this should be optional: the introspection logic should only trigger when a token actually meant for our Auth Service is present, distinguishable by its own format or scheme, for example a dedicated cookie name or a reserved `Authorization` prefix. An immediate forward should happen otherwise, leaving value tokens and each app's own locally-issued tokens for that backend to verify itself, exactly as before.
+	- In this case, apps shall only be allowed to communicate with the backends via the gateway, not directly, since we otherwise can't guarantee the same security and load-balancing behaviour, and can't guarantee that headers faking a successful introspection are actually stripped. 
+    - This latter point needs to be enforced at the network level, not just as a rule: backends need to be genuinely unreachable except from the gateway, the same "no public route at all" setup from "Network Protection: VPN-Only Access", now scoped to the gateway instead of each backend individually.
+- The one piece none of this touches: how the Auth Service itself verifies a login, the `Login` step from "Centralized Auth Service", is a pluggable **login method**, not something wired into any of the above. It can check a password against its own store directly, or redirect out to an external SSO provider and accept the identity proof it gets back instead. Either way, once that one step succeeds, everything downstream (opaque token issuance, the shared cookie, the gateway) proceeds identically. Swapping the login method doesn't touch anything else in this setup.
 
 ### Recommended Video 
 
