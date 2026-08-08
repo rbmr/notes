@@ -85,55 +85,70 @@ With that vocabulary in hand:
 
 Concretely: if App A's frontend is served from `a.z.com`, its backend from `api-a.z.com`, and the Auth Service from `auth.z.com`, every request between them is **cross-origin** (different host), but all three are **same-site** (they share the registrable domain `z.com`). A request to or from a domain the company doesn't own, e.g. an attacker's `evil.com`, is **cross-site**.
 
+### Cookies
+
+Handing the client a piece of data to hold onto, then getting it back on every subsequent request, is an extremely common need on the web. So far, for our token, we've built that by hand: return in a response body, store in `localStorage`, then attach manually as a header on every call. Browsers provide a native mechanism for exactly this need, instead of every site reinventing it: the cookie.
+
+A **cookie** is a small piece of data a server asks the browser to store, via a `Set-Cookie` response header. The browser then automatically attaches matching cookies to later requests. 
+
+Cookies have several independent attributes that can be set by the server to configure their behaviour:
+- **Domain** controls which hosts the cookie is sent to by the client.
+	- If the server omits the attribute, the cookie is **host-only**, restricted to the exact host that set it. A cookie set by `api-a.z.com` with no `Domain` attribute is only ever sent back to `api-a.z.com`, never to `a.z.com`, `auth.z.com`, or even `www.api-a.z.com`.
+	- Setting `Domain=z.com` explicitly instead widens it to every subdomain of `z.com` at once, e.g. `a.z.com`, `api-a.z.com`, `auth.z.com`. 
+	- A server can only set the domain attribute to its own host or a proper registrable superdomain of it, never a sibling subdomain, never an unrelated site. For example: `auth.z.com` may set a cookie scoped to itself or to `z.com`, but not to `api-a.z.com` (a sibling, not a superdomain) or to `evil.com`. 
+	- Browsers also refuse a bare public suffix like `com`, via a hardcoded Public Suffix List, so nobody can widen a cookie far enough to reach every unrelated domain under it.
+	- This setting ignores scheme (HTTPS vs HTTP) and port entirely.
+- **Path** narrows within a host. It defaults to the path of the response that set the cookie, and a request only carries the cookie if its own path falls under it.
+- **Secure** restricts the channel. A `Secure` cookie is only ever sent over HTTPS, never plaintext HTTP, protecting it from network eavesdroppers.
+- **SameSite** controls whether a cookie crosses site boundaries at all, in either direction.  To understand it, we need three parties: (1) the **backend** that is trying to set or read the cookie, (2) the **browser** holding the cookie jar and enforcing the rules, and (3) whichever site actually **initiated** the request that reached that backend. SameSite compares that initiating site against the backend's site, using the same-site and cross-site distinction from "Origins and Sites":
+	- `None` exchanges the cookie regardless of whether the initiator is same-site or cross-site (and must be paired with `Secure`).
+	- `Lax` blocks the exchange, in both directions, on cross-site subrequests, but still allows it on a top-level cross-site navigation via methods that are deemed "safe" like clicking a link.
+	- `Strict` blocks the exchange in every cross-site context, including top-level navigation. This is the strongest setting, at the cost that following a link from outside the site initially looks logged out.
+- **HttpOnly** doesn't change when the cookie is sent, only who can see it. It marks the cookie invisible to JavaScript entirely. The cookie is just sent automatically with every request depending on the aforementioned rules. 
+
+Taken together, each attribute determines an independent condition, not a substitute for the others. That is, the browser attaches a stored cookie to an outgoing request exactly when the request's host matches its `Domain`, the request's path falls under its `Path`, the request is HTTPS if the cookie is `Secure`, and the request satisfies the cookie's `SameSite` rule, all of it at once. `HttpOnly` plays no part in that decision. It only gates JavaScript's read access, never the browser's own send behavior.
+
 ### Cross-Site Scripting (XSS)
 
 We revisit the token-in-header approach:
 
-- For App A's frontend to attach the token to every request, its JavaScript has to be able to read the token, so it has to sit somewhere JS can reach, such as `localStorage`.
+- For App A's frontend to attach the token to every request, its JavaScript has to be able to read the token, so it has to sit somewhere JS can reach, such a browsers `localStorage`.
 - **Cross-Site Scripting (XSS)** is when an attacker gets their own JavaScript to run on App A's frontend, for example by injecting a script through unescaped user input that later gets rendered on the page, or through a compromised third-party script the page loads.
-- Because that injected script runs inside App A's own frontend, it has exactly the same access as A's legitimate code, which includes reading `localStorage`. This lets the attacker steal the token outright and replay it to fully impersonate the user, no login step required.
-- This motivates moving the token somewhere the page's own JavaScript can't read at all, which is exactly what the next section is about.
-
-### Cookies
-
-- A **cookie** is a small piece of data a server asks the browser to store, via a `Set-Cookie` response header, scoped to a given origin or site. The browser then automatically attaches matching cookies to every later request there, regardless of which page triggered that request, and regardless of whether that page's JavaScript can read the cookie at all.
+- Because that injected script runs inside App A's own frontend, it has exactly the same access as A's legitimate code, which includes reading `localStorage`. This lets the attacker steal the token outright and use it later it to fully impersonate the user.
+- Storing the token in a cookie with `HttpOnly` would prevent this issue since the JavaScript cannot actually read the token from the cookie. 
 
 ### Cross-Site Request Forgery (CSRF)
 
-- That automatic, JS-independent attachment is exactly what would protect a cookie-stored token from the XSS theft described above, but it introduces a different problem. Because the browser attaches matching cookies to a request no matter which page triggered it, a malicious page on `evil.com` can trigger a request to App A's backend (say, via an auto-submitting form), and the browser will still attach the user's App A cookie, exactly as if the request had come from App A's own frontend.
-- This is **Cross-Site Request Forgery (CSRF)**: the attacker's page forges a state-changing request that rides along on the victim's already-authenticated session, without ever needing to see or steal the token itself.
-- This wasn't a risk with the original Authorization-header approach: a malicious page has no way to read the token out of `localStorage` cross-origin, so it has nothing to attach as a header. Moving the token into a cookie to fix XSS theft reopens this new risk, which we still need to close.
+The auto attaching of cookies to requests can also come with certain risks. Whenever a malicious page on `evil.com` triggers a request to App A's backend, and the cookie's `SameSite` is `None`, the browser attaches the user's App A cookie exactly as if the request had come from App A's own frontend.
+
+This is called **Cross-Site Request Forgery (CSRF)**. The attacker's page forges a state-changing request that USES the victim's existing cookie directly, without ever needing to see or steal the token itself.
+
+This wasn't a risk with the original token-in-header approach. A malicious page has no way to read the token out of `localStorage` cross-origin, so it has nothing to attach as a header. Moving the token into a cookie fixes XSS theft but opens the risk of CSRF.
 
 ### Cross-Origin Resource Sharing (CORS)
 
-- Separately from CSRF, browsers enforce a default same-origin policy for JavaScript: a script running on origin X cannot read the response of a request it makes to a different origin Y, even though the browser sends that request (and any cookies) anyway. Without this restriction, a malicious page could ride on the victim's ambient cookies to call App A's backend and freely read back whatever sensitive data comes back.
-- **Cross-Origin Resource Sharing (CORS)** is how a server selectively relaxes that restriction: by returning headers such as `Access-Control-Allow-Origin` (which origins may read the response) and `Access-Control-Allow-Credentials` (whether that still holds when the request carries cookies), a backend tells browsers exactly which other origins are let in.
-- Concretely, App A's backend at `api-a.z.com` must return CORS headers allowlisting `a.z.com`, or the frontend's JavaScript won't be able to read any of the backend's responses, despite being same-site.
-- CORS and CSRF are easy to conflate but solve different problems. CORS is about whether a cross-origin script may *read* a response. CSRF is about whether a cross-site request should be allowed to *happen* at all. A permissive CORS policy doesn't cause CSRF, and a strict one doesn't prevent it. Plenty of state-changing requests, plain HTML form submissions in particular, aren't even subject to CORS checks in the first place.
+Separately from CSRF, browsers enforce a default same-origin policy for JavaScript: a script running on origin X cannot read the response of a request it makes to a different origin Y, even though the browser sends that request (and any cookies) anyway. Without this restriction, a malicious page could ride on the victim's ambient cookies to call App A's backend and freely read back whatever sensitive data comes back.
 
-### Cookie Attributes
+**Cross-Origin Resource Sharing (CORS)** is how a server selectively relaxes that restriction: by returning headers such as `Access-Control-Allow-Origin` (which origins may read the response) and `Access-Control-Allow-Credentials` (whether that still holds when the request carries cookies), a backend tells browsers exactly which other origins are let in.
 
-To actually fix both XSS theft and CSRF, we need finer control over a cookie than "store this, send it back."
+Concretely, App A's backend at `api-a.z.com` must return CORS headers allowlisting `a.z.com`, or the frontend's JavaScript won't be able to read any of the backend's responses, despite being same-site.
 
-- `HttpOnly` marks a cookie invisible to JavaScript entirely: `document.cookie` cannot read it. This is what fixes the XSS token-theft problem: even if an attacker's script runs on our origin, it cannot read an `HttpOnly` cookie's value.
-- `Secure` means the cookie is only ever sent over HTTPS, never plaintext HTTP, protecting it from network eavesdroppers.
-- `SameSite` controls whether the cookie is attached to cross-site requests at all:
-	- `None` sends the cookie on every request, same-site or not (and must be paired with `Secure`). This is the CSRF-vulnerable behavior described above.
-	- `Lax` withholds the cookie on cross-site subrequests (forms, fetches, images triggered by another site), but still sends it on top-level cross-site navigation via a safe method like clicking a link, so a link into the app from an email still works while logged in, but a forged form submission from `evil.com` no longer carries the cookie.
-	- `Strict` withholds the cookie on every cross-site request, including top-level navigation. This is the strongest setting, at the cost that following a link from outside the site initially looks logged out.
+CORS and CSRF are easy to conflate but solve different problems. 
+- CORS is about whether a *cross-origin* script may *read* a response. 
+- CSRF is about whether a *cross-site* request should be allowed to *happen* at all. 
 
 ### Moving the Token into a Cookie
 
-- Move the opaque token out of `localStorage` and into a cookie marked `HttpOnly` and `Secure`, with `SameSite=None` for now. This closes the XSS theft path from earlier, but `SameSite=None` still attaches the cookie to every cross-site request, so CSRF remains open. If we were shipping this as a final state we'd need a separate mitigation (e.g. a CSRF token unaffected by automatic cookie attachment) alongside it. But this step is deliberately not our final state.
+Now we know how cookies work, aswell as the three most common security concepts XSS, CSRF and CORS we attempt to make a decision on how to properly set, store and send the tokens within company Z.
 
-### Restricting SameSite
+We move the token out of `localStorage` and into a cookie with settings:
+- `HttpOnly` to prevent XSS
+- `Secure` to prevent eavesdropping
+- `SameSite` set to`Lax` to prevent CSRF without any separate CSRF-token machinery. We pick `Lax` over `Strict`, since these are still browser sessions employees expect to follow links while already logged in, and `Strict` would prevent them from that kind of navigation.
 
-- Change the cookie's `SameSite` from `None` to `Lax`. This closes the CSRF gap left open by the previous step without any separate CSRF-token machinery. We pick `Lax` over `Strict`, since these are still browser sessions employees expect to follow links into (a shared Slack link, a notification email) while already logged in, and `Strict` would log them out of that navigation.
+However, we ONLY use these cookies (with `HttpOnly`, `Secure`, `SameSite=Lax`) for anything running in a browser, since only a browser has a cookie jar, and the aforementioned nuances (CSRF, XSS, and CORS protection).
 
-### Cookies vs. Machine Tokens
-
-- We use cookies (`HttpOnly`, `Secure`, `SameSite=Lax`) for anything running in a browser, since only a browser has a cookie jar, a DOM an XSS payload can run in, and ambient cross-site requests to worry about in the first place.
-- For scripts and machine users (CI pipelines, service-to-service calls, CLI tools), none of that applies: there's no browser, no DOM, no cookie jar. We keep using a bearer opaque token attached manually in an `Authorization` header, which is also simpler for that kind of client to manage, since it needs no cookie handling at all.
+For scripts and machine users (CI pipelines, service-to-service calls, CLI tools), none of that applies. In this case we can just keep using the token in header approach, which is also generally simpler to manage.
 
 ### Single Sign-On
 
@@ -162,3 +177,7 @@ Apps A, B, and C are internal company tools, so exposing them to the entire inte
 
 - Option 1: IP allowlist: keep the apps deployed exactly as in the Initial Setup, publicly routable, but configure their firewalls to only accept connections from the VPN gateway's exit IP. Minimal infrastructure change, but the apps are still, technically, internet-facing: their DNS resolves publicly and their TLS endpoint is reachable by anyone, protected only by an IP filter that could be misconfigured or bypassed by anything able to appear to originate from that address.
 - Option 2: VPN into the network: configure the VPN so that once connected, a client's traffic is routed directly into the company's private network, and deploy the apps' backends (and any server-rendered admin portals) with no public route at all, reachable only from inside that network. This removes the public attack surface entirely rather than filtering it, at the cost of a larger one-time infrastructure change: a VPN gateway actually attached to the private network, and careful routing so only the intended traffic uses the tunnel. The static frontends hold no secrets and can still be served publicly via a CDN as before. Only the backends need to move behind the VPN.
+
+### Recommended Video
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/iX8g4LqF8p8?si=8SJh8fV-GbqrcV1m" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
