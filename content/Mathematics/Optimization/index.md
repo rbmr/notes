@@ -10,7 +10,7 @@ where $f: X \to \mathbb{R}$ is a function, and $X\subseteq \mathbb{R}^n$ is a se
 
 ### Variants
 
-Variants of Mathematical Optimization problems include:
+Variants of Mathematical Optimization problems include but are not limited to:
 
 - **Linear Programming** (**LP**) is a specific class of mathematical optimization in which the objective function and all constraints are strictly linear. In general, for LP it is assumed all variables are continuous. See [[Linear Optimisation]].
 - **Integer Linear Programming** (**ILP**) is variation of linear programming where all of the decision variables $\mathbf{x}$ are constrained to take on integer values $\mathbf{x} \in \mathbb{Z}^n$. ILP problems are strictly more difficult than LP problems. See [[Integer Linear Optimization#Integer Linear Optimization]]
