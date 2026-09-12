@@ -1,6 +1,6 @@
 ### Boolean Satisfiability
 
-The **Boolean Satisfiability Problem** (often abbreviated as SAT) is the problem of determining whether there exists an assignment of truth values to a set of Boolean variables that makes a given Boolean formula true. 
+The **Boolean Satisfiability Problem** (often abbreviated as SAT) is the problem of determining whether there exists an assignment of truth values to a set of Boolean variables that makes a given Boolean formula true. 
 
 If such an assignment exists, the formula is deemed **satisfiable**. If no such assignment exists the formula is **unsatisfiable**.
 
