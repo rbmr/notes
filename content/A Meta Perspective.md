@@ -176,47 +176,4 @@ Despite lock files, dependency management is often imperfect. A program depends 
 
 To solve this, software engineering introduced **Containerization** (most notably through **Docker**). If a function encapsulates logic, and a module encapsulates related functions, a **Container** encapsulates the entire operating environment.
 
-By "packaging" the environment itself, engineers move from **Deterministic Installs** to **Deterministic Execution**. The container acts as a standardized box, as long as the host machine can run the container engine, the code inside will behave exactly the same way, regardless of the underlying hardware. 
-
-### Other Concepts
-
-TODO: I still want to discuss the following concepts. I would probably go through each of these concepts, and determine where in the article they would fit best, either in an existing section, or in a section to be written.
-- Development, Operations, and DevOps.
-- Automated Testing Pyramid.
-- Continuous Integration / Continuous Development (CI/CD)
-- Monitoring and Observability
-- Platform Engineering
-- Application programming interface (API)
-- rest vs graphql vs gRPC (RPC)
-- Cloud computing:
-	- How a data center is built and scaled, from the individual machines, to racks, to clusters, to data centers, to regions, to the cloud as a whole.
-	- Degrees of control
-		- Self-Hosting, 
-		- Directly access machines in the cloud, 
-		- virtual machines (multiple machines in a single machine, consequently the "machine" is independent of the actual machine and can therefore be scaled)
-		- serverlessness (only provide code, completely forget the machine)
-	- Scalability (Horizontal, Vertical, Autoscaling)
-	- Execution Life-cycles (Always-on, Long-running, Short-running)
-	- Execution Triggers (Manual, Schedule (Cron), Webhooks/API (Request-Response), Event-driven, Continuous)
-	- Infrastructure as Code (IaC)
-	- Container Orchestration
-	- Availability: how likely is an outage to lead to unavailability?
-	- Durability: how likely are we to lose data?
-	- Virtual Networks
-- Security
-	- authentication vs authorization
-	- 
-- Storage:
-	- unorganized, large files, 
-	- organized, databases (relational vs nosql)
-	- caches
-- Software in business:
-	- Price is determined by supply and demand.
-	- Supply is influenced by difficulty.
-	- Difficulty may be divided into (1) how hard the solution is to find, and (2) how hard the solution is to apply.  
-	- Uniqueness of software in being essentially free to copy and distribute (extremely easy to apply), just creating the first is one is difficult (hard to find).
-	- Introduce open-source vs closed-source, explain the trade-off.
-	- Include mental model of the world not being zero sum, and innovation contributes to creating a bigger cake.
-
-- Explain the following feeling aswell:
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/LvW1HTSLPEk?si=kiN2k4rnEsQPA6F8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+By "packaging" the environment itself, engineers move from **Deterministic Installs** to **Deterministic Execution**. The container acts as a standardized box, as long as the host machine can run the container engine, the code inside will behave exactly the same way, regardless of the underlying hardware.

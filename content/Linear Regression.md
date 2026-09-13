@@ -3,8 +3,6 @@ tags:
   - mathematics/econometrics
 ---
 
-Didn't know how I should have categorized this information.
-
 The following are my notes based on the courses: Econometrics 1, and Econometrics 2 from Erasmus School of Economics. In addition to the knowledge from the related book "Econometric Methods with Applications in Business and Economics" by C. Heij, P.M. de Boer, P.H. Franses, T. Kloek & H.K. van Dijk.
 
 ### Foundations

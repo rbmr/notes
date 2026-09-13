@@ -5,7 +5,7 @@ tags:
 
 ### Definitions
 
-Let $f(x)$ and $g(x)$ be functions mapping from the set of positive real numbers to the set of non-negative real numbers. In other words: $f, g: \mathbb{R}^+ \rightarrow \mathbb{R}^{\ge 0}$. Then we define the following:
+Let $f(x)$ and $g(x)$ be functions mapping from the set of positive real numbers to the set of non-negative real numbers. Then we define the following:
 
 | **Notation & Description**                                                                                                              | **Mathematical Definition**                                                                                                                                           |
 | --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
