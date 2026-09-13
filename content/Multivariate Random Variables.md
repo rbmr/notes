@@ -3,7 +3,7 @@ tags:
   - mathematics/probability
 ---
 
-Usually, many of these terms are introduced for the case $n=2$ first, and then generalized to $n>2$ later, but since I dont like redundancy, I am tackling $n\geq 2$ all at once.
+This generalizes [[Univariate Random Variables|single random variables]] to random vectors. Usually, many of these terms are introduced for the case $n=2$ first, and then generalized to $n>2$ later, but since I dont like redundancy, I am tackling $n\geq 2$ all at once.
 
 ### Random Vectors
 

@@ -3,8 +3,7 @@ tags:
   - mathematics/linear-algebra
 ---
 
-
-Keep in mind: A matrix, and its corresponding operations are defined such that a single matrix is capable of representing a linear map.
+Keep in mind: A matrix, and its corresponding operations are defined such that a single matrix is capable of representing a [[Linear Maps|linear map]].
 
 ### Matrices
 

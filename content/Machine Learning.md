@@ -12,7 +12,7 @@ Reference: https://xkcd.com/1838/
 Artificial Intelligence (AI) is a term that is hard to define. In particular because the concept of "intelligence" is abstract and subjective, and the standard for what we consider "intelligent" constantly rises as technology masters new tasks.
 
 I like the following definition:
-> **Artificial intelligence** (**AI**) is the capability of computational systems to perform tasks typically associated with human intelligence. 
+> **Artificial intelligence** (**AI**) is the capability of computational systems to perform tasks typically associated with human intelligence. 
 > 
 > Reference: [https://en.wikipedia.org/wiki/Artificial_intelligence](https://en.wikipedia.org/wiki/Artificial_intelligence)
 
@@ -43,4 +43,8 @@ Machine learning is commonly separated into three main learning paradigms: supe
 - **Reinforcement Learning**: Data is not provided as a static set but is generated dynamically through interaction between an agent and an environment. The goal is to learn a mapping from states to actions (a policy) $\pi$ that maximizes the expected cumulative reward (return) over time.
 
 Note that machine learning as a concept is highly flexible. Machine learning comes down to using an algorithm to tune some weights to minimize a loss function with respect to some training examples. Therefore these paradigms are not exhaustive nor do they provide strict boundaries.
+
+### All Machine Learning notes
+
+![[Machine Learning Notes.base]]
 

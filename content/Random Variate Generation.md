@@ -3,6 +3,8 @@ tags:
   - mathematics/statistics
 ---
 
+Sampling from a specific target [[Common Distributions|distribution]].
+
 ### Core Definitions
 
 - A **random number generator** (**RNG**) is a system capable of generating a sequence of numbers that cannot (reasonably) be predicted better than by random chance.

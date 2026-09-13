@@ -3,6 +3,8 @@ tags:
   - mathematics/calculus
 ---
 
+Some [[Univariate Calculus|(anti)derivatives]] of common functions.   
+
 ### Power Rule
 
 - $f(x) = x^n$

@@ -5,7 +5,7 @@ tags:
 
 ### Monte Carlo Simulation
 
-The core idea: *"I don't know how to calculate it directly, so I'll estimate it."* 
+The core idea: *"I don't know how to calculate it directly, so I'll estimate it."* Every technique here rests on being able to [[Random Variate Generation|draw samples]] in the first place.
 
 Named after the Monte-Carlo casino, the method was invented by Stanisław Ulam (1946, Los Alamos), who estimated a solitaire win probability by playing many random games rather than by combinatorics.
 
@@ -43,7 +43,7 @@ where $X \sim U(a,b)$.
 
 ### Hypothesis Testing via Simulation
 
-A hypothesis test needs the distribution of the test statistic $T$ under $H_0$. When that distribution is unknown or intractable, we can also estimate it. For example, take a test that rejects $H_0$ when $T$ is large.
+A [[Hypothesis Testing|hypothesis test]] needs the distribution of the test statistic $T$ under $H_0$. When that distribution is unknown or intractable, we can also estimate it. For example, take a test that rejects $H_0$ when $T$ is large.
 
 **Estimating the critical region** (via order statistics):
 1. Draw i.i.d. datasets $X^1, X^2, \dots, X^n$ from $H_0$.

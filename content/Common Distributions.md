@@ -3,6 +3,8 @@ tags:
   - mathematics/probability
 ---
 
+Common [[Univariate Random Variables|probability distributions]], and their properties.
+
 ### Bernoulli Trials Family
 
 - The **Bernoulli** distribution models a single trial with a binary outcome: outcome 1 (success) with probability $p$ and outcome 0 (Failure) with probability $(1-p)$.

@@ -5,7 +5,7 @@ tags:
 
 ### Linear Maps
 
-- A **linear map** (also called a **linear transformation**) from a vector space $V$ to a vector space $W$ is a function $T: V \rightarrow W$ that satisfies two key properties: 
+- A **linear map** (also called a **linear transformation**) from a [[Vector Spaces|vector space]] $V$ to a vector space $W$ is a function $T: V \rightarrow W$ that satisfies two key properties: 
 	1. additivity: $T(u + v) = T(u) + T(v)$ for all $u, v \in V$
 	2. homogeneity: $T(\lambda v) = \lambda(T(v))$ for all $\lambda \in F$ and $v \in V$
 - The set of all linear maps from $V$ to $W$ is denoted by $\mathcal{L}(V, W)$.

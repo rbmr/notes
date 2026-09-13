@@ -3,6 +3,8 @@ tags:
   - mathematics/probability
 ---
 
+Studying [[Multivariate Random Variables|collections of random variables]], and the properties that arise under certain assumptions.
+
 ### Stochastic Processes
 
 - A **compound random variable** is a random variable that results from summing a random number $N$ of iid random variables $X_{i}$.  

@@ -1,0 +1,7 @@
+filters: 'file.hasTag("mathematics/probability") or file.hasTag("mathematics/statistics")'
+views:
+  - type: table
+    name: "Probability & Statistics notes"
+    order:
+      - file.name
+      - tags

@@ -3,6 +3,8 @@ tags:
   - mathematics/probability
 ---
 
+Assigning numbers to [[Probability Fundamentals|outcomes]].
+
 ### Core Definitions
 
 - A **random variable** $X$ is a real-valued function on a sample space $X : S \to \mathbb{R}$.

@@ -1,0 +1,7 @@
+filters: file.hasTag("computer-science")
+views:
+  - type: table
+    name: Computer Science notes
+    order:
+      - file.name
+      - tags

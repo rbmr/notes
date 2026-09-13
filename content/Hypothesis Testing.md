@@ -3,6 +3,12 @@ tags:
   - mathematics/statistics
 ---
 
+### Prerequisites
+
+- [[Sampling and Estimation]]: for the definitions of estimators and sample statistics.
+- [[Common Distributions]]: for definitions of the distributions the test statistics are likely to be compared against.
+- [[Limit Theorems]]: for the definitions and derivations of the limit theorems Central Limit Theorem.
+
 ### Framework
 
 The Question.

@@ -3,7 +3,7 @@ tags:
   - mathematics/linear-algebra
 ---
 
-The following is an informal and incomplete summary of common matrix calculation rules.
+The following is an informal and incomplete summary of common [[Matrix Theory|matrix]] calculation rules.
 
 - $m \times n$ matrix: is a 2d array of numbers, with $m$ rows, and $n$ columns.
 - A vector is a 1d array of numbers.

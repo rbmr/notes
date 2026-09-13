@@ -1,0 +1,7 @@
+filters: 'file.hasTag("mathematics")'
+views:
+  - type: table
+    name: "All Mathematics notes"
+    order:
+      - file.name
+      - tags

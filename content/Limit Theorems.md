@@ -3,6 +3,8 @@ tags:
   - mathematics/probability
 ---
 
+Understanding how [[Multivariate Random Variables|collections of random variables]] behave as the size of the collection approaches infinity.
+
 ### Markov's Inequality
 
 Theorem: For a random variable $X$ that only takes non-negative values, it holds that for every $c > 0$:

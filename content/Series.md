@@ -3,6 +3,8 @@ tags:
   - mathematics/calculus
 ---
 
+Sequences extend the limits from [[Univariate Calculus]] to infinite lists and sums. Series specifically can be understood as the 
+
 ### Sequences
 
 - A **sequence** is an ordered list of numbers $a_1, a_2, a_3, \dots$, i.e. a function where the domain is the set of all natural numbers.

@@ -1,0 +1,7 @@
+filters: 'file.hasTag("machine-learning")'
+views:
+  - type: table
+    name: "Machine Learning notes"
+    order:
+      - file.name
+      - tags
