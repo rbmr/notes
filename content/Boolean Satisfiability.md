@@ -11,7 +11,7 @@ If such an assignment exists, the formula is deemed **satisfiable**. If no such 
 
 SAT is the first problem that was proven to be NP-complete (by the Cook-Levin theorem). No known algorithm efficiently solves all instances of SAT in polynomial time.
 
-To formalize SAT, formulas are typically expressed in [[site/Mathematics/Logic#Normal Forms|Conjunctive Normal Form]] (CNF). A formula in CNF is a conjunction (logical AND $\land$) of one or more clauses, where a clause is a disjunction (logical OR $\lor$) of literals. A literal is either a variable $x_{1}$ or its negation $\neg x_{1}$.  
+To formalize SAT, formulas are typically expressed in [[Logic#Normal Forms|Conjunctive Normal Form]] (CNF). A formula in CNF is a conjunction (logical AND $\land$) of one or more clauses, where a clause is a disjunction (logical OR $\lor$) of literals. A literal is either a variable $x_{1}$ or its negation $\neg x_{1}$.  
 
 ### 2-Satisfiability
 
@@ -23,7 +23,7 @@ Process:
 	- For a formula with $m$ distinct clauses we create $2m$ edges. For every clause $A \lor B$, where $A$ and $B$ are literals, we add two directed edges to the graph:
 		1. An edge ($\neg A$, $B$), representing $\neg A \implies B$.
 		2. An edge ($A$, $\neg B$), representing $A \implies \neg B$.
-2. Find the [[Graph Theory#Strongly Connected Components|strongly connected components (SCCs)]] of the graph.
+2. Find the [[Optimization in Graphs#Strongly Connected Components|strongly connected components (SCCs)]] of the graph.
 3. The 2-SAT formula is unsatisfiable if some variable $x_{i}$ and its negation $\neg x_{i}$ are in the same SCC. 
 	- Reasoning: if $x_{i}$ and $\neg x_{i}$ are in the same SCC, then $x_{i} \implies \neg x_{i}$ AND $\neg x_{i} \implies x_{i}$, creating the contradiction $x_{i} \iff \neg x_{i}$.
 4. If no variable and its negation are in the same SCC we can find a satisfying assignment as follows:
