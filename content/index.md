@@ -1,6 +1,8 @@
 ---
 title: Robert's Notes
 ---
+> I am currently doing a big rewrite of the site, you can see the current state at [notes-v2.mertensrh.com](https://notes-v2.mertensrh.com).
+
 ### Intro
 
 Hi! Welcome to my notes.
