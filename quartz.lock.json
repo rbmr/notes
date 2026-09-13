@@ -235,6 +235,12 @@
       "commit": "e88fe063c68f74e6ba2dc7c54ddb353bb10c7982",
       "installedAt": "2026-07-07T11:31:16.780Z"
     },
+    "svg-embed-links": {
+      "source": "./local-plugins/svg-embed-links",
+      "resolved": "/home/robert/projects/notes/local-plugins/svg-embed-links",
+      "commit": "local",
+      "installedAt": "2026-09-13T12:52:05.440Z"
+    },
     "syntax-highlighting": {
       "source": "github:quartz-community/syntax-highlighting",
       "resolved": "https://github.com/quartz-community/syntax-highlighting.git",
