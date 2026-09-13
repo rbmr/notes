@@ -78,6 +78,11 @@ plugins:
     options:
       markdownLinkResolution: shortest
     order: 60
+  - source: ./local-plugins/svg-embed-links
+    enabled: true
+    options:
+      markdownLinkResolution: shortest
+    order: 65
   - source: github:quartz-community/description
     enabled: true
     order: 70

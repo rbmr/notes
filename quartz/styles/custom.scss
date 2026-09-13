@@ -141,6 +141,13 @@ img,
 
 img {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  // Override the border-radius from the "roundable elements" rule above (and
+  // the framework's own default in base.scss). Rounded corners clip the
+  // image content into that shape, which looks fine on photos but visibly
+  // cuts into anything with its own hard edges close to the corner --
+  // diagrams and screenshots especially (most noticeable now that SVG
+  // embeds render as real <img> tags, see local-plugins/svg-embed-links).
+  border-radius: 0;
 }
 
 pre {

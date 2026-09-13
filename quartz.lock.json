@@ -265,6 +265,12 @@
       "resolved": "https://github.com/quartz-community/unlisted-pages.git",
       "commit": "f512d8672862c5891e63d755ba04b66277e6d760",
       "installedAt": "2026-07-07T11:31:15.992Z"
+    },
+    "svg-embed-links": {
+      "source": "./local-plugins/svg-embed-links",
+      "resolved": "/home/robert/projects/notes/local-plugins/svg-embed-links",
+      "commit": "local",
+      "installedAt": "2026-09-13T12:52:05.440Z"
     }
   }
 }
