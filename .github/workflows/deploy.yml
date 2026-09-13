@@ -1,9 +1,16 @@
 name: Deploy Quartz site to Cloudflare Pages
 
+# main -> v2 site (Cloudflare Pages project "notes-v2", temporarily on notes-v2.mertensrh.com)
+# v1   -> v1 site (Cloudflare Pages project "notes", the original, on notes.mertensrh.com)
+# Both branches share this exact workflow; only the target project differs (see
+# "Select Cloudflare Pages project" below). When v1/v2 are swapped, only the
+# Cloudflare custom domain assignments change, not this file.
+
 on:
   push:
     branches:
       - main
+      - v1
   # Trigger manually from the Actions tab
   workflow_dispatch:
 
@@ -11,7 +18,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: "deploy-cloudflare"
+  group: "deploy-cloudflare-${{ github.ref_name }}"
   cancel-in-progress: false
 
 jobs:
@@ -40,9 +47,18 @@ jobs:
       - name: Add root files (robots.txt, _headers)
         run: cp deploy/robots.txt deploy/_headers public/
 
+      - name: Select Cloudflare Pages project
+        id: target
+        run: |
+          case "${{ github.ref_name }}" in
+            v1) echo "project_name=notes" >> "$GITHUB_OUTPUT" ;;
+            main) echo "project_name=notes-v2" >> "$GITHUB_OUTPUT" ;;
+            *) echo "::error::No Cloudflare Pages project configured for branch '${{ github.ref_name }}'" && exit 1 ;;
+          esac
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy public --project-name=notes --branch=main
+          command: pages deploy public --project-name=${{ steps.target.outputs.project_name }} --branch=${{ github.ref_name }}
