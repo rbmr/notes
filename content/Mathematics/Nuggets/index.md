@@ -1,1 +1,0 @@
-Relatively short notes I did not know where to fit elsewhere.
