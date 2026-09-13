@@ -9,6 +9,28 @@
   # Machine-readable license signal (scrapers/agents can read this header)
   Link: <https://creativecommons.org/licenses/by/4.0/>; rel="license"
 
-# Fingerprinted assets never change — cache them hard
-/static/*
+# Fingerprinted assets (hash baked into the filename, e.g. resource-style-<hash>.css)
+# never change under the same URL — cache them hard.
+# IMPORTANT: this must stay scoped to just the fingerprinted files. It used to be a
+# blanket /static/* rule, which also caught contentIndex.json, encryptedContentIndex.json,
+# icon.png, and og-image.png -- none of which are fingerprinted, but all of which live at
+# the same URL across every deploy. That meant visitors' browsers kept serving a
+# year-old copy of the site's content index (and everything built from it client-side:
+# the explorer sidebar, search, graph, tag listings) for a year after their first visit,
+# never even re-checking with the server. Cloudflare _headers rules merge (comma-join)
+# rather than override on overlapping paths, so the fix is to keep the patterns below
+# mutually exclusive rather than trying to layer a more specific rule on top.
+/static/resource-*
   Cache-Control: public, max-age=31536000, immutable
+
+# Same URL every deploy, different content every deploy: always revalidate with the
+# server (a cheap 304 when unchanged, thanks to the ETag Cloudflare Pages already sets)
+# instead of trusting a stale local copy.
+/static/contentIndex.json
+  Cache-Control: public, max-age=0, must-revalidate
+/static/encryptedContentIndex.json
+  Cache-Control: public, max-age=0, must-revalidate
+/static/icon.png
+  Cache-Control: public, max-age=0, must-revalidate
+/static/og-image.png
+  Cache-Control: public, max-age=0, must-revalidate
