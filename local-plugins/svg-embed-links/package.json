@@ -1,0 +1,20 @@
+{
+  "name": "svg-embed-links",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "scripts": {
+    "build": "true"
+  },
+  "quartz": {
+    "name": "svg-embed-links",
+    "displayName": "SVG Embed Links",
+    "description": "Resolves <object data> paths for Obsidian ![[*.svg]] embeds. crawl-links only rewrites <img>/<video>/<audio>/<iframe> src attributes, so SVG embeds (which Obsidian-flavored-markdown renders as <object>) are left as raw, unresolved filenames and 404 unless the referencing page happens to sit at the exact same depth as the asset.",
+    "category": "transformer",
+    "defaultOrder": 65,
+    "defaultEnabled": true,
+    "defaultOptions": {
+      "markdownLinkResolution": "shortest"
+    }
+  }
+}
