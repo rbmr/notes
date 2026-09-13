@@ -35,13 +35,13 @@ Short informal summary on set theory.
 
 ### Basic Set Operations 
 
-|**Definition**|**Formula**|**Diagram**|
-|---|---|---|
-|The **union** of sets $A$ and $B$ is the set of all elements that are in $A$, in $B$, or in both.|$A \cup B = \{x \mid x \in A \text{ or } x \in B\}$|![[venn-union.svg]]|
-|The **intersection** of sets $A$ and $B$ is the set of all elements that are in both $A$ and $B$.|$A \cap B = \{x \mid x \in A \text{ and } x \in B\}$|![[venn-intersection.svg]]|
-|The **difference** of sets $A$ and $B$ is the set of elements that are in $A$ but not in $B$.|$A \setminus B = \{x \mid x \in A \text{ and } x \notin B\}$|![[venn-difference.svg]]|
-|The **symmetric difference** of sets $A$ and $B$ is the set of elements in either $A$ or $B$, but not in their intersection.|$A \Delta B = (A \cup B) \setminus (A \cap B)$|![[venn-symdiff.svg]]|
-|The **complement** of set $A$ is the set of all elements in the universal set $U$ that are not in $A$.|$A^c = \{x \mid x \in U \text{ and } x \notin A\}$|![[venn-complement.svg]]|
+| **Definition**                                                                                                               | **Formula**                                                  | **Diagram**                |
+| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------- |
+| The **union** of sets $A$ and $B$ is the set of all elements that are in $A$, in $B$, or in both.                            | $A \cup B = \{x \mid x \in A \text{ or } x \in B\}$          | ![[venn-union.svg\|250]]        |
+| The **intersection** of sets $A$ and $B$ is the set of all elements that are in both $A$ and $B$.                            | $A \cap B = \{x \mid x \in A \text{ and } x \in B\}$         | ![[venn-intersection.svg\|250]] |
+| The **difference** of sets $A$ and $B$ is the set of elements that are in $A$ but not in $B$.                                | $A \setminus B = \{x \mid x \in A \text{ and } x \notin B\}$ | ![[venn-difference.svg\|250]]   |
+| The **symmetric difference** of sets $A$ and $B$ is the set of elements in either $A$ or $B$, but not in their intersection. | $A \Delta B = (A \cup B) \setminus (A \cap B)$               | ![[venn-symdiff.svg\|250]]      |
+| The **complement** of set $A$ is the set of all elements in the universal set $U$ that are not in $A$.                       | $A^c = \{x \mid x \in U \text{ and } x \notin A\}$           | ![[venn-complement.svg\|250]]   |
 
 Some properties of the the basic set operations are as follows:
 - **Commutative Laws:** The order doesn't matter for union or intersection.
