@@ -7,7 +7,7 @@ configuration:
   analytics:
     provider: plausible
   locale: en-US
-  baseUrl: notes.mertensrh.com
+  baseUrl: notes-v2.mertensrh.com
   ignorePatterns:
     - private
     - templates

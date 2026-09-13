@@ -1,4 +1,4 @@
-# robots.txt for notes.mertensrh.com
+# robots.txt for notes-v2.mertensrh.com
 # Goal: stay findable by search + AI-answer engines (they send traffic / cite you),
 # while opting out of AI *training* and autonomous *agent* crawlers.
 # Note: robots.txt is voluntary. Enforcement against bots that ignore it is done
@@ -35,4 +35,4 @@ Disallow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://notes.mertensrh.com/sitemap.xml
+Sitemap: https://notes-v2.mertensrh.com/sitemap.xml
