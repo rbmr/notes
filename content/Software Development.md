@@ -7,4 +7,12 @@ Notes on the actual process of writing and shipping code: guides and information
 
 ### All Software Development notes
 
-![[Software Development Notes.base]]
+```base
+filters: file.hasTag("software-development")
+views:
+  - type: table
+    name: Software Development notes
+    order:
+      - file.name
+      - tags
+```

@@ -13,4 +13,12 @@ Mathematics is infinite, so this is necessarily a starting point rather than an 
 
 ### All Mathematics notes
 
-![[Mathematics Notes.base]]
+```base
+filters: file.hasTag("mathematics")
+views:
+  - type: table
+    name: All Mathematics notes
+    order:
+      - file.name
+      - tags
+```

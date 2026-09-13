@@ -46,5 +46,13 @@ Note that machine learning as a concept is highly flexible. Machine learning com
 
 ### All Machine Learning notes
 
-![[Machine Learning Notes.base]]
+```base
+filters: file.hasTag("machine-learning")
+views:
+  - type: table
+    name: Machine Learning notes
+    order:
+      - file.name
+      - tags
+```
 

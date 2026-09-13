@@ -1,7 +1,0 @@
-filters: file.hasTag("projects")
-views:
-  - type: table
-    name: Projects notes
-    order:
-      - file.name
-      - tags

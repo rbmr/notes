@@ -1,7 +1,0 @@
-filters: file.hasTag("software-development")
-views:
-  - type: table
-    name: Software Development notes
-    order:
-      - file.name
-      - tags

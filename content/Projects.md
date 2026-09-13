@@ -7,4 +7,12 @@ Everything else: notes related to a specific project or one-off exploration that
 
 ### All Projects notes
 
-![[Projects Notes.base]]
+```base
+filters: file.hasTag("projects")
+views:
+  - type: table
+    name: Projects notes
+    order:
+      - file.name
+      - tags
+```

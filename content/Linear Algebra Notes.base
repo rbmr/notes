@@ -1,7 +1,0 @@
-filters: 'file.hasTag("mathematics/linear-algebra")'
-views:
-  - type: table
-    name: "Linear Algebra notes"
-    order:
-      - file.name
-      - tags

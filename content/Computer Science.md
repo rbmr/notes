@@ -7,4 +7,12 @@ The theory of computation: algorithms, data structures, complexity, and systems 
 
 ### All Computer Science notes
 
-![[Computer Science Notes.base]]
+```base
+filters: file.hasTag("computer-science")
+views:
+  - type: table
+    name: Computer Science notes
+    order:
+      - file.name
+      - tags
+```

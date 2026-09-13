@@ -15,4 +15,12 @@ Relevant notes in order:
 
 ### All Linear Algebra notes
 
-![[Linear Algebra Notes.base]]
+```base
+filters: file.hasTag("mathematics/linear-algebra")
+views:
+  - type: table
+    name: Linear Algebra notes
+    order:
+      - file.name
+      - tags
+```

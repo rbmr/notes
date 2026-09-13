@@ -20,4 +20,12 @@ Relevant notes in approximate order:
 
 ### All Probability & Statistics notes
 
-![[Probability and Statistics Notes.base]]
+```base
+filters: file.hasTag("mathematics/probability") or file.hasTag("mathematics/statistics")
+views:
+  - type: table
+    name: Probability & Statistics notes
+    order:
+      - file.name
+      - tags
+```
