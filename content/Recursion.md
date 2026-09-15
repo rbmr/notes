@@ -9,7 +9,7 @@ In computer science, **recursion** is a method of solving a problem where the so
 
 The definition of a recursive function is divided into two parts: 
 - One or more **base case**'s, where the function directly provides a solution to the problem.
-- One or more **recursive case**'s, where the function breaks down the problem into smaller sub-problems of the same form, solves them recursibely, and uses the solutions to these subproblems to solve the larger problem.
+- One or more **recursive case**'s, where the function breaks down the problem into smaller sub-problems of the same form, solves them rescursively, and uses the solutions to these subproblems to solve the larger problem.
 	- Any recursive step must strictly reduce the size of the problem, ensuring that it eventually reaches the base case. Failure to do so results in infinite recursion.
 
 Any recursive function can be rewritten using iteration and an explicit stack data structure if needed. Recursion has the benefit of often resulting in cleaner, more intuitive and readable code, but iteration avoids the memory overhead of function calls, and is generally faster in practice.
