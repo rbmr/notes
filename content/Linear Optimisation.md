@@ -9,7 +9,7 @@ These notes are based on the course FEB21009X Linear Optimisation at Erasmus Sch
 
 Components:
 - **Decision Variables** are the variables used in the model.
-- **Constraints** are the limits on the valid values for the decision variables. 
+- **Constraints** define the limits on the valid values for the decision variables. 
 - An assignment of values to the decision variables is called a **solution**. If a solution satisfies the constraints it is called a **feasible solution**. The set of all feasible solutions is called the **feasible region**.
 - **Objective function** assigns a real value to a solution meant to resemble the quality of the solution. The **optimal solution** is the feasible solution with the highest (or lowest) objective function value.
 
@@ -37,11 +37,11 @@ The **standard form** is a specific way of writing the problem so that standardi
 
 An LP problem with $n$ decision variables and $m$ constraints is written in standard form as follows:
 
-|Notation | Entry-wise notation | Matrix Notation |
-| ---|  --- | --- |
-| Objective | $\max z = \sum_{j=1}^{n} c_j x_j$ | $z = \mathbf{c}^T \mathbf{x}$ |
-| Constraints | $\sum_{j=1}^{n} a_{ij} x_j \le b_i \quad \text{for } i=1,...,m$ |  $A\mathbf{x} \le \mathbf{b}$ |
-| Non-negativity | $x_j \ge 0 \quad \text{for } j=1,...,n$ | $\mathbf{x} \ge 0$ |
+| Notation       | Entry-wise notation                                             | Matrix Notation               |
+| -------------- | --------------------------------------------------------------- | ----------------------------- |
+| Objective      | $\max z = \sum_{j=1}^{n} c_j x_j$                               | $z = \mathbf{c}^T \mathbf{x}$ |
+| Constraints    | $\sum_{j=1}^{n} a_{ij} x_j \le b_i \quad \text{for } i=1,...,m$ | $A\mathbf{x} \le \mathbf{b}$  |
+| Non-negativity | $x_j \ge 0 \quad \text{for } j=1,...,n$                         | $\mathbf{x} \ge 0$            |
 
 Any LP problem can be converted into standard form by applying a set of specific algebraic transformations:
 - Minimization to Maximization: $\min z = \sum_{j=1}^{n} c_j x_j \rightarrow \max z' = \sum_{j=1}^{n} c_j' x_j$, where $c_j' = -c_j$, and $z' = -z$.
@@ -61,13 +61,14 @@ Any LP problem can be converted into standard form by applying a set of specific
 Basic definitions
 
 - Any linear *inequality* can be converted into a linear *equality* using **slack variables** $s_{i}$. Any constraint $i$, $\sum_{j=1}^{n} a_{ij} x_j \le b_i$ becomes $\sum_{j=1}^{n} a_{ij} x_j + s_i = b_i$ where $s_i \ge 0$.
-- If a slack variable is exactly zero, the corresponding constraint is active, meaning the current point is located directly on that constraint boundary.
-- The **extended form** is a formulation of an LP problem that uses the original decision variables aswell as a slack variable for every original constraint. Consequently, the entire LP problem is defined using solely linear equalities.
+- If a slack variable is exactly zero, the corresponding constraint is said to be "active", meaning the current point is located directly on that constraint boundary.
+- The **extended form** is a formulation of an LP problem that uses the original decision variables aswell as a slack variable for every original constraint. Consequently, the entire LP problem is defined using solely linear *equalities*.
 
 Instead of $A$ and $\mathbf{c}$ we might use $A_{0}$ and $\mathbf{c}_{0}$ to indicate that we are dealing with the problem in standard form. We then free up $A$ and $\mathbf{c}$ to be used when writing the extended form in matrix notation.
 
+To demonstrate,
 - Suppose we have $n$ variables and $m$ constraints. 
-- $\mathbf{x}_{0}$ and $\mathbf{c}_{0}$ are $n \times 1$ vectors, $A_{0}$ is an $m \times n$ matrix, and $\mathbf{b}$ is an $m \times 1$ vector. These define the components for the problem in standard form.
+- $\mathbf{x}_{0}$ and $\mathbf{c}_{0}$ are $n \times 1$ vectors, $A_{0}$ is an $m \times n$ matrix, and $\mathbf{b}$ is an $m \times 1$ vector. Then these define the components for the problem in standard form.
 - We add the slack variables to the matrix notation as follows: $A = [A_{0} \ I_{m}]$, $\mathbf{x} =[\mathbf{x}_{0}^T \ \mathbf{x}_{s}^T]^T$, and $\mathbf{c} = [\mathbf{c}_{0}^T\ \mathbf{c}_{s}^T]^T$, with $\mathbf{c}_{s}=0$. These define the components for the problem in extended form.
 
 | Form        | Standard Form                                            | Extended Form                                    |
