@@ -2,7 +2,6 @@
 tags:
   - mathematics/optimization
 ---
-
 These notes are based on the course FEB21009X Linear Optimisation at Erasmus School of Economics.
 
 ### Modeling

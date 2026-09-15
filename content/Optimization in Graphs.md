@@ -97,3 +97,5 @@ TODO: explain how to find the topological ordering of a graph
 	4. Branching: Once fully reduced, every remaining vertex has a degree of at least $3$. Find a cycle $C$ in the graph (preferable shortest). Sine a valid FVS must break this cycle, it must include at least one vertex from $C$.
 		1. For each vertex $v \in C$ create a new graph $G_{v}$ by removing vertex $v$ and all its incident edges from $G$. Recurse for $G_{v}$ and $k-1$.
 	5. Return True if any of the recursive branches returns True.
+
+(TODO: expand and elaborate on these notes using lecture 8 from FEB22002X Combinatorial Optimization 2025-2026 as reference)

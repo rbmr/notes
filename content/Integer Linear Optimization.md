@@ -27,11 +27,10 @@ Integer Linear Programming is NP-hard in general.
 **Mixed Integer Linear Programming** (**MILP** or simply **MIP**) is a variation of linear programming where the decision variables are partitioned into two sets: continuous variables, and integer variables. 
 
 The feasible region of a MILP can be understood as a union of disjoint polyhedrons. Because MILP contains integer constraints, it inherits the mathematical complexity of ILP, and is therefore generally NP-hard. 
+### Formulations
+
+(TODO: define formulations, polyhedra, convex hulls, and all the interesting theory around it. This should serve as an indication as a step towards "why ILP is so much more difficult than standard LP")
 
 ### Modelling notes
 
 (TODO: handling logical negation, and logical AND of one or more constraints is trivial, but it might be nice to explain how to handle logical OR, and if-then of multiple constraints)
-
-### Formulations
-
-(TODO: define formulations)

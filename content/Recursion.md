@@ -213,12 +213,3 @@ Example 4: Knapsack (Bottom-up)
 function knapsack(...):
 	// TODO: provide pseudocode
 ```
-
-### Branch and Bound
-
-**Branch-and-Bound** (**B&B**) is a method for solving optimization problems by breaking them down into smaller subproblems, and using a bounding function to eliminate subproblems that cannot contain the optimal solution.
-
-General Process:
-1. Branch (Divide): Divide the problem space into two or more smaller, mutually exclusive subproblems (representing child nodes in a search tree).
-2. Bound: Calculate an optimistic estimate of the best possible solution that can be found within each subproblem.
-3. Prune: Keep track of the best valid solution found globally. If the subproblem's bound is worse than or equal to the current global best, discard (prune) that subproblem and all its potential children.
