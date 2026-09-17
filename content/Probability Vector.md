@@ -3,7 +3,6 @@ tags:
   - mathematics/nuggets
 ---
 
-
 I frequently see scenarios where a collection of real numbers must sum up to one, and each real number must be greater than or equal to zero. 
 
 Scenarios include probabilities, but also convex combinations, and the $(n-1)$ simplex. 
