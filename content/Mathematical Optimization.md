@@ -28,7 +28,7 @@ This list is definitely not exhaustive.
 
 ### Branch and Bound
 
-(TODO: Provide formal definition of a relaxation, take lecture 3 from FEB22002X Combinatorial Optimization 2025-2026 as reference)
+(TODO: Provide formal definition of a branch and bound, take lecture 3 from FEB22002X Combinatorial Optimization 2025-2026 as reference)
 
 **Branch-and-Bound** (**B&B**) is a method for solving optimization problems by breaking them down into smaller subproblems, and using a bounding function to eliminate subproblems that cannot contain the optimal solution.
 

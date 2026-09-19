@@ -2,7 +2,6 @@
 tags:
   - mathematics/optimization
 ---
-
 The following are my notes for the course FEB22006X Non-linear Optimization 2025/2026 at Erasmus School of Economics. 
 
 ### Introduction
