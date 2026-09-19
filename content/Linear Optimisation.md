@@ -244,7 +244,7 @@ $$\begin{aligned} \min_{\mathbf{y}_{0}} \quad & \mathbf{b}^\top \mathbf{y}_{0} \
 - **Weak Duality Theorem**: Let $\mathbf{x}$ and $\mathbf{y}$ be feasible solutions of a linear programming problem $(P)$ and its dual $(D)$ respectively, then $\mathbf{c}^{T}\mathbf{x} \leq \mathbf{b}^{T} \mathbf{y}$.  
 - By the weak duality theorem, if the primal problem is unbounded, then the feasible region of the dual problem is empty. 
 - **Strong Duality Theorem**: If $(P)$ has an optimal solution $\mathbf{x}^{*}$, then also the dual problem $(D)$ has an optimal solution $\mathbf{y}^*$, and their optimal objective values are equivalent: $v(P)=\mathbf{c}^T\mathbf{x}^*=\mathbf{b}^T\mathbf{y}^*=v(D)$.
-- By the strong duality theorem, and because the dual of the dual is the primal problem, we obtain that the primal problem has an optimal solution if and only if the dual problem has an optimal solution.
+- By the strong duality theorem, and because the dual of the dual is the primal problem, we obtain that the primal problem has an optimal solution *if and only if* the dual problem has an optimal solution.
 
 The following table shows which situations may occur. Y means the situation may occur, whereas N means situations may not occur.
 
