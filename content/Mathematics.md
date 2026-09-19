@@ -10,6 +10,7 @@ Mathematics is infinite, so this is necessarily a starting point rather than an 
 - [[Linear Algebra]]
 - [[Calculus]]
 - [[Probability Theory and Statistics]]
+- [[Mathematical Optimization]]
 
 ### All Mathematics notes
 
