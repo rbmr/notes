@@ -2,7 +2,6 @@
 tags:
   - machine-learning
 ---
-
 ![[machine_learning_2x.png|300]]
 
 Reference: https://xkcd.com/1838/ 
@@ -32,7 +31,7 @@ Almost all machine learning can be reduced to following:
 - Use an algorithm to find the parameters $\theta$ for which the objective function $F$ is maximal (or minimal) with respect to $\mathcal{D}$.
 - Finally, evaluate whether the model generalizes well to unseen scenarios.
 
-Most AI systems consist of a combination of both Learning and Non-learning components.
+Most "AI" systems consist of a combination of both Learning and Non-learning components.
 
 #### Subdividing Machine Learning
 
