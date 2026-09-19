@@ -9,13 +9,12 @@ The objective of a machine learning model is not to memorize a dataset, but to f
 
 **Generalization** refers to a model's ability to perform well on previously unseen data drawn from the same distribution as the data used to create the model. A model that generalizes well captures the true underlying signal of the data, rather than the random noise. 
 
-The **true error** is the expected value of the loss function over the actual underlying data distribution. All **evaluation** techniques are ultimately designed to estimate a model's true error.
-
+The **true error** is the expected value of the objective function over the actual underlying data distribution. All **evaluation** techniques are ultimately designed to estimate a model's true error.
 ### Cross Validation
 
 **Cross-validation** is any model evaluation technique for determining whether a model generalizes to unseen data.
 
-The simplest example of cross-validation is the **holdout** method. In this approach, the dataset is partitioned into two mutually exclusive sets: a training set and a test set. The model is exclusively trained on the training set, and its performance is then evaluated once on the testing set. 
+The simplest example of cross-validation is the **holdout** method. In this approach, the dataset is partitioned into two mutually exclusive sets: a training set and a test set. The model is exclusively trained on the training set, and its performance is then evaluated *once* on the testing set. 
 
 The issue with the holdout method is that the performance on the evaluation dataset is highly dependent on the single split of the data into train and test. Depending on the split, the performance may vary greatly. To address this instability, we try different splits, and average out the performance on the test set across iterations, consequently getting a closer approximation of the model's true error.
 
@@ -24,6 +23,12 @@ Suppose all $n$ samples in a dataset are labeled using numbers $1$ through $n$. 
 We face the following trade-offs:
 - Smaller test sets have lower bias, but higher variance.
 - More splits means less variance, but is more computationally expensive.
+
+TODO: 
+- define data leakage here
+- add a note about preprocessing, and specifically how the preprocessing parameters must be fit only on the training data.
+- the split must respect the data generating process (that is, i.i.d. observations allow a random split, grouped observations must be split by group, and time-dependent observations need a past vs future split)
+- add small note that data leakage in time-dependent train/test splits is sometimes called lookahead bias.
 
 ### Cross Validation Methods
 
@@ -36,6 +41,9 @@ To address the limitations of a single holdout split, several different cross-va
 **Leave-one-out Cross-Validation** (**LOOCV**) is an extreme case of $k$-fold cross validation where $k$ is equal to $n$ (the total number of samples). In each iteration, the model is trained on $n-1$ samples, and evaluated on the remaining sample. Because almost all data is used, LOOCV results in an almost unbiased estimate of the true error. However, it is extremely computationally expensive for large datasets.
 
 **Leave-$p$-out Cross Validation** (**LpOCV**) is a generalization of LOOCV, where we leave out $p$ observations from the dataset to form the test set, and uses the remaining $n-p$ observations for training. Unlike with $k$-fold cross validation, this process is repeated for all possible *combinations* of $p$ observations. Because it calculates every permutation, LpOCV is extremely computationally expensive, and rarely used in practice. Furthermore the decreased variance it provides over $k$-fold is not very significant, as there is a significant correlation between train/test sets.
+
+TODO:
+- add explanation on choosing a train/test split can be seen as an optimization problem on its own. making train and test similar is a natural goal. 
 
 ### Hyperparameters
 
