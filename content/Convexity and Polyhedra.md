@@ -31,7 +31,6 @@ The most common sets in optimization theory.
 	- $f$ is convex **if and only if** its Hessian $\nabla^2 f(x) \succeq 0$ for all $x \in X$. 
 	- $f$ is strictly convex **if** its Hessian $\nabla^2 f(x) \succ 0$ for all $x \in X$. 
 	- Note a positive definite hessian is sufficient but not necessary for strict convexity, for example: $f(x)=x^4$ is strictly convex, yet $f''(0) = 0$.
-	- To compute the Hessian of an objective written in matrix notation (e.g. $\mathbf{x}^\top A\mathbf{x}$ or $\|A\mathbf{x}-\mathbf{b}\|^2$), see [[Multivariate Calculus#Gradients and Hessians in Matrix Notation]].
 - Sometimes its easiest to establish convexity by recognizing $f$ as being composed from simpler convex functions:
 	- **Nonnegative combination**: if $f$, and $g$ are convex functions and $\alpha, \beta \ge 0$, then $x \mapsto \alpha f(x) + \beta g(x)$ is convex. 
 	- **Affine precomposition**: if $f$ is convex, then $x \mapsto f(Ax + b)$ is convex. 
@@ -54,4 +53,35 @@ The most common sets in optimization theory.
 	1. Consider $m$ halfspaces in $\mathbb{R}^n$, such that for $1 \leq i \leq m$ the halfspace $H_{i}$ can be defined as $H_{i}=\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}_{i}^\top\mathbf{x} \leq b_{i} \}$. 
 	2. The polyhedron $P=\bigcap_{i=1}^mH_{i}$ can then be rewritten as $P=\bigcap_{i=1}^m\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}_{i}^\top\mathbf{x} \leq b_{i} \}=\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}_{1}^\top\mathbf{x} \leq b_{1}, \dots, \mathbf{a}_{m}^\top\mathbf{x} \leq b_{m} \}$. 
 	3. Using the matrix $A=[\mathbf{a}_{1}\ \cdots \ \mathbf{a}_{m}]^\top$ and vector $\mathbf{b}=[b_{1}\ \cdots\ b_{m}]^\top$, this gives $P=\{ \mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} \leq \mathbf{b} \}$.
-- Any 
+- Any non-empty polyhedron $P \subseteq \mathbb{R}^n$ can be rewritten into a polyhedron $P' \subseteq \mathbb{R}^p$ constrained using only non-negative variables.
+	- Rewrite: For every variable $x_{i} \in \mathbb{R}$, introduce two non-negative variables $x_{i}^+, x_{i}^- \geq 0$, and substitute $x_{i}=x_{i}^+ - x_{i}^-$ in every constraint.
+	- Note: $P'$ and $P$ are not the same polyhedron, rather, $P$ is a projection of $P'$ under the linear map $\pi(\mathbf{x}^+, \mathbf{x}^-) = \mathbf{x}^+ - \mathbf{x}^-$. Multiple points in $P'$ may map to the same point in $P$.
+-  Any non-empty polyhedron $P \subseteq \mathbb{R}^n$ can be rewritten into a polyhedron $P' \subseteq \mathbb{R}^p$ defined entirely by equality constraints.
+	- Rewrite: For every constraint $\mathbf{a}_{i}\mathbf{x}\leq b_{i}$, introduce a non-negative slack variable $s_{i}\geq 0$ and replace the constraint with $\mathbf{a}_{i}\mathbf{x}+ s_{i} = b_{i}$.
+	- Note: $P'$ and $P$ are not the same polyhedron, however the mapping between them is strictly one-to-one. 
+- Every polyhedron is a convex set.
+- The point $x$ is called an **extreme point** (or **vertex**) of a set $S$ if $x\in S$ and there are no two distinct points $x_{1},x_{2}\in S$ such that $x=\lambda x_{1}+(1-\lambda)x_{2}$ for some $\lambda\in(0,1)$.
+- (TODO: add sufficient and necessary condition for a point to be an extreme point of a polyhedron)
+	- (TODO: notes)
+- For any polyhedron, the set of extreme points is finite.
+	- (TODO: notes)
+
+### Directions and Convex Cones
+
+- (TODO: define ray / half-line)
+- (TODO: define direction of a set, independent of the definition of convex sets/ polyhedra)
+	- The set of directions of a set $S$ is empty if and only if that set is bounded.
+	- If $\mathbf{d}$ is a direction of $S$ then so is $\lambda \mathbf{d}$ for $\lambda>0$.
+- (TODO: theorem for sufficient and necessary conditions for a vector to be a direction of a polyhedron)
+	- (TODO: proof)
+- (TODO: definition of a recession cone, independent of the definition of convex sets/polyhedra)
+- (TODO: formula for the recession cone of a polyhedron)
+- (TODO: definition of an extreme direction, and extreme ray)
+- (TODO: definition of the polyhedron whose extreme points are all the extreme directions of an original polyhedron)
+	- (TODO: proof)
+- (TODO: the number of extreme directions of a polyhedron is finite)
+	- (TODO: proof)
+- (TODO: definition of a convex cone, and correct $\subset$ to be $\subseteq$)
+- (TODO: specific convex cone)
+- (TODO: representation theorem)
+
