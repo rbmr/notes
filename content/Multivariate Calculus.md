@@ -232,3 +232,7 @@ Existence:
 
 - **Extreme Value Theorem** (also known as **Weierstrass' Theorem**): Let $X \subseteq \mathbb{R}^n$ be a compact (closed and bounded) non-empty set, and let $f:X \rightarrow \mathbb{R}$ be a continuous function. Then $f$ has a global minimizer and a global maximizer on $X$. 
 	- This generalizes the Extreme Value Theorem from [[Univariate Calculus]].
+
+### TODO
+
+TODO: write about integrals in higher dimensions, maybe attribute an entirely separate note to it.
