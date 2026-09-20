@@ -16,7 +16,7 @@ We phrase everything below in terms of minimization, the maximization case follo
 
 Roadmap for finding unconstrained global minimizers analytically:
 1. Find $\mathbf{x}^*$ such that $\nabla f (\mathbf{x}^*)=\mathbf{0}$.
-2. Is $f$ convex?
+2. Is $f$ [[Polyhedra and Convexity#Convex Functions|convex]]?
 	1. Yes? Any stationary $\mathbf{x}^*$ is a global minimizer.
 	2. No? continue
 3. Determine the best local minimizer(s).
@@ -364,7 +364,7 @@ Additional remarks:
 
 A **convex optimization problem** is the special case of the constrained problem above where global optimization becomes tractable: every local minimizer is automatically a global minimizer, and (as shown later) the KKT conditions become *sufficient*, not just necessary. Achieving this requires two things: a convex objective and a convex feasible region.
 
-Convexity of the objective is checked with the function rules from the [[#Convexity]] section. Convexity of the feasible region is built up from the constraints, using the rules below for recognizing convex sets.
+Convexity of the objective is checked with the function rules from [[Polyhedra and Convexity#Convex Functions]] section. Convexity of the feasible region is built up from the constraints, using the rules below for recognizing convex sets.
 
 
 These rules turn each constraint into a convex feasible set:
@@ -378,6 +378,8 @@ Collecting the requirements, a constrained optimization problem is a **convex op
 - the inequality constraints are concave: $-c_i$ is convex for all $i \in \mathcal{I}$ (so each $\{c_i(x) \ge 0\}$ is convex).
 
 The payoff of this structure is developed in the sections below: local minimizers are global (the constrained analogue of the [[#Convexity|Convex Fermat theorem]]), and under Slater's condition the KKT conditions become both necessary and sufficient for global optimality.
+
+(TODO: rewrite this section with the nuance from foundational texts like Stephen Boyd and Lieven Vandenberghe’s Convex Optimization, that the geometric definition of a convex optimization problem (minimizing a convex $f(x)$ over a convex set $C$) is explicitly defined as the "abstract form.", and the version where the set $C$ is rigorously defined by strictly convex inequality functions and affine equality functions, is defined as the "standard form.". Standard form implies abstract form, but not vice versa, and the nuance that standard form is actually the computationally tractable kind. )
 
 ### Lagrangian Function
 
