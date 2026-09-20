@@ -14,31 +14,6 @@ This document builds on:
 
 We phrase everything below in terms of minimization, the maximization case follows by negating $f$.
 
-### Convexity
-
-Convexity is the property that makes optimization problems globally tractable: it removes the gap between local and global minimizers.
-
-- A set $X \subseteq \mathbb{R}^n$ is **convex** if for every $x, y \in X$ and $t \in [0,1]$, we have $tx + (1-t)y \in X$. Intuitively: the line segment between any two points of the set lies entirely within the set.
-- Let $X \subseteq \mathbb{R}^n$ be a convex set. A function $f:X \rightarrow \mathbb{R}$ is:
-	- **convex** if for every $x, y \in X$ and $t \in [0,1]$, we have $f(tx + (1-t)y) \le tf(x) + (1-t)f(y)$. 
-	- **strictly convex** if for every $x, y \in X$ such that $x \ne y$ and $t \in (0,1)$, we have $f(tx + (1-t)y) < tf(x) + (1-t)f(y)$. 
-	- **(strictly) concave** if $-f$ is (strictly) convex.
-	- Intuitively: a function is convex if the line between any two points on its graph lies on or above the graph.
-- Convexity can be verified with the Hessian. Let $X \subseteq \mathbb{R}^n$ be an open convex set, and let $f:X \rightarrow \mathbb{R}$ be twice continuously differentiable on $X$. Then,
-	- $f$ is convex **if and only if** its Hessian $\nabla^2 f(x) \succeq 0$ for all $x \in X$. 
-	- $f$ is strictly convex **if** its Hessian $\nabla^2 f(x) \succ 0$ for all $x \in X$. 
-	- Note a positive definite hessian is sufficient but not necessary for strict convexity, for example: $f(x)=x^4$ is strictly convex, yet $f''(0) = 0$.
-	- This generalizes the univariate characterization: a function in one variable is convex if and only if its second derivative is non-negative everywhere.
-	- To compute the Hessian of an objective written in matrix notation (e.g. $\mathbf{x}^\top A\mathbf{x}$ or $\|A\mathbf{x}-\mathbf{b}\|^2$), see [[Multivariate Calculus#Gradients and Hessians in Matrix Notation]].
-- Checking the definition or the Hessian directly is often unnecessary: convexity is usually easiest to establish by recognizing $f$ as built from simpler convex functions. The following operations **preserve convexity**, and each has a one-line justification, so none need to be memorized by rote:
-	- **Nonnegative combination**: if $f, g$ are convex and $\alpha, \beta \ge 0$, then $\alpha f + \beta g$ is convex. Adding the two defining inequalities, each scaled by a nonnegative weight, preserves the inequality.
-	- **Affine precomposition**: if $f$ is convex, then $x \mapsto f(Ax + b)$ is convex. An affine map sends a line segment to a line segment, so it cannot introduce any new bend for $f$ to curve the wrong way on.
-	- **Pointwise maximum**: if $f_1, \dots, f_k$ are convex, then $\max_i f_i$ is convex (and likewise a pointwise supremum of convex functions). Intuition: the region on or above the graph of $\max_i f_i$ is exactly the intersection of the regions above each $f_i$, and an intersection of convex sets is convex (see [[#Convex Optimization Problem]]).
-	- **Scalar composition**: for $h: \mathbb{R} \to \mathbb{R}$ and a convex or concave inner function $g$, the composition $h \circ g$ is convex when the signs line up: $g$ convex with $h$ convex nondecreasing, or $g$ concave with $h$ convex nonincreasing. This is just sign bookkeeping on the 1D chain rule $(h\circ g)'' = h''(g)\,(g')^2 + h'(g)\,g''$: the first term is $\ge 0$ when $h$ is convex, and the second is $\ge 0$ when the monotonicity of $h$ matches the curvature of $g$.
-	- Useful base cases: every **affine** function $a^\top x + b$ is both convex and concave (zero Hessian); every **norm** is convex (by the triangle inequality and homogeneity); and a **quadratic form** $x^\top A x$ is convex if and only if $A \succeq 0$.
-- **Convex Fermat Theorem**: Let $f:\mathbb{R}^n \rightarrow \mathbb{R}$ be a continuously differentiable, convex function. Then, $x^* \in \mathbb{R}^n$ is a global minimizer of $f$ if and only if $\nabla f(x^*) = 0$. If $f$ is strictly convex, then $x^*$ is the unique global minimizer of $f$ if and only if $\nabla f(x^*) = 0$.
-	- Contrast this with the plain Fermat's theorem: stationarity is normally only *necessary* for *local* minimizers; under convexity it becomes an exact characterization of *global* minimizers.
-
 Roadmap for finding unconstrained global minimizers analytically:
 1. Find $\mathbf{x}^*$ such that $\nabla f (\mathbf{x}^*)=\mathbf{0}$.
 2. Is $f$ convex?
@@ -391,12 +366,6 @@ A **convex optimization problem** is the special case of the constrained problem
 
 Convexity of the objective is checked with the function rules from the [[#Convexity]] section. Convexity of the feasible region is built up from the constraints, using the rules below for recognizing convex sets.
 
-Operations that **preserve convexity of sets** (each follows directly from the segment definition of a convex set):
-- **Intersection**: the intersection of any collection of convex sets is convex. If a line segment lies inside every set of the collection, it lies inside their intersection too. (Contrast with unions: the union of two convex sets is generally *not* convex.)
-- **Affine preimage**: if $S$ is convex, then $\{x : Ax + b \in S\}$ is convex. An affine map sends segments to segments, so the points landing in $S$ form a convex set.
-- **Affine image**: if $S$ is convex, then $\{Ax + b : x \in S\}$ is convex, for the same reason.
-- **Sublevel sets of a convex function**: for a convex function $f$, the sublevel set $\{x : f(x) \le \alpha\}$ is convex for every $\alpha \in \mathbb{R}$. If $f$ stays below $\alpha$ at both endpoints of a segment, convexity keeps its graph below the chord, hence below $\alpha$, along the whole segment. Symmetrically, the superlevel set $\{x : g(x) \ge \alpha\}$ of a *concave* function $g$ is convex (apply the rule to $-g$).
-	- The converse fails: a set can be a sublevel set of a non-convex function too, so this is a sufficient, not necessary, test for a set's convexity.
 
 These rules turn each constraint into a convex feasible set:
 - An **affine equality** $c_i(x) = a_i^\top x + b_i = 0$ defines a hyperplane, which is convex: it is the intersection of the two sublevel sets $\{c_i(x) \le 0\}$ and $\{-c_i(x) \le 0\}$ of the affine (hence convex) functions $\pm c_i$. Note a nonlinear equality generally does *not* define a convex set (e.g. $\|x\|^2 = 1$ is a sphere), which is why equalities must be affine.
