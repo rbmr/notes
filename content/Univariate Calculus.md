@@ -2,7 +2,6 @@
 tags:
   - mathematics/calculus
 ---
-
 ### Interval Notation
 
 - **Interval Notation** is a shorthand way to describe continuous subsets of the set of real numbers $\mathbb{R}$.
