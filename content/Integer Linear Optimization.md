@@ -2,6 +2,16 @@
 tags:
   - mathematics/optimization
 ---
+### Variants
+
+TODO:
+
+- restate definition of standard linear programming. State that real variables are generally implied when someone says "linear programming". In this case, the feasible region is a polyhedron. Then introduce the variants:
+- define integer linear programming (feasible region can be understood as discrete lattice points inside the same polyhedron)
+- define mixed-integer linear programming (feasible region can be understood as union of disjoint polyhedrons)
+	- add note that MIP technically means mixed integer programming, which says something only about the variables, not the constraints/objective, yet in practice MIP generally implies MILP, and MINLP would be be used to refer to mixed integer nonlinear optimization. And MIQP to the special case where ...
+- define binary linear programming (should be a small note, since rarely relevant) 
+
 ### Integer Linear Optimization
 
 **Integer Linear Optimization** (also called **integer linear programming**) is a variation of linear programming where the decision variables are constrained to be integers, instead of allowing all real values like in basic [[Linear Optimisation|Linear Programming]].
@@ -26,3 +36,5 @@ Because MILP contains integer constraints, it inherits the mathematical complexi
 ### Modelling notes
 
 (TODO: handling logical negation, and logical AND of one or more constraints is trivial, but it might be nice to explain how to handle logical OR, and if-then of multiple constraints)
+
+
