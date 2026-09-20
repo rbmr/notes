@@ -16,7 +16,7 @@ We phrase everything below in terms of minimization, the maximization case follo
 
 Roadmap for finding unconstrained global minimizers analytically:
 1. Find $\mathbf{x}^*$ such that $\nabla f (\mathbf{x}^*)=\mathbf{0}$.
-2. Is $f$ [[Polyhedra and Convexity#Convex Functions|convex]]?
+2. Is $f$ [[Convexity and Polyhedra#Convex Functions|convex]]?
 	1. Yes? Any stationary $\mathbf{x}^*$ is a global minimizer.
 	2. No? continue
 3. Determine the best local minimizer(s).
@@ -364,7 +364,7 @@ Additional remarks:
 
 A **convex optimization problem** is the special case of the constrained problem above where global optimization becomes tractable: every local minimizer is automatically a global minimizer, and (as shown later) the KKT conditions become *sufficient*, not just necessary. Achieving this requires two things: a convex objective and a convex feasible region.
 
-Convexity of the objective is checked with the function rules from [[Polyhedra and Convexity#Convex Functions]] section. Convexity of the feasible region is built up from the constraints, using the rules below for recognizing convex sets.
+Convexity of the objective is checked with the function rules from [[Convexity and Polyhedra#Convex Functions]] section. Convexity of the feasible region is built up from the constraints, using the rules below for recognizing convex sets.
 
 
 These rules turn each constraint into a convex feasible set:
