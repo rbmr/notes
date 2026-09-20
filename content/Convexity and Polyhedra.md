@@ -44,4 +44,14 @@ The most common sets in optimization theory.
     - **Norms**: every [[Similarity#Norms|norm]] is convex.
     - **Quadratic forms**: a quadratic form $x^\top A x$ is convex if and only if $A \succeq 0$.
 - **Convex Fermat Theorem**: Let $f:\mathbb{R}^n \rightarrow \mathbb{R}$ be a continuously differentiable, convex function. Then, $x^* \in \mathbb{R}^n$ is a global minimizer of $f$ if and only if $\nabla f(x^*) = 0$. If $f$ is strictly convex, then $x^*$ is the unique global minimizer of $f$ if and only if $\nabla f(x^*) = 0$.
-	- Contrast this with the plain Fermat's theorem: stationarity is normally only *necessary* for *local* minimizers; under convexity it becomes an exact characterization of *global* minimizers.
+	- Contrast this with the [[Univariate Calculus#Extreme values|plain Fermat's theorem]]: stationarity is normally only *necessary* for *local* minimizers; under convexity it is both *necessary* AND *sufficient* for *global* minimizers.
+
+### Polyhedra
+
+- For a given vector $\mathbf{a} \in \mathbb{R}^n$ and a scalar $b \in \mathbb{R}$ the set $\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}^\top\mathbf{x} \leq b \}$ is called a **halfspace**.
+- The intersection of a finite number of half spaces is called a **polyhedron**.
+- A set $P \subseteq \mathbb{R}^n$ is a polyhedron if and only if there exists some $m \times n$ matrix $A$ and $\mathbf{b} \in \mathbb{R}^n$ such that $P=\{x \in \mathbb{R}^n \mid Ax \leq b\}$. Derivation: 
+	1. Consider $m$ halfspaces in $\mathbb{R}^n$, such that for $1 \leq i \leq m$ the halfspace $H_{i}$ can be defined as $H_{i}=\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}_{i}^\top\mathbf{x} \leq b_{i} \}$. 
+	2. The polyhedron $P=\bigcap_{i=1}^mH_{i}$ can then be rewritten as $P=\bigcap_{i=1}^m\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}_{i}^\top\mathbf{x} \leq b_{i} \}=\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}_{1}^\top\mathbf{x} \leq b_{1}, \dots, \mathbf{a}_{m}^\top\mathbf{x} \leq b_{m} \}$. 
+	3. Using the matrix $A=[\mathbf{a}_{1}\ \cdots \ \mathbf{a}_{m}]^\top$ and vector $\mathbf{b}=[b_{1}\ \cdots\ b_{m}]^\top$, this gives $P=\{ \mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} \leq \mathbf{b} \}$.
+- Any 
