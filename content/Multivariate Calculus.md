@@ -20,7 +20,6 @@ Multivariate calculus studies functions of several variables. The core ideas of 
 - A set $X \subseteq \mathbb{R}^n$ is **closed** if its complement, $\mathbb{R}^n \setminus X$, is an open set. Intuitively, the set contains its own boundary.
 - The **interior** of a set $X$, denoted $\text{int}(X)$, is the largest open set contained within $X$ (the set $X$ with its boundary points removed).
 - A set $X \subseteq \mathbb{R}^n$ is **bounded** if it can be contained within a ball of finite radius. Formally, there exists a real number $M > 0$ such that $\|x\| < M$ for all $x \in X$. 
-- A set $X \subseteq \mathbb{R}^n$ is **unbounded** if it is not bounded.
 - A set $X \subseteq \mathbb{R}^n$ is **compact** if and only if it is both closed and bounded.
 - Relation to the 1-dimensional case: the open interval $(a,b)$ is an open set, the closed interval $[a,b]$ is a closed set, and both are bounded. $[a,b]$ is closed and bounded and thus compact, and $[a, \infty)$ is closed but not bounded and thus not compact.
 
