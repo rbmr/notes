@@ -41,12 +41,7 @@ The most common sets in optimization theory.
 		- _Proof_: This is just sign bookkeeping on the 1D chain rule $(h\circ g)'' = h''(g)\,(g')^2 + h'(g)\,g''$. The first term is $\ge 0$ when $h$ is convex. The second term is $\ge 0$ when the monotonicity of $h$ (the sign of $h'$) matches the curvature of $g$ (the sign of $g''$).
 - Some examples of convex funtions:
     - **Affine functions**: every affine function $a^\top x + b$ is both convex and concave.
-    - **Norms**: every norm is convex.
-        
-        - _Proof_: Applying the fundamental rules of norms—the triangle inequality (∥a+b∥≤∥a∥+∥b∥) and positive homogeneity (∥αa∥=α∥a∥ for α≥0)—to the line segment definition of a convex function perfectly satisfies the inequality f(tx+(1−t)y)≤tf(x)+(1−t)f(y).
-            
-    - **Quadratic forms**: a quadratic form x⊤Ax is convex if and only if A⪰0.
-        
-        - _Proof_: The Hessian of x⊤Ax is simply 2A. Therefore, the Hessian is positive semi-definite if and only if the matrix A itself is positive semi-definite.
+    - **Norms**: every [[Similarity#Norms|norm]] is convex.
+    - **Quadratic forms**: a quadratic form $x^\top A x$ is convex if and only if $A \succeq 0$.
 - **Convex Fermat Theorem**: Let $f:\mathbb{R}^n \rightarrow \mathbb{R}$ be a continuously differentiable, convex function. Then, $x^* \in \mathbb{R}^n$ is a global minimizer of $f$ if and only if $\nabla f(x^*) = 0$. If $f$ is strictly convex, then $x^*$ is the unique global minimizer of $f$ if and only if $\nabla f(x^*) = 0$.
 	- Contrast this with the plain Fermat's theorem: stationarity is normally only *necessary* for *local* minimizers; under convexity it becomes an exact characterization of *global* minimizers.
