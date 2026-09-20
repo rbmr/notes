@@ -27,7 +27,7 @@ The most common sets in optimization theory.
 - Ar a function $f$, its **sublevel set** for a given $\alpha \in \mathbb{R}$ is defined as $\{x : f(x) \le \alpha\}$.
 	- If $f$ is a convex function, its sublevel sets are convex sets for all $\alpha \in \mathbb{R}$.
 	- The converse fails: a function can have perfectly convex sublevel sets without being a convex function itself.
-- Convexity can be verified with the Hessian. Let $X \subseteq \mathbb{R}^n$ be an open convex set, and let $f:X \rightarrow \mathbb{R}$ be twice continuously differentiable on $X$. Then,
+- Convexity can be verified with [[Multivariate Calculus#The Hessian|the Hessian]]. Let $X \subseteq \mathbb{R}^n$ be an open convex set, and let $f:X \rightarrow \mathbb{R}$ be twice continuously differentiable on $X$. Then,
 	- $f$ is convex **if and only if** its Hessian $\nabla^2 f(x) \succeq 0$ for all $x \in X$. 
 	- $f$ is strictly convex **if** its Hessian $\nabla^2 f(x) \succ 0$ for all $x \in X$. 
 	- Note a positive definite hessian is sufficient but not necessary for strict convexity, for example: $f(x)=x^4$ is strictly convex, yet $f''(0) = 0$.
