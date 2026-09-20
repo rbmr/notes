@@ -63,7 +63,7 @@ Multivariate calculus studies functions of several variables. The core ideas of 
 
 In 1-dimensional calculus, if a derivative exists at a point, then the function is differentiable and thus continuous at that point. In multivariate calculus the existence of all directional derivatives (including partial derivatives) is not sufficient to guarantee that $f$ is continuous at $\mathbf{a}$.  
 
-Proof by example:
+Proof by example ([open in Desmos](https://www.desmos.com/3d/ypmydxmtve))
 1. Consider $f(x,y) = \frac{x^4y^2}{(x^4+y^2)^2}$ for $(x,y) \neq (0,0)$, and $f(0,0) = 0$. 
 2. Let $\mathbf{u} = (u_1, u_2)$ be any unit vector, then the directional derivative at the origin is:
 	$$
