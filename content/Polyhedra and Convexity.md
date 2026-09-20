@@ -38,7 +38,7 @@ The most common sets in optimization theory.
 	- **Pointwise maximum**: if $f_1, \dots, f_k$ are convex functions, then both $\max_i f_i$ and $\sup_{i}f_{i}$ are convex. 
 		- Intuition: the region on or above the graph of $\max_i f_i$ is the intersection of the epigraphs of each $f_i$, and an intersection of convex sets is convex.
 	- **Scalar composition**: for $h: \mathbb{R} \to \mathbb{R}$ and a convex or concave inner function $g$, the composition $h \circ g$ is convex when the signs line up: $g$ convex with $h$ convex nondecreasing, OR $g$ concave with $h$ convex nonincreasing.
-		- _Proof_: This is just sign bookkeeping on the 1D chain rule $(h\circ g)'' = h''(g)\,(g')^2 + h'(g)\,g''$. The first term is $\ge 0$ when $h$ is convex. The second term is $\ge 0$ when the monotonicity of $h$ (the sign of $h'$) matches the curvature of $g$ (the sign of $g''$).
+		- _Proof_: Apply the one dimensional chain rule twice $(h\circ g)'' = h''(g)\,(g')^2 + h'(g)\,g''$. The first term is $\ge 0$ when $h$ is convex. The second term is $\ge 0$ when the monotonicity of $h$ (the sign of $h'$) matches the curvature of $g$ (the sign of $g''$).
 - Some examples of convex funtions:
     - **Affine functions**: every affine function $a^\top x + b$ is both convex and concave.
     - **Norms**: every [[Similarity#Norms|norm]] is convex.
