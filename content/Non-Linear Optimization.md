@@ -379,7 +379,7 @@ Collecting the requirements, a constrained optimization problem is a **convex op
 
 The payoff of this structure is developed in the sections below: local minimizers are global (the constrained analogue of the [[#Convexity|Convex Fermat theorem]]), and under Slater's condition the KKT conditions become both necessary and sufficient for global optimality.
 
-(TODO: rewrite this section with the nuance from foundational texts like Stephen Boyd and Lieven Vandenberghe’s Convex Optimization, that the geometric definition of a convex optimization problem (minimizing a convex $f(x)$ over a convex set $C$) is explicitly defined as the "abstract form.", and the version where the set $C$ is rigorously defined by strictly convex inequality functions and affine equality functions, is defined as the "standard form.". Standard form implies abstract form, but not vice versa, and the nuance that standard form is actually the computationally tractable kind. )
+(TODO: rewrite this section with the nuance from foundational texts like Stephen Boyd and Lieven Vandenberghe’s Convex Optimization, that the geometric definition of a convex optimization problem (minimizing a convex $f(x)$ over a convex set $C$) is explicitly defined as the "abstract form.", and the version where the set $C$ is rigorously defined by strictly convex inequality functions and affine equality functions, is defined as the "standard form.". Standard form implies abstract form, but not vice versa, and the nuance that standard form is actually the computationally tractable kind, and that rewriting from abstract to standard form is not always doable)
 
 ### Lagrangian Function
 
