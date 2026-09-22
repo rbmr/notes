@@ -88,7 +88,7 @@ The most common sets in optimization theory.
 	- _Proof_: the polyhedron is non-empty and unbounded, so its set of directions is non-empty. Its extreme directions are the extreme points of the associated polyhedron $P'$ above, and the set of extreme points of any polyhedron is finite.
 - A set $C\subseteq \mathbb{R}^n$ is a **convex cone** if it is convex and $\lambda \mathbf{x}\in C$ for all $\mathbf{x}\in C$ and $\lambda\geq 0$.
 - The polyhedron $C=\{ \mathbf{x}\in\mathbb{R}^n \mid A\mathbf{x}\leq \mathbf{0}, \mathbf{x}\geq \mathbf{0} \}$ is a convex cone with exactly one extreme point, namely $\mathbf{0}$, and finitely many extreme directions.
-- **Representation theorem**: consider a polyhedron $P\subseteq \mathbb{R}^n$ with extreme points $\mathbf{x}_{1},\dots,\mathbf{x}_{k}$ and extreme directions $\mathbf{d}_{1},\dots,\mathbf{d}_{p}$ (either count $k$ or $p$ may be zero). Then $P$ can be written as 
+- **Representation theorem**: consider a polyhedron $P\subseteq \mathbb{R}^n$ with extreme points $\mathbf{x}_{1},\dots,\mathbf{x}_{k}$ and extreme directions $\mathbf{d}_{1},\dots,\mathbf{d}_{p}$ (count $k$ or $p$ may be zero). Then $P$ can be written as 
 	$$
 	P=\left\{ \mathbf{x}\in\mathbb{R}^n \;\middle|\; \begin{aligned}
 	&\mathbf{x}=\textstyle\sum_{i=1}^{k}\lambda_{i}\mathbf{x}_{i}+\sum_{i=1}^{p}\mu_{i}\mathbf{d}_{i} \\
