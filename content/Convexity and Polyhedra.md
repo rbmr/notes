@@ -56,32 +56,46 @@ The most common sets in optimization theory.
 - Any non-empty polyhedron $P \subseteq \mathbb{R}^n$ can be rewritten into a polyhedron $P' \subseteq \mathbb{R}^p$ constrained using only non-negative variables.
 	- Rewrite: For every variable $x_{i} \in \mathbb{R}$, introduce two non-negative variables $x_{i}^+, x_{i}^- \geq 0$, and substitute $x_{i}=x_{i}^+ - x_{i}^-$ in every constraint.
 	- Note: $P'$ and $P$ are not the same polyhedron, rather, $P$ is a projection of $P'$ under the linear map $\pi(\mathbf{x}^+, \mathbf{x}^-) = \mathbf{x}^+ - \mathbf{x}^-$. Multiple points in $P'$ may map to the same point in $P$.
--  Any non-empty polyhedron $P \subseteq \mathbb{R}^n$ can be rewritten into a polyhedron $P' \subseteq \mathbb{R}^p$ defined entirely by equality constraints.
+- Any non-empty polyhedron $P \subseteq \mathbb{R}^n$ can be rewritten into a polyhedron $P' \subseteq \mathbb{R}^p$ defined entirely by equality constraints.
 	- Rewrite: For every constraint $\mathbf{a}_{i}\mathbf{x}\leq b_{i}$, introduce a non-negative slack variable $s_{i}\geq 0$ and replace the constraint with $\mathbf{a}_{i}\mathbf{x}+ s_{i} = b_{i}$.
 	- Note: $P'$ and $P$ are not the same polyhedron, however the mapping between them is strictly one-to-one. 
 - Every polyhedron is a convex set.
 - The point $x$ is called an **extreme point** (or **vertex**) of a set $S$ if $x\in S$ and there are no two distinct points $x_{1},x_{2}\in S$ such that $x=\lambda x_{1}+(1-\lambda)x_{2}$ for some $\lambda\in(0,1)$.
-- (TODO: add sufficient and necessary condition for a point to be an extreme point of a polyhedron)
-	- (TODO: notes)
+- Suppose we have some polyhedron $P=\{ \mathbf{x}\in\mathbb{R}^n \mid A\mathbf{x}\leq \mathbf{b} \}$ for some $A\in\mathbb{R}^{m\times n}$ and $\mathbf{b}\in\mathbb{R}^m$, and a point $\mathbf{x}\in P$. Then $\mathbf{x}$ is an extreme point of $P$ if and only if at least $n$ linearly independent rows of $A$ correspond to active constraints ($A\mathbf{x}=\mathbf{b}$) at $\mathbf{x}$.
+	- Intuition: each active constraint defines a hyperplane, $n$ linearly independent rows are needed to pin down the intersection of these hyperplanes to a single point in $\mathbb{R}^n$.
+	- If $m<n$, $P$ cannot have any extreme points.
+	- If $P$ is instead written as $\{ \mathbf{x}\in\mathbb{R}^n \mid A\mathbf{x}\leq \mathbf{b}, \mathbf{x}\geq \mathbf{0} \}$, the non-negativity constraints are counted as rows of the inequality too, giving $m+n$ rows in total.
+	- For $A\in \mathbb{R}^{m\times n}$, $P=\{ \mathbf{x}\in\mathbb{R}^n \mid A\mathbf{x}=\mathbf{b}, \mathbf{x}\geq \mathbf{0} \}$, every extreme point of $P$ has at least $n-\text{rank}(A)$ zero elements.
+		- If $A$ has one slack variable added per original constraint, then $m<n$ and the $m$ rows of $A$ are independent, thus every extreme point has at least $n - m$ zero elements.
 - For any polyhedron, the set of extreme points is finite.
-	- (TODO: notes)
+	- In the worst case, a polyhedron with $m$ constraints in $\mathbb{R}^n$ has $\binom{m}{n}$ extreme points.
 
 ### Directions and Convex Cones
 
-- (TODO: define ray / half-line)
-- (TODO: define direction of a set, independent of the definition of convex sets/ polyhedra)
-	- The set of directions of a set $S$ is empty if and only if that set is bounded.
+- A **ray** (or **half-line**) is a set of the form $\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{x}=\mathbf{x}_{0}+\mu \mathbf{d},\ \mu\geq 0 \}$ for a point $\mathbf{x}_{0}\in \mathbb{R}^n$ and a nonzero direction $\mathbf{d}\in \mathbb{R}^n$.
+- A vector $\mathbf{d}\in\mathbb{R}^n$ is called a **direction** of a set $S$ if $\mathbf{d}\neq \mathbf{0}$ and for every point $\mathbf{x}_{0}\in S$ the ray $\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{x}=\mathbf{x}_{0}+\mu \mathbf{d},\ \mu\geq 0 \}$ is contained in $S$.
+	- For a convex set $S$, the set of directions of $S$ is empty if and only if $S$ is bounded.
 	- If $\mathbf{d}$ is a direction of $S$ then so is $\lambda \mathbf{d}$ for $\lambda>0$.
-- (TODO: theorem for sufficient and necessary conditions for a vector to be a direction of a polyhedron)
-	- (TODO: proof)
-- (TODO: definition of a recession cone, independent of the definition of convex sets/polyhedra)
-- (TODO: formula for the recession cone of a polyhedron)
-- (TODO: definition of an extreme direction, and extreme ray)
-- (TODO: definition of the polyhedron whose extreme points are all the extreme directions of an original polyhedron)
-	- (TODO: proof)
-- (TODO: the number of extreme directions of a polyhedron is finite)
-	- (TODO: proof)
-- (TODO: definition of a convex cone, and correct $\subset$ to be $\subseteq$)
-- (TODO: specific convex cone)
-- (TODO: representation theorem)
+- For the polyhedron $P=\{ \mathbf{x}\in\mathbb{R}^n \mid A\mathbf{x}\leq \mathbf{b}, \mathbf{x}\geq \mathbf{0} \}$, the vector $\mathbf{d}\in\mathbb{R}^n$ is a direction of $P$ if and only if $\mathbf{d}\neq \mathbf{0}$, $A\mathbf{d}\leq \mathbf{0}$ and $\mathbf{d}\geq \mathbf{0}$.
+	- _Proof ($\Rightarrow$)_: if $\mathbf{d}$ is a direction, $\mathbf{d}\neq \mathbf{0}$ by definition. Then $A(\mathbf{x}_{0}+\mu\mathbf{d})\leq \mathbf{b}$ for all $\mu\geq 0$ forces $A\mathbf{d}\leq \mathbf{0}$, and $\mathbf{x}_{0}+\mu\mathbf{d}\geq \mathbf{0}$ for all $\mu\geq 0$ forces $\mathbf{d}\geq \mathbf{0}$.
+	- _Proof ($\Leftarrow$)_: if the three properties hold, then for any $\mathbf{x}_{0}\in P$ and $\mu\geq 0$, $A(\mathbf{x}_{0}+\mu\mathbf{d})=A\mathbf{x}_{0}+\mu A\mathbf{d}\leq \mathbf{b}$ and $\mathbf{x}_{0}+\mu\mathbf{d}\geq \mathbf{0}$, so the ray lies in $P$ and $\mathbf{d}$ is a direction.
+- The **recession cone** of a set $S$, denoted $\text{rec}(S)$, is the set of all directions of $S$ together with the zero vector. For $P=\{ \mathbf{x}\in\mathbb{R}^n \mid A\mathbf{x}\leq \mathbf{b}, \mathbf{x}\geq \mathbf{0} \}$ this gives $\text{rec}(P)=\{ \mathbf{d}\in\mathbb{R}^n \mid A\mathbf{d}\leq \mathbf{0}, \mathbf{d}\geq \mathbf{0} \}$.
+- A direction $\mathbf{d}$ of $P$ is called an **extreme direction** if there are no two directions $\mathbf{d}_{1},\mathbf{d}_{2}$ of $P$ (with $\mu_{1}\mathbf{d}_{1}\neq \mathbf{d}$ and $\mu_{2}\mathbf{d}_{2}\neq \mathbf{d}$ for all $\mu_{1},\mu_{2}\geq 0$) for which there exist $\lambda_{1},\lambda_{2}>0$ such that $\mathbf{d}=\lambda_{1}\mathbf{d}_{1}+\lambda_{2}\mathbf{d}_{2}$.
+	- The ray $\{ \mathbf{x}\in\mathbb{R}^n \mid \mathbf{x}=\mathbf{x}_{0}+\mu\mathbf{d},\ \mu\geq 0 \}$, where $\mathbf{x}_{0}\in P$ is an extreme point and $\mathbf{d}$ is a corresponding extreme direction of $P$, is called an **extreme ray**.
+- To ease notation, only normalized directions are considered from here on, i.e. those $\mathbf{d}$ with $\mathbf{e}^\top \mathbf{d}=1$. A normalized direction $\mathbf{d}^*$ of $P$ is an extreme direction if and only if $\mathbf{d}^*$ is an extreme point of the polyhedron $P'=\text{rec}(P)\cap \{ \mathbf{d}\in\mathbb{R}^n \mid \mathbf{e}^\top \mathbf{d}=1 \} = \{ \mathbf{d}\in\mathbb{R}^n \mid A\mathbf{d}\leq \mathbf{0}, \mathbf{d}\geq \mathbf{0}, \mathbf{e}^\top\mathbf{d}=1 \}$.
+	- _Proof_: (both directions, by contradiction) if $\mathbf{d}^*$ is an extreme direction of $P$ but not an extreme point of $P'$, it can be written as a convex combination of two other points of $P'$, which are themselves directions of $P$, contradicting extremality of $\mathbf{d}^*$. Conversely if $\mathbf{d}^*$ is an extreme point of $P'$ but not an extreme direction of $P$, it can be written as $\lambda_{1}\mathbf{d}_{1}+\lambda_{2}\mathbf{d}_{2}$ for directions $\mathbf{d}_{1},\mathbf{d}_{2}$ of $P$ and $\lambda_{1},\lambda_{2}>0$. Normalizing $\mathbf{d}_{1},\mathbf{d}_{2}$ and using $\mathbf{e}^\top\mathbf{d}^*=\lambda_{1}+\lambda_{2}=1$ rewrites $\mathbf{d}^*$ as a convex combination of two points of $P'$, contradicting extremality of $\mathbf{d}^*$.
+- For any non-empty unbounded polyhedron, the collection of (normalized) extreme directions is finite.
+	- _Proof_: the polyhedron is non-empty and unbounded, so its set of directions is non-empty. Its extreme directions are the extreme points of the associated polyhedron $P'$ above, and the set of extreme points of any polyhedron is finite.
+- A set $C\subseteq \mathbb{R}^n$ is a **convex cone** if it is convex and $\lambda \mathbf{x}\in C$ for all $\mathbf{x}\in C$ and $\lambda\geq 0$.
+- The polyhedron $C=\{ \mathbf{x}\in\mathbb{R}^n \mid A\mathbf{x}\leq \mathbf{0}, \mathbf{x}\geq \mathbf{0} \}$ is a convex cone with exactly one extreme point, namely $\mathbf{0}$, and finitely many extreme directions.
+- **Representation theorem**: consider a polyhedron $P\subseteq \mathbb{R}^n$ with extreme points $\mathbf{x}_{1},\dots,\mathbf{x}_{k}$ and extreme directions $\mathbf{d}_{1},\dots,\mathbf{d}_{p}$ (either count $k$ or $p$ may be zero). Then $P$ can be written as 
+	$$
+	P=\left\{ \mathbf{x}\in\mathbb{R}^n \;\middle|\; \begin{aligned}
+	&\mathbf{x}=\textstyle\sum_{i=1}^{k}\lambda_{i}\mathbf{x}_{i}+\sum_{i=1}^{p}\mu_{i}\mathbf{d}_{i} \\
+	&\textstyle\sum_{i=1}^{k}\lambda_{i}=1 \\
+	&\lambda_{i}\geq 0 \quad \forall i=1,\dots,k \\
+	&\mu_{i}\geq 0 \quad \forall i=1,\dots,p
+	\end{aligned} \right\}
+	$$
+	- If $P$ is bounded it has no extreme directions, so every point reduces to a plain convex combination of the extreme points: $\mathbf{x}=\sum_{i=1}^{k}\lambda_{i}\mathbf{x}_{i}$ with $\sum_{i}\lambda_{i}=1$ and $\lambda_{i}\geq 0$.
 
