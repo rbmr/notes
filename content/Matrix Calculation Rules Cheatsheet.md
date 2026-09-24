@@ -17,7 +17,7 @@ The following is an informal and incomplete summary of common [[Matrix Theory|ma
 - Main diagonal: entries of a square matrix where the column and row index are equal $a_{ii}$ 
 - Upper/lower triangular matrix: square matrix where all the entries below/above the main diagonal are zero. 
 - Diagonal matrix: square matrix where all off diagonal entries are zero. I.e. matrix that is both upper and lower triangular.
-- Identity matrix: diagonal matrix with $1$s on the main diagonal and $0$ everywhere else.
+- Identity matrix: diagonal matrix with $1$s on the main diagonal. Denoted as $I$, or $I_{m}$ when its dimensions are specifically $m \times m$.
 - Addition $A+ B$: requires same dimensions, and elements are added element wise. Properties:
 	- $A + B = B + A$
 	- $(A+B)+C=A+(B+C)$
@@ -55,7 +55,7 @@ The following is an informal and incomplete summary of common [[Matrix Theory|ma
 	    - Expansion along column $j$: $\det(A) = \sum_{i=1}^{n} (-1)^{i+j} a_{ij} \det(M_{ij})$
 		- where $a_{ij}$ is the entry in the $i$-th row and $j$-th column, and $M_{ij}$ is the $(n-1) \times (n-1)$ submatrix obtained by deleting row $i$ and column $j$. The term $(-1)^{i+j}\det(M_{ij})$ is known as the cofactor.
 	- Calculation rules:
-		- $\det(AB) = \det(A)\det(B)$
+		- $\det(AB) = \det(A)\det(B) = \det(B)\det(A) = \det(BA)$
 		- $\det(A^T) = \det(A)$
 		- $\det(kA) = k^n\det(A)$ (where $A$ is an $n \times n$ matrix)
 		- $\det(A^{-1}) = \frac{1}{\det(A)}$
@@ -76,6 +76,7 @@ The following is an informal and incomplete summary of common [[Matrix Theory|ma
 	- $\text{rank}(A) = n$
 - For a given square matrix $A$, an **eigenvalue** is a scalar $\lambda$ for which there exists a vector $v$ (called the **eigenvector**) such that $Av = \lambda v$. 
 	- You find eigenvalues by solving the characteristic equation $\det(A - \lambda I) = 0$. 
+	- You find the eigenvector for some eigenvalue by solving $(A-\lambda I)v=0$.
 	- The trace $\text{tr}(A)$ is equal to the sum of all its eigen values.
 	- The determinant $\text{det(A)}$ is equal to the product of all its eigenvalues.
 - Diagonalization: factoring a square matrix into the product $A = PDP^{-1}$ where $D$ is a diagonal matrix containing the eigenvalues of $A$ and $P$ is a matrix whose columns are the corresponding eigenvectors. Properties:

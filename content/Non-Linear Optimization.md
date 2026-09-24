@@ -267,6 +267,8 @@ Theorems for minimization/maximization frequently rely on a gradient. For convex
 	- **Maximum**: $\partial(\max\{f,g\})(x)$ equals $\partial f(x)$ where $f(x) > g(x)$, equals $\partial g(x)$ where $g(x) > f(x)$, and equals $\text{conv}(\partial f(x) \cup \partial g(x))$ at the kink where $f(x) = g(x)$.
 		- The **convex hull** $\text{conv}(S)$ is the smallest convex set containing $S$, or equivalently, the set of all convex combinations of points in $S$.
 
+(TODO: extend this section to include all the rules for subdifferentials from the lecture "Basics of convex optimization" from 2026-2027 FEM21061 ML in OR )
+
 ### Coordinate Descent and Golden Section Method
 
 Suppose we want to perform line search, but without relying on derivatives. We need to re-answer the two core questions for line search.
