@@ -12,6 +12,8 @@ The following is an informal and incomplete summary of common [[Matrix Theory|ma
 	- Norm (Magnitude) $\|v\|$: the length of a vector, typically the Euclidean norm defined as $\sqrt{v \cdot v}$. 
 	- Cauchy-Schwarz Inequality: $|u \cdot v| \le \|u\| \|v\|$. The absolute value of the dot product of two vectors is always less than or equal to the product of their magnitudes. 
 	- Triangle Inequality: $\|u + v\| \le \|u\| + \|v\|$ and $\|u - v\| \le \|u\| + \|v\|$. The magnitude of the sum of two vectors is less than or equal to the sum of their individual magnitudes.
+	- Orthogonal vectors: $u, v$ such that $u \cdot v = 0$.
+	- Orthonormal vectors: a set of vectors that are pairwise orthogonal and each have unit norm ($\|v_i\| = 1$).
 - Zero matrix $0$: matrix where all values are zero. 
 - Square matrix: matrix where $m=n$.
 - Main diagonal: entries of a square matrix where the column and row index are equal $a_{ii}$ 
@@ -35,7 +37,7 @@ The following is an informal and incomplete summary of common [[Matrix Theory|ma
 	- $(AB)^T = B^TA^T$ (note the order reversal)
 	- $(kA)^T=k(A^T)$
 - Symmetric matrix a matrix $A$ such that $A = A^T$.
-- Inverse $A^{-1}$ is the corresponding matrix of $A$ such that $AA^{-1}=A^{-1}A=I$. Properties:
+- Inverse $A^{-1}$ is the corresponding matrix of $A$ such that $AA^{-1}=A^{-1}A=I$. A matrix is said to be **invertible** if its inverse exists, and **singular** otherwise. Properties:
 	- $(A^{-1})^{-1} = A$
 	- $(AB)^{-1}=B^{-1}A^{-1}$
 	- $(A^{-1})^T=(A^T)^{-1}$
@@ -43,6 +45,7 @@ The following is an informal and incomplete summary of common [[Matrix Theory|ma
 	- $A^T A = A A^T = I$
 	- $A^{-1} = A^T$
 	- $\det(A) = 1$ or $\det(A) = -1$
+	- Preserves length and angles: $(Ax)\cdot(Ay) = x \cdot y$ ($\Rightarrow  \|Ax\| = \|x\|$) for all $x, y$. So it only rotates/reflects, never scales.
 - Trace $\text{tr}(A)$: the sum of the elements on the main diagonal of a square matrix $A$. Properties:
 	- $\text{tr}(A+B) = \text{tr}(A) + \text{tr}(B)$
 	- $\text{tr}(kA) = k\text{tr}(A)$
@@ -79,9 +82,10 @@ The following is an informal and incomplete summary of common [[Matrix Theory|ma
 	- You find the eigenvector for some eigenvalue by solving $(A-\lambda I)v=0$.
 	- The trace $\text{tr}(A)$ is equal to the sum of all its eigen values.
 	- The determinant $\text{det(A)}$ is equal to the product of all its eigenvalues.
-- Diagonalization: factoring a square matrix into the product $A = PDP^{-1}$ where $D$ is a diagonal matrix containing the eigenvalues of $A$ and $P$ is a matrix whose columns are the corresponding eigenvectors. Properties:
-	- $A$ is diagonalizable if and only if it has $n$ linearly independent eigenvectors.
-	- A symmetric matrix is always diagonalizable and its eigenvectors are orthogonal (meaning it can be written as $A=PDP^T$)
+- **Diagonalization** (also called **eigendecomposition**): factoring a $n \times n$ square matrix $A$ into the product $A = PDP^{-1}$ where $D$ is a diagonal matrix containing the eigenvalues of $A$ and $P$ is a matrix whose columns are the corresponding eigenvectors. Properties:
+	- $A$ is diagonalizable if and only if it has $n$ linearly independent eigenvectors (i.e. $P$ is invertible by the invertible matrix theorem)
+	- **Spectral theorem**: every symmetric matrix $A \in \mathbb{R}^{n \times n}$ is diagonalizable with real eigenvalues and an orthogonal matrix of eigenvectors. This implies it can be written as $A=PDP^T$.
+	- Diagonalizability is unrelated to full rank: $A$ can be diagonalizable yet singular, or full rank yet not diagonalizable.
 - Matrix Powers $A^k$: multiplying a square matrix $A$ by itself $k$ times. Properties:
 	- $A^0 = I$
 	- $A^jA^k=A^{j+k}$
@@ -91,10 +95,17 @@ The following is an informal and incomplete summary of common [[Matrix Theory|ma
 	- $A$ is **positive semidefinite** (denoted as $A \succeq 0$) if and only if $v^\top A v \ge 0$ for all $v \in \mathbb{R}^n$. Equivalently, $A \succeq 0$ if and only if all eigenvalues of $A$ are non-negative.
 	- $A$ is **positive definite** (denoted as $A \succ 0$) if and only if $v^\top A v > 0$ for all $v \in \mathbb{R}^n \setminus \{0\}$. Equivalently, $A \succ 0$ if and only if all its eigenvalues are positive.
 	- A positive definite matrix is always invertible (since no eigenvalues are zero, the determinant is non-zero).
+- **Singular Value Decomposition (SVD, full)**: every $A \in \mathbb{R}^{m \times n}$ can be written as $A = U\Sigma V^T$, where $U \in \mathbb{R}^{m \times m}$ and $V \in \mathbb{R}^{n \times n}$ are orthogonal matrices, and $\Sigma \in \mathbb{R}^{m \times n}$ has $\Sigma_{ii} = \sigma_i$ for $i = 1, \dots, \min(m,n)$ and $0$s elsewhere, with singular values $\sigma_1 \ge \dots \ge \sigma_{\min(m,n)} \ge 0$. Properties:
+	- Geometrically, the SVD of $A$ can be understood as follows: $V^T$ rotates/reflects the input, $\Sigma$ scales each axis by $\sigma_i$ (collapsing any axis with $\sigma_i=0$), and $U$ rotates/reflects the result into place.
+	- $u_i, v_i$ (the columns of $U$, $V$) are the left/right singular vectors: $Av_i = \sigma_i u_i$ and $A^Tu_i = \sigma_i v_i$ for $i = 1, \dots, \min(m,n)$.
+	- The $u_i$ are eigenvectors of $AA^T \in \mathbb{R}^{m \times m}$ and the $v_i$ are eigenvectors of $A^TA \in \mathbb{R}^{n \times n}$, with eigenvalues $\sigma_i^2$ (padded with $0$ eigenvalues where $i > \min(m,n)$).
+	- $\text{rank}(A)$ equals the number of strictly positive $\sigma_i$.
+	- If $A = A^T$, the Spectral theorem gives $A = Q\Lambda Q^T$. Note this is not guaranteed to be a valid SVD, since the eigenvalues are not guaranteed to be non-negative. If additionally $A \succeq 0$ (so $\lambda_i \ge 0$), the eigendecomposition satisfies the SVD directly. If $A$ is not positive semidefinite, you can just adjust signs instead: $\sigma_i = |\lambda_i|$, $v_i = q_i$, $u_i = \text{sign}(\lambda_i) q_i$ (reordered so $\sigma_i$ is descending).
+- **Singular Value Decomposition (SVD, compact)**: every $A \in \mathbb{R}^{m \times n}$ with $\text{rank}(A) = r$ can be written as $A = U\Sigma V^T = \sum_{i=1}^{r} \sigma_i u_i v_i^T$, where $U = [u_1, \dots, u_r] \in \mathbb{R}^{m \times r}$ and $V = [v_1, \dots, v_r] \in \mathbb{R}^{n \times r}$ have orthonormal columns, and $\Sigma = \text{diag}(\sigma_1, \dots, \sigma_r)$ with $\sigma_1 \ge \dots \ge \sigma_r > 0$.
+	- This drops the zero singular values from the full SVD, together with the corresponding columns of $U$/$V$ (which spanned the left null space/null space), so $U^TU = V^TV = I_r$, but $U$, $V$ are no longer square and $UU^T \ne I_m$, $VV^T \ne I_n$ in general.
 - LU decomposition: factoring a square matrix $A$ into the product $A = LU$, where $L$ is a lower triangular matrix and $U$ is an upper triangular matrix. Properties:
 	- Primarily used to efficiently solve systems of linear equations ($Ax=b$), invert matrices, and compute determinants.
-    - Often requires row swaps (partial pivoting) for numerical stability or to prevent division by zero, resulting in $PA = LU$, where $P$ is a permutation matrix.
-     Typically, $L$ is defined to have $1$s on its main diagonal (known as Doolittle's algorithm).
+    - Often requires row swaps (partial pivoting) for numerical stability or to prevent division by zero, resulting in $PA = LU$, where $P$ is a permutation matrix. Typically, $L$ is defined to have $1$s on its main diagonal (known as Doolittle's algorithm).
     - Makes determinant calculation very simple: $\det(A) = \det(L)\det(U)$ (or $\det(A) = \det(P^{-1})\det(L)\det(U)$ if pivoting was used), where the determinants of triangular matrices $L$ and $U$ are just the products of their main diagonal entries.
 - Cholesky decomposition: factoring a symmetric, positive-definite matrix $A$ into the product $A = LL^T$, where $L$ is a lower triangular matrix with strictly positive diagonal entries. Properties:
      - Requires $A$ to be both symmetric ($A=A^T$) and positive definite.
