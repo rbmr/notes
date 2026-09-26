@@ -13,6 +13,10 @@ The most common sets in optimization theory.
 	- **Intersection**: the intersection of any collection of convex sets is convex. (the union of two convex sets is generally *not* convex.)
 	- **Affine preimage**: if $S$ is convex, then $\{x : Ax + b \in S\}$ is convex.
 	- **Affine image**: if $S$ is convex, then $\{Ax + b : x \in S\}$ is convex.
+- A point $x$ is a **convex combination** of points $y_{1}, \dots, y_{n}$ if it can be written as $x = \sum_{i=1}^{n} \lambda_i y_i$ for some $\lambda_1 \ge 0, \dots, \lambda_n \ge 0$, where $\sum_{i=1}^{n} \lambda_i = 1$.
+	- A line segment between two points $\mathbf{x},\mathbf{y} \in \mathbb{R}^n$ is the same as "the set of all points that can be written as a convex combination of points $\mathbf{x}$, and $\mathbf{y}$".  
+- The **convex hull** of a set $X \subseteq \mathbb{R}^n$, denoted $\text{conv}(X)$, is the intersection of all convex sets that contain $X$. Or less formally, the "smallest" convex set containing $X$. 
+	- Equivalently, it is the set of all convex combinations of points in $X$.
 
 ### Convex Functions
 
@@ -44,6 +48,8 @@ The most common sets in optimization theory.
     - **Quadratic forms**: a quadratic form $x^\top A x$ is convex if and only if $A \succeq 0$.
 - **Convex Fermat Theorem**: Let $f:\mathbb{R}^n \rightarrow \mathbb{R}$ be a continuously differentiable, convex function. Then, $x^* \in \mathbb{R}^n$ is a global minimizer of $f$ if and only if $\nabla f(x^*) = 0$. If $f$ is strictly convex, then $x^*$ is the unique global minimizer of $f$ if and only if $\nabla f(x^*) = 0$.
 	- Contrast this with the [[Univariate Calculus#Extreme values|plain Fermat's theorem]]: stationarity is normally only *necessary* for *local* minimizers; under convexity it is both *necessary* AND *sufficient* for *global* minimizers.
+- For a function $f: X \to \mathbb{R}$, its **convex envelope** (or **greatest convex minorant**) is defined as $\text{conv}(f)=\sup_{x\in X} \{g(x) \mid g \text{ is convex and } g(y) \le f(y) \text{ for all } y \in X\}$
+	- Geometrically, $\text{conv}(f)$ is the function whose epigraph is the convex hull of the epigraph of $f$. 
 
 ### Polyhedra
 
