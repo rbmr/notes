@@ -19,13 +19,14 @@ Theorems for minimization/maximization frequently rely on the gradient. For func
 - If a convex function $f$ is finite everywhere then its subdifferential is non-empty for every $x$.
 - If a convex function $f$ is differentiable at $x$, then $\partial f(x) = \{\nabla f(x)\}$. That is, the tangent plane is the only affine lower bound touching the graph at $x$.
 - For non-convex $f$, $\partial f(x)$ is empty except where $f$ is equal to its [[Convexity and Polyhedra#Convex Functions|convex envelope]].
-- **Convex Fermat Theorem (subgradient version)**: Let $f: \mathbb{R}^n \to \mathbb{R}$ be a convex function, and let $x^* \in \mathbb{R}^n$. Then $x^*$ is a global minimizer of $f$ if and only if $0 \in \partial f(x^*)$. If $f$ is strictly convex, then $x^*$ is the unique global minimizer of $f$.
+- **Fermat Theorem (subgradient version)**: Let $f: \mathbb{R}^n \to \mathbb{R}$, and let $x^* \in \mathbb{R}^n$. Then $x^*$ is a *global* minimizer of $f$ if and only if $0 \in \partial f(x^*)$. If $f$ is strictly convex, then $x^*$ is the *unique* global minimizer of $f$.
 	- Intuition: substituting $r = 0$ into the subgradient inequality gives $f(y) \geq f(x^*)$ for all $y$, which *is* the definition of a global minimizer, the converse makes intuitive sense aswell.
 - Subdifferentials of complicated convex functions can be computed using the subdifferentials of simpler convex functions. Let $f: X \to \mathbb{R}$ and $g: X \to \mathbb{R}$ be convex functions and $x \in X$:
 	- **Norm**: if $f(x) = \|x\|$, then $\partial f(0) = \{r \in \mathbb{R}^n : \|r\| \leq 1\}$ (the unit ball), at any $x \neq 0$ the norm is differentiable.
 	- **Non-negative scaling**: $\partial(\alpha f)(x) = \alpha\,\partial f(x) := \{\alpha r : r \in \partial f(x)\}$ for all $\alpha \geq 0$.
-	- **Sum**: $\partial(f+g)(x) = \partial f(x) + \partial g(x) := \{r + s \mid r \in \partial f(x), s \in \partial g(x)\}$. 
+	- **Sum**: $\partial(f+g)(x) \supseteq \partial f(x) + \partial g(x) := \{r + s \mid r \in \partial f(x), s \in \partial g(x)\}$, with equality if $f$ or $g$ is continuous.
 		- This "sum of sets", where every element of the resulting set is the sum of one element from either set is called the **Minkowski sum**.
+	- **Separability**: let $I_1,\dots,I_p$ partition the coordinate indices $\{1,\dots,n\}$ of $x\in\mathbb{R}^n$, and write $x_j$ for the sub-vector of $x$ indexed by $I_j$. If $f(x)=\sum_{j=1}^p f_j(x_j)$, for some functions $f_{j}:\mathbb{R}^{|I_{j}|}\to \mathbb{R}$, then $\partial f(x) = \partial f_1(x_1)\times\cdots\times\partial f_p(x_p)$.
 	- **Maximum**: $\partial(\max\{f,g\})(x)$ equals $\partial f(x)$ where $f(x) > g(x)$, equals $\partial g(x)$ where $g(x) > f(x)$, and equals $\text{conv}(\partial f(x) \cup \partial g(x))$ at the kink where $f(x) = g(x)$.
 
 (TODO: extend this section to include all the rules for subdifferentials from the lecture "Basics of convex optimization" from 2026-2027 FEM21061 ML in OR )
