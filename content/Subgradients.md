@@ -29,4 +29,12 @@ Theorems for minimization/maximization frequently rely on the gradient. For func
 	- **Separability**: let $I_1,\dots,I_p$ partition the coordinate indices $\{1,\dots,n\}$ of $x\in\mathbb{R}^n$, and write $x_j$ for the sub-vector of $x$ indexed by $I_j$. If $f(x)=\sum_{j=1}^p f_j(x_j)$, for some functions $f_{j}:\mathbb{R}^{|I_{j}|}\to \mathbb{R}$, then $\partial f(x) = \partial f_1(x_1)\times\cdots\times\partial f_p(x_p)$.
 	- **Maximum**: $\partial(\max\{f,g\})(x)$ equals $\partial f(x)$ where $f(x) > g(x)$, equals $\partial g(x)$ where $g(x) > f(x)$, and equals $\text{conv}(\partial f(x) \cup \partial g(x))$ at the kink where $f(x) = g(x)$.
 
-(TODO: extend this section to include all the rules for subdifferentials from the lecture "Basics of convex optimization" from 2026-2027 FEM21061 ML in OR )
+### Note on Constrained Optimization
+
+- The **normal cone** of a convex set $C$ at $x^* \in C$ is defined as $N_C(x^*) = \{ g \in \mathbb{R}^n \mid g^\top(x-x^*) \le 0\ \forall x \in C \}$. Informally, it is the set of directions $g$ that make an angle of at least $90°$ with every feasible direction at $x^*$.
+	- If $x^*$ is in the interior of $C$, then any small enough direction is a feasible direction, so the only $g$ satisfying the inequality against every one of them is $g=0$, thus $N_C(x^*) = \{0\}$.
+	- $N_C(x^*)$ is always a convex cone (scaling a valid $g$ by any $\lambda\ge0$ keeps the inequality).
+- **Constrained optimality**: let $f$ be convex and $C$ a convex feasible set. Then $x^* \in C$ minimizes $f$ over $C$ if and only if $0 \in \partial f(x^*) + N_C(x^*)$.
+	- This generalizes the unconstrained Fermat theorem $0\in\partial f(x^*)$.
+	- Understanding: $0\in\partial f(x^*)+N_C(x^*)$ means there *exists* some $r\in\partial f(x^*)$ with $-r\in N_C(x^*)$, or alternatively, $(-\partial f(x^*)) \cap N_C(x^*) \neq \varnothing$. It *does not* mean $-\partial f(x^*)\subseteq N_C(x^*)$ (every subgradient's negation lying in the normal cone), which is a strictly stronger, generally false claim.
+	- Example: $f(x)=|x|$, $C=[0,\infty)$, $x^*=0$ (which does minimize $f$ over $C$). Here $\partial f(0)=[-1,1]$ and $N_C(0)=(-\infty,0]$. Then, $0 \in [-1,1]+(-\infty,0]=(-\infty,1]$. But $-\partial f(0)=[-1,1]\not\subseteq(-\infty,0]$.
