@@ -76,3 +76,16 @@ the pricing problem might be hard, and the pricing algorithm slow. A **pricing h
 - Remove every column that was not part of an RMP solution for a given number of iterations.
 - Remove every column whose reduced cost is far from zero, i.e. $RC(x_i) < -\alpha$ for some $\alpha \geq 0$.
 - Removed columns can be stored in a **column pool**. Checking the column pool for positive reduced cost columns is itself a pricing heuristic.
+
+### Row Generation
+
+- **Row generation** applies when an LP has very many constraints, instead of very many variables.
+- The [[Linear Optimisation#Duality|dual problem]] of such an LP has very many variables, so we can apply column generation to the dual problem.
+- This is effectively row generation on the primal problem: solve the primal with only a subset of the constraints, and repeatedly add a constraint that the current solution violates.
+	- Explanation: For the primal $\max \{ \sum_{i \in N} c_i x_i \mid \sum_{i \in N} a_{ij} x_i \leq b_j \ \forall j \in M,\ x \geq 0 \}$, the dual variable $\lambda_j$ has reduced cost $b_j - \sum_{i \in N} a_{ij} x_i$, where the duals of the restricted dual are the optimal primal solution $x$ of the restricted primal. The dual is a minimization, so we look for a negative reduced cost, which is exactly a primal constraint $j$ violated by $x$.
+
+### Branch-and-Price
+
+**Branch-and-price** is a [[Mathematical Optimization#Branch and Bound|branch-and-bound]] algorithm in which the LP relaxations are solved using column generation. It solves MILPs with very many variables.
+- A branching rule for branch-and-price requires extra care, since branching affects both the LP relaxation and the pricing problem, and a different pricing algorithm might be needed.
+- It is usually a bad idea to branch on the variables directly. Instead, avoid changes to the pricing problem when branching, so the same pricing algorithm can be used in all nodes of the branching tree.
