@@ -57,7 +57,7 @@ The most common sets in optimization theory.
 
 - For a given vector $\mathbf{a} \in \mathbb{R}^n$ and a scalar $b \in \mathbb{R}$ the set $\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}^\top\mathbf{x} \leq b \}$ is called a **halfspace**.
 - The intersection of a finite number of half spaces is called a **polyhedron**.
-- A set $P \subseteq \mathbb{R}^n$ is a polyhedron if and only if there exists some $m \times n$ matrix $A$ and $\mathbf{b} \in \mathbb{R}^n$ such that $P=\{x \in \mathbb{R}^n \mid Ax \leq b\}$. Derivation: 
+- A set $P \subseteq \mathbb{R}^n$ is a polyhedron if and only if there exists some $m \times n$ matrix $A$ and $\mathbf{b} \in \mathbb{R}^m$ such that $P=\{x \in \mathbb{R}^n \mid Ax \leq b\}$. Derivation: 
 	1. Consider $m$ halfspaces in $\mathbb{R}^n$, such that for $1 \leq i \leq m$ the halfspace $H_{i}$ can be defined as $H_{i}=\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}_{i}^\top\mathbf{x} \leq b_{i} \}$. 
 	2. The polyhedron $P=\bigcap_{i=1}^mH_{i}$ can then be rewritten as $P=\bigcap_{i=1}^m\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}_{i}^\top\mathbf{x} \leq b_{i} \}=\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{a}_{1}^\top\mathbf{x} \leq b_{1}, \dots, \mathbf{a}_{m}^\top\mathbf{x} \leq b_{m} \}$. 
 	3. Using the matrix $A=[\mathbf{a}_{1}\ \cdots \ \mathbf{a}_{m}]^\top$ and vector $\mathbf{b}=[b_{1}\ \cdots\ b_{m}]^\top$, this gives $P=\{ \mathbf{x} \in \mathbb{R}^n \mid A\mathbf{x} \leq \mathbf{b} \}$.
@@ -82,7 +82,7 @@ The most common sets in optimization theory.
 
 - A **ray** (or **half-line**) is a set of the form $\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{x}=\mathbf{x}_{0}+\mu \mathbf{d},\ \mu\geq 0 \}$ for a point $\mathbf{x}_{0}\in \mathbb{R}^n$ and a nonzero direction $\mathbf{d}\in \mathbb{R}^n$.
 - A vector $\mathbf{d}\in\mathbb{R}^n$ is called a **direction** of a set $S$ if $\mathbf{d}\neq \mathbf{0}$ and for every point $\mathbf{x}_{0}\in S$ the ray $\{ \mathbf{x} \in \mathbb{R}^n \mid \mathbf{x}=\mathbf{x}_{0}+\mu \mathbf{d},\ \mu\geq 0 \}$ is contained in $S$.
-	- For a convex set $S$, the set of directions of $S$ is empty if and only if $S$ is bounded.
+	- For a non-empty closed convex set $S$, the set of directions of $S$ is empty if and only if $S$ is bounded.
 	- If $\mathbf{d}$ is a direction of $S$ then so is $\lambda \mathbf{d}$ for $\lambda>0$.
 - For the polyhedron $P=\{ \mathbf{x}\in\mathbb{R}^n \mid A\mathbf{x}\leq \mathbf{b}, \mathbf{x}\geq \mathbf{0} \}$, the vector $\mathbf{d}\in\mathbb{R}^n$ is a direction of $P$ if and only if $\mathbf{d}\neq \mathbf{0}$, $A\mathbf{d}\leq \mathbf{0}$ and $\mathbf{d}\geq \mathbf{0}$.
 	- _Proof ($\Rightarrow$)_: if $\mathbf{d}$ is a direction, $\mathbf{d}\neq \mathbf{0}$ by definition. Then $A(\mathbf{x}_{0}+\mu\mathbf{d})\leq \mathbf{b}$ for all $\mu\geq 0$ forces $A\mathbf{d}\leq \mathbf{0}$, and $\mathbf{x}_{0}+\mu\mathbf{d}\geq \mathbf{0}$ for all $\mu\geq 0$ forces $\mathbf{d}\geq \mathbf{0}$.
