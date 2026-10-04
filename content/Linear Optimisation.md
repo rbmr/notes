@@ -76,6 +76,7 @@ To demonstrate,
 | Constraints | $A_0 \mathbf{x}_0 \le \mathbf{b}$                        | $A\mathbf{x} = \mathbf{b}$                       |
 | Objective   | $\mathbf{x}_0 \ge 0$                                     | $\mathbf{x} \ge 0$                               |
 
+
 ### Dictionaries
 
 - A dictionary of a linear program is established with a **basis** $\mathcal{B}$ and a **non-basis** $\mathcal{N} = \{1, \dots, n+m\} \setminus \mathcal{B}$. Variables inside the basis are called **basic variables**, and variables in the non-basis are called **non-basic variables**.
@@ -91,6 +92,7 @@ To demonstrate,
 	- Crucially, not every basis corresponds to a valid dictionary. However, if and only if the basis DOES correspond to a valid dictionary, then the normal vectors corresponding to the $n$ hyperplanes are guaranteed to be linearly independent, and the hyperplanes intersect at the basic solution.
 - Any basic solution of a dictionary is guaranteed to adhere to the linear constraints, but are not guaranteed to adhere to the non-negativity constraint.
 - A **basic feasible solution** (**BFS**) is a basic solution where all basic variables are $\geq 0$, and is therefore feasible. 
+	- It follows that the basic solution of a dictionary is feasible if and only if all $\bar{b}_{i} \geq 0$.
 - A dictionary that has a basic feasible solution is called **primal feasible**.
 - Every vertex of a linear programming problem is the BFS of at least one dictionary. Any BFS corresponds to exactly one vertex. 
 - The **initial dictionary** (or start dictionary) of a problem is typically formed by considering the problem in extended form, and choosing the slack variables as the basis and the original decision variables as the non-basis. 
