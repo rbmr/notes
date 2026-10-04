@@ -28,17 +28,40 @@ Variants of Mathematical Optimization problems include but are not limited to:
 
 This list is definitely not exhaustive.
 
-### Branch and Bound
+### Relaxations
 
-(TODO: Provide formal definition of a branch and bound, take lecture 3 from FEB22002X Combinatorial Optimization 2025-2026 as reference)
+A **relaxation** of the problem $(P)$: $\inf_{\mathbf{x} \in X} f(\mathbf{x})$ is a problem $(R)$: $\inf_{\mathbf{x} \in X_R} f_R(\mathbf{x})$ such that:
+- $X \subseteq X_R$, that is, every feasible solution of $(P)$ is feasible for $(R)$.
+- $f_R(\mathbf{x}) \leq f(\mathbf{x})$ for all $\mathbf{x} \in X$, the objective is never overestimated on the original feasible region.
+
+A relaxation is only useful if it is easier to solve than the original problem.
+
+Properties:
+- $v(R) \leq v(P)$, so a relaxation provides a lower bound.
+	- _Proof_: $v(R) = \inf_{\mathbf{x} \in X_R} f_R(\mathbf{x}) \leq \inf_{\mathbf{x} \in X} f_R(\mathbf{x}) \leq \inf_{\mathbf{x} \in X} f(\mathbf{x}) = v(P)$.
+- If an optimal solution $\mathbf{x}^*$ of $(R)$ satisfies $\mathbf{x}^* \in X$ and $f_R(\mathbf{x}^*) = f(\mathbf{x}^*)$, then $\mathbf{x}^*$ is an optimal solution of $(P)$ and $v(R) = v(P)$.
+	- _Proof_: $v(P) \leq f(\mathbf{x}^*) = f_R(\mathbf{x}^*) = v(R) \leq v(P)$.
+- In general, an optimal solution of a relaxation is not feasible for $(P)$.
+- For a maximization problem the inequalities flip: $f_R(\mathbf{x}) \geq f(\mathbf{x})$ for all $\mathbf{x} \in X$, and $v(R) \geq v(P)$ is an upper bound.
+
+### Branch and Bound
 
 **Branch-and-Bound** (**B&B**) is a method for solving optimization problems by breaking them down into smaller subproblems, and using a bounding function to eliminate subproblems that cannot contain the optimal solution.
 
-General Process:
-1. Branch (Divide): Divide the problem space into two or more smaller, mutually exclusive subproblems (representing child nodes in a search tree).
-2. Bound: Calculate an optimistic estimate of the best possible solution that can be found within each subproblem.
-3. Prune: Keep track of the best valid solution found globally. If the subproblem's bound is worse than or equal to the current global best, discard (prune) that subproblem and all its potential children.
-
-### Relaxations
-
-(TODO: Provide formal definition of a relaxation, take lecture 4&5 from FEB22002X Combinatorial Optimization 2025-2026 as reference)
+Formally, consider the problem $(P)$ with optimal value $v(P) = \inf_{\mathbf{x} \in X} f(\mathbf{x})$.
+- **Branching**: if $X = \bigcup_{k=1}^{K} X_k$, then $v(P) = \min_{k} \inf_{\mathbf{x} \in X_k} f(\mathbf{x})$. So $(P)$ can be solved by solving each **subproblem** $\inf_{\mathbf{x} \in X_k} f(\mathbf{x})$ and taking the best one. Note that $X_{k}$ need not be disjoint, but are usually chosen so to avoid exploring the same solutions more than once. Applying this recursively gives a search tree, in which every node is a subproblem with feasible region $\tilde{X} \subseteq X$.
+	- Example for MILP: if $x_j^*$ is fractional in the optimal solution of the LP relaxation, branch into $x_j \leq \lfloor x_j^* \rfloor$ and $x_j \geq \lceil x_j^* \rceil$.
+- **Bounding**: instead of solving a subproblem exactly, compute at each node:
+	- a lower bound $\underline{z}(\tilde{X}) \leq \inf_{\mathbf{x} \in \tilde{X}} f(\mathbf{x})$, usually the optimal value of a [[#Relaxations|relaxation]].
+	- an upper bound $\bar{z}(\tilde{X}) = f(\mathbf{x}')$ for some feasible $\mathbf{x}' \in \tilde{X}$, usually found by a heuristic. If no feasible point is known, $\bar{z}(\tilde{X}) = \infty$.
+- After branching $\tilde{X}$ into $\tilde{X}_1, \dots, \tilde{X}_K$, the bounds of the parent are updated:
+	$$
+	\underline{z}(\tilde{X}) := \min_{k} \underline{z}(\tilde{X}_k), \qquad \bar{z}(\tilde{X}) := \min\{\bar{z}(\tilde{X}),\ \min_{k} \bar{z}(\tilde{X}_k)\}
+	$$
+	- At the root, $\bar{z}(X)$ is the objective value of the best feasible solution found so far, called the **incumbent**.
+- **Pruning**: a node $\tilde{X}_k$ is not branched on further if:
+	1. **by optimality**: its subproblem is solved to optimality, e.g. the optimal solution of its relaxation is feasible for the subproblem.
+	2. **by bound**: $\underline{z}(\tilde{X}_k) \geq \bar{z}(X)$, so it cannot contain a solution better than the incumbent.
+	3. **by infeasibility**: $\tilde{X}_k = \emptyset$, e.g. its relaxation is infeasible.
+- **Node selection**: deciding which open node to branch on next. Common strategies are **best-bound-first** (the node with the lowest lower bound, which tends to minimize the number of nodes that need to be explored) and **depth-first search** (which tends to find feasible solutions quickly).
+- When no open nodes remain, the incumbent is an optimal solution.
