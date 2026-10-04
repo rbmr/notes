@@ -20,7 +20,7 @@ f(\mathbf{x})&\text{if } \mathbf{x} \text{ is feasible} \\
 $$
 
 Reasoning:
-- If $\mathbf{x}$ is feasible: every equality term contributes $\lambda_i \cdot 0 = 0$, and every inequality term satisfies $c_i(\mathbf{x}) \geq 0$ and $\lambda_i \geq 0$, so $-\lambda_i c_i(\mathbf{x}) \le 0$ is maximized by choosing $\lambda_i = 0$. The supremum is $f(\mathbf{x})$.
+- If $\mathbf{x}$ is feasible: every equality term contributes $\lambda_i \cdot 0 = 0$, and every inequality term satisfies $c_i(\mathbf{x}) \geq 0$ and $\lambda_i \geq 0$, so $-\lambda_i c_i(\mathbf{x}) \le 0$, which is maximized by choosing $\lambda_i = 0$. The supremum is $f(\mathbf{x})$.
 - If $\mathbf{x}$ is infeasible: some constraint is violated, and scaling up its multiplier (with the appropriate sign for a violated equality, or towards $+\infty$ for a violated inequality, where $c_i(\mathbf{x}) < 0$) drives $\mathcal{L}(\mathbf{x}, \mathbf{\lambda}) \to \infty$.
 
 Consequently, the original constrained optimization problem can be rewritten as an unconstrained min-max problem:

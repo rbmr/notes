@@ -10,7 +10,7 @@ Mathematical optimization problems generally have the following form:
 $$
 \inf_{\mathbf{x} \in X}f(\mathbf{x})
 $$
-where $f: X \to \mathbb{R}$ is a function, and $X\subseteq \mathbb{R}^n$ is the set of available alternatives. If $X = \mathbb{R}^n$ we call the problem **unconstrained**, and **constrained** otherwise.
+where $f: X \to \mathbb{R}$ is a function, and $X\subseteq \mathbb{R}^n$ is the set of available alternatives.
 
 The problem is stated with $\inf$ rather than $\min$ because a minimizer is not guaranteed to exist, when one does, the infimum is attained and equals the minimum.
 
