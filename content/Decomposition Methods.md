@@ -12,6 +12,11 @@ Notation may differ from [[Linear Optimisation]]. I aim to explain the differenc
 
 - Note: The [[Linear Optimisation#Revised Simplex Method|revised simplex method]] already improves upon the standard simplex method by not computing the entire dictionary, but just computing each reduced cost one by one until a positive reduced cost is found. Column generation goes even further by never even storing a list of all the variables and/or their constraint weights, and instead uses an entirely seperate optimization problem to directly determine the variable that has the maximal reduced cost, only then adding it to the LP.
 
+Very many variables occur when:
+- The problem is simply large.
+- The Dantzig-Wolfe decomposition is used, which has exponentially many variables.
+- A formulation with many variables is chosen because it is stronger, i.e. its LP relaxation gives a better bound.
+
 The large LP to be solved is called the **master problem** (**MP**), with variables $N = \{1, \dots, n\}$, constraints $M = \{1, \dots, m\}$, and optimal value $z_{MP}$:
 $$
 z_{MP} = \max \Big\{ \sum_{i \in N} c_i x_i \mid \sum_{i \in N} a_{ij} x_i = b_j \ \forall j \in M,\ x_i \geq 0 \ \forall i \in N \Big\}
