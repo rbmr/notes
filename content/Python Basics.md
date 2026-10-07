@@ -182,3 +182,7 @@ msg = "User {} is {} years old.".format(name, age)
 # Good:
 msg = f"User {name} is {age} years old."
 ```
+
+### Tabular Data
+
+(TODO: use polars over pandas)
