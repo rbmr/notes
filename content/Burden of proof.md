@@ -34,3 +34,5 @@ A side thought: once we no longer need to read the implementation, because we tr
 ### Are LLMs the Right Tool for This?
 
 The obvious next question is whether current AIs are even well suited to this. I don't think they are. LLMs are just the first machines that can reason flexibly enough to do mathematics and write proofs a computer can check rigorously. They already beat most humans at it, maybe all of us, but I still think they're far from the best possible design for the job.
+
+(TODO: maybe add something about deriving this spec, and how its difficult on its own since humans are generally incapable of exactly specifying what they want. Its the reward hacking, "be careful what you wish for", etc. And the main things that seems to work well in practice: agile and ci/cd)
