@@ -129,3 +129,63 @@ flowchart TD
 
 These two readings compute different things. So the string is not the right object to attach meaning to. The tree is.
 
+### Programs as trees
+
+Synthesis therefore works directly on trees, and skips strings, parentheses and operator precedence altogether.
+
+A **regular tree grammar** is a tuple $G = (N, F, R, S)$ where:
+
+- $N$ is a finite set of nonterminals, which here act as **types**.
+- $F$ is a finite set of **function symbols**, each with a fixed number of arguments called its **arity**. Symbols of arity $0$ are constants and variables (the difference becomes relevant only when we consider semantics).
+- $R$ is a finite set of rules of the form $A \to f(A_1, \dots, A_k)$, with $A, A_1, \dots, A_k \in N$ and $f \in F$ of arity $k$.
+- $S \in N$ is the start symbol.
+
+The **terms** of type $A$, written $T_G(A)$, are the smallest sets such that:
+$$
+(A \to f(A_1, \dots, A_k)) \in R \ \land\ t_1 \in T_G(A_1) \land \dots \land t_k \in T_G(A_k) \implies f(t_1, \dots, t_k) \in T_G(A)
+$$
+Where:
+- $(A \to f(A_1, \dots, A_k)) \in R$ says that the grammar has a rule that builds a term of type $A$ from the function symbol $f$ and $k$ arguments of types $A_1, \dots, A_k$.
+- $t_1 \in T_G(A_1) \land \dots \land t_k \in T_G(A_k)$ says that we already have a term of the required type for every argument.
+- $f(t_1, \dots, t_k) \in T_G(A)$ is the conclusion: the tree with root $f$ and subtrees $t_1, \dots, t_k$ is a term of type $A$.
+- We ask for the smallest sets (one set for each nonterminal) because the implication only says which trees must be included. Larger sets that also contain trees no rule can build may satisfy the implication aswell. In the smallest sets, a tree is included only if the rules require it.
+
+For $k = 0$ the premise about subterms is empty, which gives the base case of this recursive definition. A **program** is a term $t \in T_G(S)$, and the **program space** is the whole set $T_G(S)$.
+
+A term can be drawn as a **program tree**, a finite rooted tree with ordered children. The tree of $f(t_1, \dots, t_k)$ has a root labelled $f$, and its $i$-th child is the root of the tree of $t_i$. A symbol of arity $0$ is therefore a single leaf. Unlike in a parse tree, the inner nodes are labelled with function symbols, and there are no nonterminals or brackets. Such a tree is also called an **abstract syntax tree** (**AST**).
+
+For example, this is the tree of $\text{add}(x, \text{mul}(1, x))$, the program that corresponds to the parse tree of $x + (1 \times x)$ shown earlier. It has 5 nodes, whereas the parse tree has 10.
+
+%%
+Maintainer note for the program tree (AST) diagram below.
+
+Preferences: all children of a node are on the same row, and edges exit the bottom of a node and enter the top of the next. Unlike the parse trees above, leaves are not forced onto one bottom row, so use plain arrows (-->). Quartz showing a root's outer edges leaving from its sides is fine. Check changes in both Obsidian and Quartz.
+%%
+
+```mermaid
+flowchart TD
+    n["add"] --> l["x"]
+    n --> m["mul"]
+    m --> o["1"]
+    m --> r["x"]
+```
+
+We can also construct these smallest sets in rounds, starting from nothing:
+
+$$
+T^{0}(A) = \emptyset, \qquad T^{h+1}(A) = \{ f(t_1, \dots, t_k) \mid (A \to f(A_1, \dots, A_k)) \in R,\ t_i \in T^{h}(A_i) \}
+$$
+
+Then $T^h(A)$ contains exactly the programs of type $A$ with height at most $h$, and $T_G(A) = \bigcup_{h} T^h(A)$. In words, every program is built from smaller programs in finitely many steps. This gives us **structural induction**: to prove something about all programs, prove it for $f(t_1, \dots, t_k)$ assuming it holds for $t_1, \dots, t_k$.
+
+The running example of this note is the following grammar, with start symbol $E$ (integer expressions) and a second type $B$ (conditions):
+
+$$
+\begin{aligned}
+E &\to x \mid y \mid 0 \mid 1 \mid \text{add}(E, E) \mid \text{sub}(E, E) \mid \text{mul}(E, E) \mid \text{ite}(B, E, E) \\
+B &\to \text{le}(E, E)
+\end{aligned}
+$$
+
+Here $\text{ite}$ stands for "if then else" and $\text{le}$ for "less than or equal". The types rule out nonsense such as $\text{add}(\text{le}(x, y), 1)$.
+
