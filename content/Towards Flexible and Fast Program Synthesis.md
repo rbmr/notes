@@ -1,6 +1,7 @@
 ---
 tags:
   - projects
+  - computer-science/program-synthesis
 draft: false
 ---
 In preparation for my master thesis I needed to be come familiar with the existing tools the thesis will build upon. This document covers: the Julia language, the Herb.jl framework, the BART constraint solver, and the PHALCON synthesizer. It is about methodology only: how each piece works and why it is designed that way. Experiments, related work and results are left out on purpose.
